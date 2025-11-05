@@ -73,6 +73,79 @@ export function App() {
 }
 ```
 
+### After connecting
+
+Once the provider is in place, grabbing wallet state or performing actions is one hook away.
+
+```tsx
+import { useBalance, useSolTransfer, useSplToken, useWalletSession } from '@solana/react-hooks';
+
+function WalletDetails() {
+    const session = useWalletSession();
+    const address = session?.account.address.toString();
+    const balance = useBalance(address);
+
+    if (!session) {
+        return <p>Connect a wallet to see details.</p>;
+    }
+
+    return (
+        <div>
+            <p>Address: {address}</p>
+            <p>Lamports: {balance.lamports?.toString() ?? '–'}</p>
+        </div>
+    );
+}
+
+function SendOneLamport() {
+    const session = useWalletSession();
+    const { send, status } = useSolTransfer();
+
+    if (!session) {
+        return null;
+    }
+
+    return (
+        <button
+            disabled={status === 'loading'}
+            onClick={() =>
+                send({
+                    amount: 1n,
+                    destination: session.account.address,
+                })
+            }
+        >
+            {status === 'loading' ? 'Sending…' : 'Send 1 lamport to myself'}
+        </button>
+    );
+}
+
+function UsdcBalance() {
+    const { balance, status } = useSplToken('4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU');
+    if (status !== 'ready' || !balance) {
+        return <p>Fetching USDC balance…</p>;
+    }
+    return <p>USDC: {balance.uiAmount}</p>;
+}
+
+function SendUsdc({ destination }: { destination: string }) {
+    const { isSending, send } = useSplToken('4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU');
+    return (
+        <button
+            disabled={isSending}
+            onClick={() =>
+                send({
+                    amount: '0.5',
+                    destinationOwner: destination,
+                })
+            }
+        >
+            {isSending ? 'Sending…' : 'Send 0.5 USDC'}
+        </button>
+    );
+}
+```
+
 ### Popular hooks
 
 - `useClusterState`, `useClusterStatus`: check RPC/WebSocket connectivity and latency.
