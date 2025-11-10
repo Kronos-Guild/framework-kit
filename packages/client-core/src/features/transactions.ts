@@ -32,6 +32,11 @@ import {
 } from '@solana-program/compute-budget';
 
 import { createWalletTransactionSigner, isWalletSession, resolveSignerMode } from '../signers/walletTransactionSigner';
+import {
+	type PrepareTransactionMessage,
+	type PrepareTransactionOptions,
+	prepareTransaction as prepareTransactionUtility,
+} from '../transactions/prepareTransaction';
 import type { SolanaClientRuntime, WalletSession } from '../types';
 
 type BlockhashLifetime = Readonly<{
@@ -47,6 +52,8 @@ type SignableTransactionMessage = Parameters<typeof signTransactionMessageWithSi
 
 type TransactionAuthority = TransactionSigner | WalletSession;
 
+type PrepareTransactionOverrides = Omit<PrepareTransactionOptions<PrepareTransactionMessage>, 'transaction'>;
+
 export type TransactionPrepareRequest = Readonly<{
 	abortSignal?: AbortSignal;
 	authority?: TransactionAuthority;
@@ -58,6 +65,11 @@ export type TransactionPrepareRequest = Readonly<{
 	lifetime?: BlockhashLifetime;
 	version?: TransactionVersion | 'auto';
 }>;
+
+export type TransactionPrepareAndSendRequest = TransactionPrepareRequest &
+	Readonly<{
+		prepareTransaction?: false | PrepareTransactionOverrides;
+	}>;
 
 export type TransactionPrepared = Readonly<{
 	commitment: Commitment;
@@ -92,6 +104,10 @@ export type TransactionHelper = Readonly<{
 	): ReturnType<typeof signTransactionMessageWithSigners>;
 	toWire(prepared: TransactionPrepared, options?: TransactionSignOptions): Promise<string>;
 	send(prepared: TransactionPrepared, options?: TransactionSendOptions): Promise<ReturnType<typeof signature>>;
+	prepareAndSend(
+		request: TransactionPrepareAndSendRequest,
+		options?: TransactionSendOptions,
+	): Promise<ReturnType<typeof signature>>;
 }>;
 
 function toAddress(value: Address | string): Address {
@@ -311,10 +327,34 @@ export function createTransactionHelper(
 		return signature(response);
 	}
 
+	async function prepareAndSend(
+		request: TransactionPrepareAndSendRequest,
+		options: TransactionSendOptions = {},
+	): Promise<ReturnType<typeof signature>> {
+		const { prepareTransaction: overrides, ...rest } = request;
+		const prepared = await prepare(rest);
+		if (overrides === false) {
+			return send(prepared, options);
+		}
+		const prepareConfig = overrides ?? {};
+		const tunedMessage = (await prepareTransactionUtility({
+			blockhashReset: prepareConfig.blockhashReset ?? false,
+			...prepareConfig,
+			rpc: runtime.rpc as Parameters<typeof prepareTransactionUtility>[0]['rpc'],
+			transaction: prepared.message as unknown as PrepareTransactionMessage,
+		})) as SignableTransactionMessage;
+		const tunedPrepared: TransactionPrepared = Object.freeze({
+			...prepared,
+			message: tunedMessage,
+		});
+		return send(tunedPrepared, options);
+	}
+
 	return Object.freeze({
 		prepare,
 		sign,
 		toWire,
 		send,
+		prepareAndSend,
 	});
 }

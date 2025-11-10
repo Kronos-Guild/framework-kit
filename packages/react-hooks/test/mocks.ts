@@ -203,6 +203,9 @@ function createDefaultTransactionHelper(): MockedTransactionHelper {
 		sign: vi.fn<TransactionHelper['sign']>(async () => ({}) as unknown),
 		toWire: vi.fn<TransactionHelper['toWire']>(async () => 'MockWireTransaction1111111111111111111111111'),
 		send: vi.fn<TransactionHelper['send']>(async () => 'MockTxSignature1111111111111111111111111' as Signature),
+		prepareAndSend: vi.fn<TransactionHelper['prepareAndSend']>(
+			async () => 'MockTxSignature1111111111111111111111111' as Signature,
+		),
 	};
 }
 

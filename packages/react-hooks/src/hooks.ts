@@ -11,6 +11,7 @@ import {
 	type SplTransferPrepareConfig,
 	type TransactionHelper,
 	type TransactionInstructionInput,
+	type TransactionPrepareAndSendRequest,
 	type TransactionPrepared,
 	type TransactionPrepareRequest,
 	type TransactionSendOptions,
@@ -481,6 +482,12 @@ type UseTransactionPoolSignOptions = Readonly<TransactionSignOptions & { prepare
 
 type UseTransactionPoolSendOptions = Readonly<TransactionSendOptions & { prepared?: TransactionPrepared }>;
 
+type UseTransactionPoolPrepareAndSendOptions = Readonly<
+	Omit<TransactionPrepareAndSendRequest, 'instructions'> & {
+		instructions?: TransactionInstructionList;
+	}
+>;
+
 type TransactionSignature = Signature;
 
 /**
@@ -504,6 +511,10 @@ export function useTransactionPool(config: UseTransactionPoolConfig = {}): Reado
 	sendError: unknown;
 	sendSignature: TransactionSignature | null;
 	sendStatus: AsyncState<TransactionSignature>['status'];
+	prepareAndSend(
+		request?: UseTransactionPoolPrepareAndSendOptions,
+		sendOptions?: TransactionSendOptions,
+	): Promise<TransactionSignature>;
 	sign(options?: UseTransactionPoolSignOptions): ReturnType<TransactionHelper['sign']>;
 	toWire(options?: UseTransactionPoolSignOptions): ReturnType<TransactionHelper['toWire']>;
 }> {
@@ -630,6 +641,35 @@ export function useTransactionPool(config: UseTransactionPoolConfig = {}): Reado
 		[helper, prepared],
 	);
 
+	const prepareAndSend = useCallback(
+		async (
+			request: UseTransactionPoolPrepareAndSendOptions = {},
+			sendOptions?: TransactionSendOptions,
+		): Promise<TransactionSignature> => {
+			const { instructions: overrideInstructions, ...rest } = request;
+			const nextInstructions = overrideInstructions ?? instructions;
+			if (!nextInstructions.length) {
+				throw new Error('Add at least one instruction before preparing a transaction.');
+			}
+			setSendState({ status: 'loading' });
+			try {
+				const signature = await helper.prepareAndSend(
+					{
+						...(rest as Omit<TransactionPrepareAndSendRequest, 'instructions'>),
+						instructions: nextInstructions,
+					},
+					sendOptions,
+				);
+				setSendState({ data: signature, status: 'success' });
+				return signature;
+			} catch (error) {
+				setSendState({ error, status: 'error' });
+				throw error;
+			}
+		},
+		[helper, instructions],
+	);
+
 	const isPreparing = prepareState.status === 'loading';
 	const isSending = sendState.status === 'loading';
 
@@ -651,6 +691,7 @@ export function useTransactionPool(config: UseTransactionPoolConfig = {}): Reado
 		sendError: sendState.error ?? null,
 		sendSignature: sendState.data ?? null,
 		sendStatus: sendState.status,
+		prepareAndSend,
 		sign,
 		toWire,
 	};

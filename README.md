@@ -11,6 +11,26 @@ Solana SDK delivers React-focused tooling for building Solana applications. This
 
 ---
 
+## Transaction-helper DX
+
+`@solana/client-core` now folds automatic transaction preparation into the public surface. You can lean on `client.helpers.transaction.prepareAndSend` for the common “build → simulate → send” flow while still opting into the bare `prepareTransaction` utility when you need to log or inspect the wire payload. Feed it `addressLookupTables` and it automatically switches to v0 transactions—otherwise it stays legacy so you never have to name the version explicitly.
+
+```ts
+const signature = await client.helpers.transaction.prepareAndSend(
+	{
+		instructions,
+		authority: walletSession,
+		prepareTransaction: {
+			computeUnitLimitMultiplier: 1.2,
+			logRequest: ({ base64WireTransaction }) => telemetry.debug({ base64WireTransaction }),
+		},
+	},
+	{ commitment: 'confirmed' },
+);
+```
+
+Need finer control? `client.prepareTransaction` exposes the same simulation-powered tuning without re-exporting any of `@solana/kit`.
+
 ## Development
 
 - Install deps with `pnpm install`.

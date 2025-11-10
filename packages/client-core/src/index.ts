@@ -17,6 +17,7 @@ export {
 	createTransactionHelper,
 	type TransactionHelper,
 	type TransactionInstructionInput,
+	type TransactionPrepareAndSendRequest,
 	type TransactionPrepared,
 	type TransactionPrepareRequest,
 	type TransactionSendOptions,
