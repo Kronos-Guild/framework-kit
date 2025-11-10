@@ -41,7 +41,25 @@ export {
 	toBigint,
 } from './numeric/math';
 export { type ApplyRatioOptions, applyRatio, createRatio, type Ratio, type RoundingMode } from './numeric/rational';
+export {
+	type CreateSolanaRpcClientConfig,
+	createSolanaRpcClient,
+	type SendAndConfirmTransactionOptions,
+	type SimulateTransactionOptions,
+	type SolanaRpcClient,
+} from './rpc/createSolanaRpcClient';
 export { bigintFromJson, bigintToJson, lamportsFromJson, lamportsToJson } from './serialization/json';
+export {
+	transactionToBase64,
+	transactionToBase64WithSigners,
+} from './transactions/base64';
+export {
+	type PrepareTransactionConfig,
+	type PrepareTransactionMessage,
+	type PrepareTransactionOptions,
+	prepareTransaction,
+} from './transactions/prepareTransaction';
+export { insertReferenceKey, insertReferenceKeys } from './transactions/referenceKeys';
 export type {
 	AccountCache,
 	AccountCacheEntry,

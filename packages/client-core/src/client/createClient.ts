@@ -1,6 +1,5 @@
-import { createSolanaRpc, createSolanaRpcSubscriptions } from '@solana/kit';
-
 import { createLogger, formatError } from '../logging/logger';
+import { createSolanaRpcClient } from '../rpc/createSolanaRpcClient';
 import type { ClientStore, SolanaClient, SolanaClientConfig, SolanaClientRuntime } from '../types';
 import { now } from '../utils';
 import { createWalletRegistry } from '../wallet/registry';
@@ -24,9 +23,16 @@ export function createClient(config: SolanaClientConfig): SolanaClient {
 		websocketEndpoint,
 	});
 	const store: ClientStore = config.createStore ? config.createStore(initialState) : createClientStore(initialState);
+	const rpcClient =
+		config.rpcClient ??
+		createSolanaRpcClient({
+			commitment,
+			endpoint: config.endpoint,
+			websocketEndpoint,
+		});
 	const runtime: SolanaClientRuntime = {
-		rpc: createSolanaRpc(config.endpoint),
-		rpcSubscriptions: createSolanaRpcSubscriptions(websocketEndpoint),
+		rpc: rpcClient.rpc,
+		rpcSubscriptions: rpcClient.rpcSubscriptions,
 	};
 	const connectors = createWalletRegistry(config.walletConnectors ?? []);
 	const logger = createLogger(config.logger);
@@ -78,6 +84,7 @@ export function createClient(config: SolanaClientConfig): SolanaClient {
 		get transaction() {
 			return helpers.transaction;
 		},
+		prepareTransaction: helpers.prepareTransaction,
 		watchers,
 	};
 }

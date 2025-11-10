@@ -1,4 +1,4 @@
-import type { SolanaClientConfig, WalletConnector } from '@solana/client-core';
+import { createSolanaRpcClient, type SolanaClientConfig, type WalletConnector } from '@solana/client-core';
 import { SolanaClientProvider, useConnectWallet, useWallet, useWalletStandardConnectors } from '@solana/react-hooks';
 import { useEffect, useMemo, useRef } from 'react';
 
@@ -18,13 +18,23 @@ const DEFAULT_CLIENT_CONFIG: SolanaClientConfig = {
 
 export default function App() {
 	const walletConnectors = useWalletStandardConnectors();
+	const rpcClient = useMemo(
+		() =>
+			createSolanaRpcClient({
+				commitment: DEFAULT_CLIENT_CONFIG.commitment,
+				endpoint: DEFAULT_CLIENT_CONFIG.endpoint,
+				websocketEndpoint: DEFAULT_CLIENT_CONFIG.websocketEndpoint,
+			}),
+		[],
+	);
 
 	const clientConfig = useMemo<SolanaClientConfig>(
 		() => ({
 			...DEFAULT_CLIENT_CONFIG,
+			rpcClient,
 			walletConnectors,
 		}),
-		[walletConnectors],
+		[rpcClient, walletConnectors],
 	);
 
 	return (

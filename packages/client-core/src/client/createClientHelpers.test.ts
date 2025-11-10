@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { SolTransferPrepareConfig } from '../features/sol';
 import type { SplTokenHelperConfig } from '../features/spl';
+import type { PrepareTransactionMessage } from '../transactions/prepareTransaction';
 import { createClientHelpers } from './createClientHelpers';
 import { createDefaultClientStore } from './createClientStore';
 
@@ -33,6 +34,8 @@ const createTransactionHelperMock = vi.hoisted(() =>
 	})),
 );
 
+const prepareTransactionMock = vi.hoisted(() => vi.fn());
+
 vi.mock('../features/sol', () => ({
 	createSolTransferHelper: createSolTransferHelperMock,
 }));
@@ -43,6 +46,10 @@ vi.mock('../features/spl', () => ({
 
 vi.mock('../features/transactions', () => ({
 	createTransactionHelper: createTransactionHelperMock,
+}));
+
+vi.mock('../transactions/prepareTransaction', () => ({
+	prepareTransaction: prepareTransactionMock,
 }));
 
 describe('client helpers', () => {
@@ -61,6 +68,7 @@ describe('client helpers', () => {
 		createSolTransferHelperMock.mockClear();
 		createSplTokenHelperMock.mockClear();
 		createTransactionHelperMock.mockClear();
+		prepareTransactionMock.mockClear();
 	});
 
 	it('lazily creates sol transfer helper and injects default commitment', async () => {
@@ -107,5 +115,14 @@ describe('client helpers', () => {
 		const splDifferentConfig: SplTokenHelperConfig = { mint: 'mint', commitment: 'finalized' };
 		const splDifferent = helpers.splToken({ ...splDifferentConfig });
 		expect(splDifferent).not.toBe(splA);
+	});
+
+	it('prepares transactions using the runtime RPC', async () => {
+		const store = createDefaultClientStore(config);
+		const rpc = { tag: 'rpc' };
+		const helpers = createClientHelpers({ ...runtime, rpc } as never, store);
+		const transaction = { tag: 'message' } as unknown as PrepareTransactionMessage;
+		await helpers.prepareTransaction({ transaction });
+		expect(prepareTransactionMock).toHaveBeenCalledWith({ transaction, rpc });
 	});
 });

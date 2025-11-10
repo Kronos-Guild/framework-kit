@@ -3,6 +3,11 @@ import type { Commitment } from '@solana/kit';
 import { createSolTransferHelper, type SolTransferHelper } from '../features/sol';
 import { createSplTokenHelper, type SplTokenHelper, type SplTokenHelperConfig } from '../features/spl';
 import { createTransactionHelper, type TransactionHelper } from '../features/transactions';
+import {
+	type PrepareTransactionMessage,
+	type PrepareTransactionOptions,
+	prepareTransaction as prepareTransactionUtility,
+} from '../transactions/prepareTransaction';
 import type { ClientHelpers, ClientStore, SolanaClientRuntime } from '../types';
 
 type SplTokenCacheEntry = Readonly<{
@@ -108,6 +113,14 @@ export function createClientHelpers(runtime: SolanaClientRuntime, store: ClientS
 		return scoped;
 	}
 
+	const prepareTransactionWithRuntime = <TMessage extends PrepareTransactionMessage>(
+		options: PrepareTransactionOptions<TMessage>,
+	) =>
+		prepareTransactionUtility({
+			...options,
+			rpc: runtime.rpc as Parameters<typeof prepareTransactionUtility>[0]['rpc'],
+		});
+
 	return Object.freeze({
 		get solTransfer() {
 			return getSolTransfer();
@@ -116,5 +129,6 @@ export function createClientHelpers(runtime: SolanaClientRuntime, store: ClientS
 		get transaction() {
 			return getTransaction();
 		},
+		prepareTransaction: prepareTransactionWithRuntime,
 	});
 }

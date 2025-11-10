@@ -6,8 +6,6 @@ import type { ClientActions, SolanaClientRuntime, WalletConnector, WalletRegistr
 import { createActions } from './actions';
 import { createDefaultClientStore } from './createClientStore';
 
-const createSolanaRpcMock = vi.hoisted(() => vi.fn());
-const createSolanaRpcSubscriptionsMock = vi.hoisted(() => vi.fn());
 const getBase64EncodedWireTransactionMock = vi.hoisted(() => vi.fn((tx: unknown) => `wire:${String(tx)}`));
 const airdropFactoryMock = vi.hoisted(() => vi.fn());
 const createBlockHeightExceedencePromiseFactoryMock = vi.hoisted(() => vi.fn());
@@ -20,11 +18,25 @@ const nowMock = vi.hoisted(() => {
 	return vi.fn(() => ++current);
 });
 
+const createSolanaRpcClientMock = vi.hoisted(() =>
+	vi.fn(() => ({
+		commitment: 'confirmed',
+		endpoint: 'https://rpc.test',
+		rpc: {} as SolanaClientRuntime['rpc'],
+		rpcSubscriptions: {} as SolanaClientRuntime['rpcSubscriptions'],
+		sendAndConfirmTransaction: vi.fn(),
+		simulateTransaction: vi.fn(),
+		websocketEndpoint: 'wss://rpc.test',
+	})),
+);
+
 vi.mock('@solana/kit', () => ({
-	createSolanaRpc: createSolanaRpcMock,
-	createSolanaRpcSubscriptions: createSolanaRpcSubscriptionsMock,
 	getBase64EncodedWireTransaction: getBase64EncodedWireTransactionMock,
 	airdropFactory: airdropFactoryMock,
+}));
+
+vi.mock('../rpc/createSolanaRpcClient', () => ({
+	createSolanaRpcClient: createSolanaRpcClientMock,
 }));
 
 vi.mock('@solana/transaction-confirmation', () => ({
@@ -92,13 +104,20 @@ describe('client actions', () => {
 			signatureNotifications: vi.fn(),
 		} as unknown as SolanaClientRuntime['rpcSubscriptions'];
 
-		createSolanaRpcMock.mockReturnValue(rpc);
-		createSolanaRpcSubscriptionsMock.mockReturnValue(rpcSubscriptions);
-
 		runtime = {
 			rpc: rpc as unknown as SolanaClientRuntime['rpc'],
 			rpcSubscriptions,
 		};
+
+		createSolanaRpcClientMock.mockImplementation(({ commitment, endpoint, websocketEndpoint }) => ({
+			commitment: commitment ?? 'confirmed',
+			endpoint,
+			rpc: { endpoint } as SolanaClientRuntime['rpc'],
+			rpcSubscriptions: { endpoint: websocketEndpoint ?? endpoint } as SolanaClientRuntime['rpcSubscriptions'],
+			sendAndConfirmTransaction: vi.fn(),
+			simulateTransaction: vi.fn(),
+			websocketEndpoint: websocketEndpoint ?? endpoint,
+		}));
 
 		walletConnector = {
 			id: 'wallet-1',
@@ -134,8 +153,11 @@ describe('client actions', () => {
 		const state = store.getState();
 		expect(state.cluster.endpoint).toBe('https://new.rpc');
 		expect(state.cluster.status).toMatchObject({ status: 'ready' });
-		expect(createSolanaRpcMock).toHaveBeenCalledWith('https://new.rpc');
-		expect(createSolanaRpcSubscriptionsMock).toHaveBeenCalledWith('wss://new');
+		expect(createSolanaRpcClientMock).toHaveBeenCalledWith({
+			commitment: 'processed',
+			endpoint: 'https://new.rpc',
+			websocketEndpoint: 'wss://new',
+		});
 	});
 
 	it('connects and disconnects a wallet, handling errors', async () => {

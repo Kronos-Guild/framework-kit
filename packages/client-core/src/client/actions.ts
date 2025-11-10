@@ -7,12 +7,7 @@ import type {
 	Signature,
 	Transaction,
 } from '@solana/kit';
-import {
-	airdropFactory,
-	createSolanaRpc,
-	createSolanaRpcSubscriptions,
-	getBase64EncodedWireTransaction,
-} from '@solana/kit';
+import { airdropFactory, getBase64EncodedWireTransaction } from '@solana/kit';
 import type { TransactionWithLastValidBlockHeight } from '@solana/transaction-confirmation';
 import {
 	createBlockHeightExceedencePromiseFactory,
@@ -21,6 +16,7 @@ import {
 } from '@solana/transaction-confirmation';
 
 import { createLogger, formatError } from '../logging/logger';
+import { createSolanaRpcClient } from '../rpc/createSolanaRpcClient';
 import type { ClientActions, ClientState, ClientStore, SolanaClientRuntime, WalletRegistry } from '../types';
 import { now } from '../utils';
 
@@ -113,8 +109,13 @@ export function createActions({ connectors, logger: inputLogger, runtime, store 
 			lastUpdatedAt: now(),
 		}));
 		try {
-			runtime.rpc = createSolanaRpc(endpoint);
-			runtime.rpcSubscriptions = createSolanaRpcSubscriptions(websocketEndpoint);
+			const newRpcClient = createSolanaRpcClient({
+				commitment: nextCommitment,
+				endpoint,
+				websocketEndpoint,
+			});
+			runtime.rpc = newRpcClient.rpc;
+			runtime.rpcSubscriptions = newRpcClient.rpcSubscriptions;
 			const latencyMs = await warmupCluster(endpoint, nextCommitment);
 			store.setState((state) => ({
 				...state,

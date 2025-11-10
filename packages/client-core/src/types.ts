@@ -6,12 +6,15 @@ import type {
 	SendableTransaction,
 	Signature,
 	Transaction,
+	TransactionMessageWithBlockhashLifetime,
 } from '@solana/kit';
 import type { TransactionWithLastValidBlockHeight } from '@solana/transaction-confirmation';
 import type { StoreApi } from 'zustand/vanilla';
 import type { SolTransferHelper } from './features/sol';
 import type { SplTokenHelper, SplTokenHelperConfig } from './features/spl';
 import type { TransactionHelper } from './features/transactions';
+import type { SolanaRpcClient } from './rpc/createSolanaRpcClient';
+import type { PrepareTransactionMessage, PrepareTransactionOptions } from './transactions/prepareTransaction';
 
 type SolanaRpcInstance = ReturnType<typeof import('@solana/kit')['createSolanaRpc']>;
 type SolanaSubscriptionsInstance = ReturnType<typeof import('@solana/kit')['createSolanaRpcSubscriptions']>;
@@ -159,6 +162,7 @@ export type SolanaClientConfig = Readonly<{
 	createStore?: CreateStoreFn;
 	endpoint: ClusterUrl;
 	logger?: ClientLogger;
+	rpcClient?: SolanaRpcClient;
 	walletConnectors?: readonly WalletConnector[];
 	websocketEndpoint?: ClusterUrl;
 }>;
@@ -214,6 +218,9 @@ export type ClientHelpers = Readonly<{
 	solTransfer: SolTransferHelper;
 	splToken(config: SplTokenHelperConfig): SplTokenHelper;
 	transaction: TransactionHelper;
+	prepareTransaction<TMessage extends PrepareTransactionMessage>(
+		config: PrepareTransactionOptions<TMessage>,
+	): Promise<TMessage & TransactionMessageWithBlockhashLifetime>;
 }>;
 
 export type WalletRegistry = Readonly<{
@@ -236,4 +243,5 @@ export type SolanaClient = Readonly<{
 	SplToken(config: SplTokenHelperConfig): SplTokenHelper;
 	SplHelper(config: SplTokenHelperConfig): SplTokenHelper;
 	transaction: TransactionHelper;
+	prepareTransaction: ClientHelpers['prepareTransaction'];
 }>;

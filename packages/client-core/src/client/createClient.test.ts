@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import type { SolanaRpcClient } from '../rpc/createSolanaRpcClient';
 import type { SolanaClientConfig } from '../types';
 import { createClient } from './createClient';
 
@@ -9,8 +10,6 @@ type Logger = ReturnType<ReturnType<typeof createLoggerMock>>;
 
 type Helpers = ReturnType<typeof createClientHelpersMock>;
 
-const createSolanaRpcMock = vi.hoisted(() => vi.fn(() => ({ rpc: true })));
-const createSolanaRpcSubscriptionsMock = vi.hoisted(() => vi.fn(() => ({ sub: true })));
 const createActionsMock = vi.hoisted(() =>
 	vi.fn(() => ({
 		setCluster: vi.fn().mockResolvedValue(undefined),
@@ -37,10 +36,23 @@ const createWalletRegistryMock = vi.hoisted(() =>
 const createLoggerMock = vi.hoisted(() => vi.fn(() => vi.fn()));
 const formatErrorMock = vi.hoisted(() => vi.fn((error: unknown) => ({ formatted: error })));
 const nowMock = vi.hoisted(() => vi.fn(() => 111));
+const createSolanaRpcClientMock = vi.hoisted(() =>
+	vi.fn(
+		() =>
+			({
+				commitment: 'confirmed',
+				endpoint: 'https://rpc.example',
+				rpc: { tag: 'rpc' },
+				rpcSubscriptions: { tag: 'sub' },
+				sendAndConfirmTransaction: vi.fn(),
+				simulateTransaction: vi.fn(),
+				websocketEndpoint: 'wss://rpc.example',
+			}) satisfies SolanaRpcClient,
+	),
+);
 
-vi.mock('@solana/kit', () => ({
-	createSolanaRpc: createSolanaRpcMock,
-	createSolanaRpcSubscriptions: createSolanaRpcSubscriptionsMock,
+vi.mock('../rpc/createSolanaRpcClient', () => ({
+	createSolanaRpcClient: createSolanaRpcClientMock,
 }));
 
 vi.mock('../logging/logger', () => ({
@@ -87,8 +99,11 @@ describe('createClient', () => {
 
 	it('instantiates the client with runtime wiring and helpers', async () => {
 		const client = createClient(config);
-		expect(createSolanaRpcMock).toHaveBeenCalledWith('https://rpc.example');
-		expect(createSolanaRpcSubscriptionsMock).toHaveBeenCalledWith('https://rpc.example');
+		expect(createSolanaRpcClientMock).toHaveBeenCalledWith({
+			commitment: 'finalized',
+			endpoint: 'https://rpc.example',
+			websocketEndpoint: 'https://rpc.example',
+		});
 		expect(createWalletRegistryMock).toHaveBeenCalledWith(config.walletConnectors);
 		expect(createActionsMock).toHaveBeenCalled();
 		expect(createWatchersMock).toHaveBeenCalled();
@@ -108,6 +123,24 @@ describe('createClient', () => {
 
 		client.destroy();
 		expect(client.store.getState().cluster.status).toEqual({ status: 'idle' });
+	});
+
+	it('respects a provided rpcClient instance', () => {
+		const rpcClient = {
+			commitment: 'processed',
+			endpoint: 'https://rpc.example',
+			rpc: { tag: 'external-rpc' },
+			rpcSubscriptions: { tag: 'external-sub' },
+			sendAndConfirmTransaction: vi.fn(),
+			simulateTransaction: vi.fn(),
+			websocketEndpoint: 'wss://rpc.example',
+		} satisfies SolanaRpcClient;
+		createClient({
+			...config,
+			commitment: 'processed',
+			rpcClient,
+		});
+		expect(createSolanaRpcClientMock).not.toHaveBeenCalled();
 	});
 
 	it('logs errors when initial cluster setup fails', async () => {
