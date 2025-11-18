@@ -1,13 +1,29 @@
-# Solana SDK
+# Framework-kit
 
-> ⚠️ Experimental: Solana SDK is an early-stage Solana SDK built on Solana Kit and slated to supersede Gill and web3.js.
+> ⚠️ Experimental: Framework-kit is the opinionated layer that sits above Solana Kit—think “Next.js for Solana” in the sense of shipping production-ready conventions, scaffolding, and guardrails on top of raw Solana primitives—and will eventually supersede Gill and web3.js.
 
-Solana SDK delivers React-focused tooling for building Solana applications. This workspace currently ships two packages:
+Framework-kit currently focuses on React developers, but the roadmap takes it from “handy hooks” to a cohesive, production-standard application framework that spans multiple runtimes and UI stacks.
+
+## Packages available today
+
+This workspace currently ships two packages:
 
 | Package | Description |
 | --- | --- |
 | [`@solana/react-hooks`](packages/react-hooks) | React bindings over the headless [`@solana/client`](packages/client) SDK. Supplies context providers plus hooks for wallet management, balances, transfers, and SPL helpers. |
 | [`@solana/example-react-hooks`](examples/react-hooks) | Tailwind/Vite demo application showcasing the hooks with a polished UI. Handy as a reference or quick-start template. |
+
+---
+
+## Goals
+
+Framework-kit’s roadmap is anchored in a handful of big goals:
+
+- **React-first excellence:** keep Suspense support sharp, fold in automatic reconnection and cluster switching, and refactor “recipes” so React code becomes a thin layer over the shared Core. Server Component helpers round out the production story.
+- **Gentle migrations:** ship a `web3-compat` package that mirrors the Connection surface closely enough (~75%) for teams to migrate over 12–18 months without rewrites.
+- **Core upgrades:** adopt Anza’s transaction planner/executor, centralize reusable instruction recipes, and explore generated clients from IDLs so every runtime benefits from the same primitives.
+- **More runtimes:** extend the same recipes and tooling to Node.js/Bun.js (including key management + ETL helpers) and deliver feature parity adapters for Svelte, Vue, and Angular.
+- **Framework-level experience:** once these pillars land, Framework-kit steps beyond “a set of libraries” into a deployable framework that bakes in escrow-like modules, opinionated scaffolding, and production guardrails on top of Solana Kit.
 
 ---
 

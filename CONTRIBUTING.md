@@ -1,6 +1,6 @@
 # Contributing
 
-Thanks for your interest in helping! This project is an experimental Solana SDK, and we value contributions that respect the community and keep the codebase healthy.
+Thanks for your interest in helping! Framework-kit is still experimental, and we value contributions that respect the community and keep the codebase healthy.
 
 ## Code of Conduct & Ethics
 
@@ -46,4 +46,4 @@ Thanks for your interest in helping! This project is an experimental Solana SDK,
 - Provide reproduction steps, expected vs. actual behavior, and environment details.
 - Be patient and courteous—maintainers review issues and PRs as time allows.
 
-We appreciate your contribution to the Solana SDK ecosystem!
+We appreciate your contribution to the Framework-kit ecosystem!
