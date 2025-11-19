@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 import { useEffect, useRef, useState } from 'react';
 import type { SWRConfiguration } from 'swr';
 
-import { SolanaClientProvider } from './context';
+import { SolanaClientProvider, useSolanaClient } from './context';
 import { useConnectWallet, useWallet } from './hooks';
 import { SolanaQueryProvider } from './QueryProvider';
 
@@ -70,12 +70,22 @@ const DEFAULT_STORAGE_KEY = 'solana:last-connector';
 function WalletPersistence({ autoConnect = true, storage, storageKey = DEFAULT_STORAGE_KEY }: WalletPersistenceConfig) {
 	const wallet = useWallet();
 	const connectWallet = useConnectWallet();
+	const client = useSolanaClient();
 	const storageRef = useRef<StorageAdapter | null>(storage ?? getDefaultStorage());
 	const [hasAttemptedAutoConnect, setHasAttemptedAutoConnect] = useState(false);
+	const hasPersistedConnectorRef = useRef(false);
+	const clientRef = useRef<SolanaClient | null>(null);
 
 	useEffect(() => {
 		storageRef.current = storage ?? getDefaultStorage();
 	}, [storage]);
+
+	useEffect(() => {
+		if (clientRef.current !== client) {
+			clientRef.current = client;
+			setHasAttemptedAutoConnect(false);
+		}
+	}, [client]);
 
 	useEffect(() => {
 		const activeStorage = storageRef.current;
@@ -84,11 +94,13 @@ function WalletPersistence({ autoConnect = true, storage, storageKey = DEFAULT_S
 			const connectorId = wallet.connectorId;
 			if (connectorId) {
 				safelyWrite(() => activeStorage.setItem(storageKey, connectorId));
+				hasPersistedConnectorRef.current = true;
 				return;
 			}
 		}
-		if (wallet.status === 'disconnected') {
+		if (wallet.status === 'disconnected' && hasPersistedConnectorRef.current) {
 			safelyWrite(() => activeStorage.removeItem(storageKey));
+			hasPersistedConnectorRef.current = false;
 		}
 	}, [storageKey, wallet]);
 
@@ -113,6 +125,12 @@ function WalletPersistence({ autoConnect = true, storage, storageKey = DEFAULT_S
 			return;
 		}
 
+		const connector = client.connectors.get(connectorId);
+		if (!connector) {
+			// Connector not yet registered; wait for the client to refresh.
+			return;
+		}
+
 		void (async () => {
 			try {
 				await connectWallet(connectorId, { autoConnect: true });
@@ -128,7 +146,7 @@ function WalletPersistence({ autoConnect = true, storage, storageKey = DEFAULT_S
 		return () => {
 			cancelled = true;
 		};
-	}, [autoConnect, connectWallet, hasAttemptedAutoConnect, storageKey, wallet.status]);
+	}, [autoConnect, client, connectWallet, hasAttemptedAutoConnect, storageKey, wallet.status]);
 
 	return null;
 }

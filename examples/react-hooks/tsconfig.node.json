@@ -11,7 +11,9 @@
 		"baseUrl": ".",
 		"paths": {
 			"@solana/client": ["../../packages/client/src/index.ts"],
-			"@solana/client/*": ["../../packages/client/src/*"]
+			"@solana/client/*": ["../../packages/client/src/*"],
+			"@solana/react-hooks": ["../../packages/react-hooks/src/index.ts"],
+			"@solana/react-hooks/*": ["../../packages/react-hooks/src/*"]
 		}
 	},
 	"include": ["vite.config.ts"]

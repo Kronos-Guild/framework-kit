@@ -1,12 +1,6 @@
-import { createSolanaRpcClient, type SolanaClientConfig, type WalletConnector } from '@solana/client';
-import {
-	SolanaClientProvider,
-	SolanaQueryProvider,
-	useConnectWallet,
-	useWallet,
-	useWalletStandardConnectors,
-} from '@solana/react-hooks';
-import { useEffect, useMemo, useRef } from 'react';
+import { createSolanaRpcClient, type SolanaClientConfig } from '@solana/client';
+import { SolanaProvider, useWalletStandardConnectors } from '@solana/react-hooks';
+import { useMemo } from 'react';
 
 import { AccountInspectorCard } from './components/AccountInspectorCard.tsx';
 import { AirdropCard } from './components/AirdropCard.tsx';
@@ -54,64 +48,17 @@ export default function App() {
 	);
 
 	return (
-		<SolanaClientProvider config={clientConfig}>
-			<SolanaQueryProvider suspense>
-				<DemoApp connectors={walletConnectors} />
-			</SolanaQueryProvider>
-		</SolanaClientProvider>
+		<SolanaProvider
+			config={clientConfig}
+			query={{ suspense: true }}
+			walletPersistence={{ storageKey: LAST_CONNECTOR_STORAGE_KEY }}
+		>
+			<DemoApp />
+		</SolanaProvider>
 	);
 }
 
-type DemoAppProps = Readonly<{
-	connectors: readonly WalletConnector[];
-}>;
-
-function DemoApp({ connectors }: DemoAppProps) {
-	const connectWallet = useConnectWallet();
-	const wallet = useWallet();
-	const attemptedAutoConnect = useRef(false);
-
-	useEffect(() => {
-		if (typeof window === 'undefined') {
-			return;
-		}
-		if (wallet.status === 'connected') {
-			window.localStorage.setItem(LAST_CONNECTOR_STORAGE_KEY, wallet.connectorId);
-		} else if (wallet.status === 'disconnected') {
-			window.localStorage.removeItem(LAST_CONNECTOR_STORAGE_KEY);
-		}
-	}, [wallet]);
-
-	useEffect(() => {
-		if (typeof window === 'undefined') {
-			return;
-		}
-		if (attemptedAutoConnect.current) {
-			return;
-		}
-		if (!connectors.length) {
-			return;
-		}
-		if (wallet.status !== 'disconnected' && wallet.status !== 'error') {
-			return;
-		}
-		const lastConnectorId = window.localStorage.getItem(LAST_CONNECTOR_STORAGE_KEY);
-		if (!lastConnectorId) {
-			attemptedAutoConnect.current = true;
-			return;
-		}
-		const candidate = connectors.find((connector) => connector.id === lastConnectorId && connector.canAutoConnect);
-		if (!candidate) {
-			attemptedAutoConnect.current = true;
-			window.localStorage.removeItem(LAST_CONNECTOR_STORAGE_KEY);
-			return;
-		}
-		attemptedAutoConnect.current = true;
-		void connectWallet(candidate.id, { autoConnect: true }).catch(() => {
-			window.localStorage.removeItem(LAST_CONNECTOR_STORAGE_KEY);
-		});
-	}, [connectWallet, connectors, wallet.status]);
-
+function DemoApp() {
 	return (
 		<div className="relative min-h-screen">
 			<div className="pointer-events-none absolute inset-0 -z-10">
@@ -139,7 +86,7 @@ function DemoApp({ connectors }: DemoAppProps) {
 					<TabsContent value="state">
 						<div className="grid gap-6 lg:grid-cols-2">
 							<ClusterStatusCard />
-							<WalletControls connectors={connectors} />
+							<WalletControls />
 							<BalanceCard />
 							<AccountInspectorCard />
 							<AirdropCard />

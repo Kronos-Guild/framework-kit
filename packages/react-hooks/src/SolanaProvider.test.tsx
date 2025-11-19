@@ -1,11 +1,21 @@
 // @vitest-environment jsdom
 
+import type { WalletConnector } from '@solana/client';
 import { render, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { createMockSolanaClient } from '../test/mocks';
 import { useConnectWallet, useWallet } from './hooks';
 import { SolanaProvider } from './SolanaProvider';
+
+const PHANTOM_CONNECTOR: WalletConnector = {
+	canAutoConnect: true,
+	connect: vi.fn(),
+	disconnect: vi.fn(),
+	id: 'phantom',
+	isSupported: () => true,
+	name: 'Phantom',
+};
 
 vi.mock('./hooks', async () => {
 	const actual = await vi.importActual<typeof import('./hooks')>('./hooks');
@@ -39,7 +49,11 @@ describe('SolanaProvider wallet persistence', () => {
 		useConnectWalletMock.mockReturnValue(vi.fn());
 
 		render(
-			<SolanaProvider client={createMockSolanaClient()} query={false} walletPersistence={{ storage }}>
+			<SolanaProvider
+				client={createMockSolanaClient({ connectors: [PHANTOM_CONNECTOR] })}
+				query={false}
+				walletPersistence={{ storage }}
+			>
 				<div />
 			</SolanaProvider>,
 		);
@@ -48,21 +62,42 @@ describe('SolanaProvider wallet persistence', () => {
 		expect(storage.removeItem).not.toHaveBeenCalled();
 	});
 
-	it('removes persisted state when the wallet disconnects', async () => {
+	it('removes persisted state when the wallet disconnects after storing an id', async () => {
 		const storage = createStorage();
-		useWalletMock.mockReturnValue({
-			status: 'disconnected',
-		});
+		useWalletMock
+			.mockReturnValueOnce({
+				connectorId: 'phantom',
+				session: {},
+				status: 'connected',
+			})
+			.mockReturnValue({
+				status: 'disconnected',
+			});
 		useConnectWalletMock.mockReturnValue(vi.fn());
 
-		render(
-			<SolanaProvider client={createMockSolanaClient()} query={false} walletPersistence={{ storage }}>
+		const { rerender } = render(
+			<SolanaProvider
+				client={createMockSolanaClient({ connectors: [PHANTOM_CONNECTOR] })}
+				query={false}
+				walletPersistence={{ storage }}
+			>
+				<div />
+			</SolanaProvider>,
+		);
+
+		await waitFor(() => expect(storage.setItem).toHaveBeenCalledWith('solana:last-connector', 'phantom'));
+		rerender(
+			<SolanaProvider
+				client={createMockSolanaClient({ connectors: [PHANTOM_CONNECTOR] })}
+				query={false}
+				walletPersistence={{ storage }}
+			>
 				<div />
 			</SolanaProvider>,
 		);
 
 		await waitFor(() => expect(storage.removeItem).toHaveBeenCalledWith('solana:last-connector'));
-		expect(storage.setItem).not.toHaveBeenCalled();
+		expect(storage.setItem).toHaveBeenCalledTimes(1);
 	});
 
 	it('auto-connects using the stored connector identifier by default', async () => {
@@ -75,7 +110,40 @@ describe('SolanaProvider wallet persistence', () => {
 		});
 
 		render(
-			<SolanaProvider client={createMockSolanaClient()} query={false} walletPersistence={{ storage }}>
+			<SolanaProvider
+				client={createMockSolanaClient({ connectors: [PHANTOM_CONNECTOR] })}
+				query={false}
+				walletPersistence={{ storage }}
+			>
+				<div />
+			</SolanaProvider>,
+		);
+
+		await waitFor(() => expect(connect).toHaveBeenCalledWith('phantom', { autoConnect: true }));
+	});
+
+	it('retries auto-connect when a new client with registered connectors is provided', async () => {
+		const storage = createStorage();
+		storage.getItem.mockReturnValue('phantom');
+		const connect = vi.fn().mockResolvedValue(undefined);
+		useConnectWalletMock.mockReturnValue(connect);
+		useWalletMock.mockReturnValue({
+			status: 'disconnected',
+		});
+
+		const initialClient = createMockSolanaClient({ connectors: [] });
+		const nextClient = createMockSolanaClient({ connectors: [PHANTOM_CONNECTOR] });
+
+		const { rerender } = render(
+			<SolanaProvider client={initialClient} query={false} walletPersistence={{ storage }}>
+				<div />
+			</SolanaProvider>,
+		);
+
+		expect(connect).not.toHaveBeenCalled();
+
+		rerender(
+			<SolanaProvider client={nextClient} query={false} walletPersistence={{ storage }}>
 				<div />
 			</SolanaProvider>,
 		);
@@ -94,7 +162,7 @@ describe('SolanaProvider wallet persistence', () => {
 
 		render(
 			<SolanaProvider
-				client={createMockSolanaClient()}
+				client={createMockSolanaClient({ connectors: [PHANTOM_CONNECTOR] })}
 				query={false}
 				walletPersistence={{ autoConnect: false, storage }}
 			>
