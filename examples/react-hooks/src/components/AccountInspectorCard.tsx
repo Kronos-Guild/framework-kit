@@ -20,9 +20,29 @@ export function AccountInspectorCard() {
 			return 'No account data fetched yet.';
 		}
 		try {
-			return JSON.stringify(account.data, null, 2);
+			if (account?.data instanceof Uint8Array) {
+				return `Uint8Array(${account?.data?.length} bytes):\n${Array.from(account?.data?.slice(0, 100))
+					.map((byte) => byte.toString(16).padStart(2, '0'))
+					.join(' ')}${account?.data?.length > 100 ? '\n... (truncated)' : ''}`;
+			}
+			return JSON.stringify(
+				account?.data,
+				(_, value) => {
+					if (typeof value === 'bigint') {
+						return value.toString();
+					}
+					if (value instanceof Uint8Array) {
+						return `Uint8Array(${value.length})`;
+					}
+					return value;
+				},
+				2,
+			);
 		} catch {
-			return String(account.data);
+			if (typeof account?.data === 'object' && account?.data !== null) {
+				return `[Complex Object]\nType: ${account?.data?.constructor?.name || 'Unknown'}\nKeys: ${Object.keys(account?.data).join(', ')}`;
+			}
+			return String(account?.data);
 		}
 	}, [account]);
 
@@ -33,10 +53,10 @@ export function AccountInspectorCard() {
 		if (!account) {
 			return 'Loading account data…';
 		}
-		if (account.error) {
-			return `Fetch error: ${formatError(account.error)}`;
+		if (account?.error) {
+			return `Fetch error: ${formatError(account?.error)}`;
 		}
-		return `Lamports: ${account.lamports ?? 'unknown'} · Slot: ${account.slot ?? 'unknown'}`;
+		return `Lamports: ${account?.lamports ?? 'unknown'} · Slot: ${account?.slot ?? 'unknown'}`;
 	})();
 
 	const handleAddressChange = (event: ChangeEvent<HTMLInputElement>) => {
