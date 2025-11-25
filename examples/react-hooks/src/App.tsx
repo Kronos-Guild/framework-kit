@@ -20,16 +20,11 @@ import { WalletControls } from './components/WalletControls.tsx';
 
 const LAST_CONNECTOR_STORAGE_KEY = 'solana:last-connector';
 
-const WALLET_CONNECTORS = [...phantom(), ...solflare(), ...backpack(), ...autoDiscover()];
-const DEFAULT_CLIENT_CONFIG: SolanaClientConfig = {
-	commitment: 'confirmed',
-	endpoint: 'https://api.devnet.solana.com',
-};
-
 export default function App() {
 	const clientConfig: SolanaClientConfig = {
-		...DEFAULT_CLIENT_CONFIG,
-		walletConnectors: WALLET_CONNECTORS,
+		commitment: 'confirmed',
+		endpoint: 'https://api.devnet.solana.com',
+		walletConnectors: [...phantom(), ...solflare(), ...backpack(), ...autoDiscover()],
 	};
 
 	return (
