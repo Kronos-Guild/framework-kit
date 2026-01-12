@@ -1,0 +1,23 @@
+[
+	{
+		"name": "button",
+		"type": "registry:ui",
+		"dependencies": ["@radix-ui/react-slot"],
+		"files": [
+			{
+				"path": "src/kit-components/ui/button/Button.tsx",
+				"type": "registry:component"
+			}
+		]
+	},
+	{
+		"name": "header",
+		"type": "registry:ui",
+		"files": [
+			{
+				"path": "src/kit-components/ui/header/Header.tsx",
+				"type": "registry:component"
+			}
+		]
+	}
+]
