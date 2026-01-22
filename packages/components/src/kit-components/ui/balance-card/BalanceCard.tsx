@@ -1,0 +1,110 @@
+import type React from 'react';
+import { BalanceAmount } from './BalanceAmount';
+import { BalanceCardSkeleton } from './BalanceCardSkeleton';
+import { ErrorState } from './ErrorState';
+import { TokenList } from './TokenList';
+import type { BalanceCardProps } from './types';
+import { WalletAddress } from './WalletAddress';
+
+/**
+ * A comprehensive balance card component for displaying wallet balances
+ * with support for token lists, loading states, and error handling.
+ *
+ * @example
+ * ```tsx
+ * // Basic usage
+ * <BalanceCard
+ *   walletAddress="6DMh...1DkK"
+ *   totalBalance={34.81}
+ *   isFiatBalance
+ * />
+ *
+ * // With token list
+ * <BalanceCard
+ *   walletAddress="6DMh...1DkK"
+ *   totalBalance={34.81}
+ *   isFiatBalance
+ *   tokens={[
+ *     { symbol: 'USDC', balance: 15.50, fiatValue: 15.50 },
+ *     { symbol: 'USDT', balance: 10.18, fiatValue: 10.18 },
+ *   ]}
+ * />
+ * ```
+ */
+export const BalanceCard: React.FC<BalanceCardProps> = ({
+	walletAddress,
+	totalBalance,
+	isFiatBalance = true,
+	currency = 'USD',
+	decimals = 2,
+	tokens = [],
+	isLoading = false,
+	error,
+	onRetry,
+	onCopyAddress,
+	defaultExpanded = false,
+	isExpanded: controlledExpanded,
+	onExpandedChange,
+	variant = 'default',
+	size = 'md',
+	className = '',
+	locale = 'en-US',
+}) => {
+	// Show skeleton during loading
+	if (isLoading) {
+		return <BalanceCardSkeleton variant={variant} size={size} className={className} />;
+	}
+
+	const isDark = variant === 'dark' || variant === 'default';
+
+	const cardStyles = isDark ? 'bg-[#1a1a1a] border-[#2a2a2a] text-white' : 'bg-white border-gray-200 text-gray-900';
+
+	const labelColor = isDark ? 'text-gray-400' : 'text-gray-500';
+
+	const paddingStyles = {
+		sm: 'p-3',
+		md: 'p-4',
+		lg: 'p-6',
+	}[size];
+
+	const errorMessage = error ? (typeof error === 'string' ? error : error.message || 'An error occurred') : null;
+
+	return (
+		<section
+			className={`rounded-xl border ${cardStyles} ${paddingStyles} ${className}`}
+			aria-label={walletAddress ? `Wallet balance for ${walletAddress}` : 'Wallet balance'}
+		>
+			{/* Wallet address */}
+			{walletAddress && (
+				<WalletAddress address={walletAddress} onCopy={onCopyAddress} variant={variant} className="mb-4" />
+			)}
+
+			{/* Balance label */}
+			<div className={`text-xs ${labelColor} mb-1`}>Total balance</div>
+
+			{/* Balance amount */}
+			<BalanceAmount
+				balance={totalBalance}
+				isFiat={isFiatBalance}
+				currency={currency}
+				decimals={decimals}
+				locale={locale}
+				size={size}
+				variant={variant}
+				className="mb-3"
+			/>
+
+			{/* Error state */}
+			{errorMessage && <ErrorState message={errorMessage} onRetry={onRetry} variant={variant} className="mb-3" />}
+
+			{/* Token list */}
+			<TokenList
+				tokens={tokens}
+				isExpanded={controlledExpanded ?? (defaultExpanded ? true : undefined)}
+				onExpandedChange={onExpandedChange}
+				variant={variant}
+				locale={locale}
+			/>
+		</section>
+	);
+};
