@@ -18,7 +18,7 @@ export const BalanceAmount: React.FC<BalanceAmountProps> = ({
 }) => {
 	const isDark = variant === 'dark' || variant === 'default';
 
-	const textColor = isDark ? 'text-white' : 'text-gray-900';
+	const textColor = isDark ? 'text-white' : 'text-zinc-900';
 
 	const sizeStyles = {
 		sm: 'text-xl font-semibold',

@@ -57,9 +57,9 @@ export const BalanceCard: React.FC<BalanceCardProps> = ({
 
 	const isDark = variant === 'dark' || variant === 'default';
 
-	const cardStyles = isDark ? 'bg-[#1a1a1a] border-[#2a2a2a] text-white' : 'bg-white border-gray-200 text-gray-900';
+	const cardStyles = isDark ? 'bg-zinc-900 border-zinc-800 text-white' : 'bg-white border-zinc-200 text-zinc-900';
 
-	const labelColor = isDark ? 'text-gray-400' : 'text-gray-500';
+	const labelColor = isDark ? 'text-zinc-400' : 'text-zinc-500';
 
 	const paddingStyles = {
 		sm: 'p-3',
@@ -104,6 +104,7 @@ export const BalanceCard: React.FC<BalanceCardProps> = ({
 				onExpandedChange={onExpandedChange}
 				variant={variant}
 				locale={locale}
+				currency={currency}
 			/>
 		</section>
 	);

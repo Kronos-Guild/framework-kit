@@ -72,12 +72,22 @@ export function formatFiatValue(value: number | string | null | undefined, curre
 		return '';
 	}
 
-	return new Intl.NumberFormat(locale, {
-		style: 'currency',
-		currency,
-		minimumFractionDigits: 2,
-		maximumFractionDigits: 2,
-	}).format(num);
+	try {
+		return new Intl.NumberFormat(locale, {
+			style: 'currency',
+			currency,
+			minimumFractionDigits: 2,
+			maximumFractionDigits: 2,
+		}).format(num);
+	} catch {
+		// Fallback to USD if invalid currency code is provided
+		return new Intl.NumberFormat(locale, {
+			style: 'currency',
+			currency: 'USD',
+			minimumFractionDigits: 2,
+			maximumFractionDigits: 2,
+		}).format(num);
+	}
 }
 
 /**

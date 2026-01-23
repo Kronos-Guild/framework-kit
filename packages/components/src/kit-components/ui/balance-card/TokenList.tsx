@@ -1,6 +1,6 @@
 import { ChevronUp } from 'lucide-react';
 import type React from 'react';
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import type { TokenInfo, TokenListProps } from './types';
 import { formatFiatValue } from './utils';
 
@@ -11,14 +11,15 @@ const TokenRow: React.FC<{
 	token: TokenInfo;
 	variant: 'default' | 'dark' | 'light';
 	locale?: string;
-}> = ({ token, variant, locale = 'en-US' }) => {
+	currency?: string;
+}> = ({ token, variant, locale = 'en-US', currency = 'USD' }) => {
 	const isDark = variant === 'dark' || variant === 'default';
 
-	const textColor = isDark ? 'text-white' : 'text-gray-900';
-	const hoverBg = isDark ? 'hover:bg-[#2a2a2a]' : 'hover:bg-gray-50';
+	const textColor = isDark ? 'text-white' : 'text-zinc-900';
+	const hoverBg = isDark ? 'hover:bg-zinc-800' : 'hover:bg-zinc-50';
 
 	const displayBalance = token.fiatValue
-		? formatFiatValue(token.fiatValue, 'USD', locale)
+		? formatFiatValue(token.fiatValue, currency, locale)
 		: typeof token.balance === 'number'
 			? token.balance.toLocaleString(locale, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 			: token.balance;
@@ -41,8 +42,10 @@ export const TokenList: React.FC<TokenListProps> = ({
 	variant = 'default',
 	className = '',
 	locale = 'en-US',
+	currency = 'USD',
 }) => {
 	const [internalExpanded, setInternalExpanded] = useState(false);
+	const contentId = useId();
 
 	const isControlled = controlledExpanded !== undefined;
 	const isExpanded = isControlled ? controlledExpanded : internalExpanded;
@@ -57,10 +60,10 @@ export const TokenList: React.FC<TokenListProps> = ({
 
 	const isDark = variant === 'dark' || variant === 'default';
 
-	const textColor = isDark ? 'text-gray-300' : 'text-gray-600';
-	const headerTextColor = isDark ? 'text-gray-400' : 'text-gray-500';
-	const borderColor = isDark ? 'border-[#2a2a2a]' : 'border-gray-200';
-	const iconColor = isDark ? 'text-gray-400' : 'text-gray-500';
+	const textColor = isDark ? 'text-zinc-300' : 'text-zinc-600';
+	const headerTextColor = isDark ? 'text-zinc-400' : 'text-zinc-500';
+	const borderColor = isDark ? 'border-zinc-800' : 'border-zinc-200';
+	const iconColor = isDark ? 'text-zinc-400' : 'text-zinc-500';
 
 	return (
 		<div className={`border-t ${borderColor} ${className}`}>
@@ -70,7 +73,7 @@ export const TokenList: React.FC<TokenListProps> = ({
 				onClick={handleToggle}
 				className={`flex items-center justify-between w-full py-3 ${textColor} focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 rounded`}
 				aria-expanded={isExpanded}
-				aria-controls="token-list-content"
+				aria-controls={contentId}
 			>
 				<span className="text-sm">View all tokens</span>
 				<ChevronUp
@@ -81,7 +84,7 @@ export const TokenList: React.FC<TokenListProps> = ({
 
 			{/* Expandable content */}
 			<div
-				id="token-list-content"
+				id={contentId}
 				className={`overflow-hidden transition-all duration-200 ${isExpanded ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}
 			>
 				{/* Table header */}
@@ -103,6 +106,7 @@ export const TokenList: React.FC<TokenListProps> = ({
 								token={token}
 								variant={variant}
 								locale={locale}
+								currency={currency}
 							/>
 						))}
 					</div>

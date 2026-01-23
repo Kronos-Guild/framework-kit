@@ -128,6 +128,8 @@ export interface TokenListProps {
 	className?: string;
 	/** Locale for number formatting */
 	locale?: string;
+	/** Currency code for fiat display (default: "USD") */
+	currency?: string;
 }
 
 /**
