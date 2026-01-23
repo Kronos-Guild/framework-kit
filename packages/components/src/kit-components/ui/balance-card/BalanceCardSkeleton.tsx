@@ -11,9 +11,9 @@ export const BalanceCardSkeleton: React.FC<BalanceCardSkeletonProps> = ({
 }) => {
 	const isDark = variant === 'dark' || variant === 'default';
 
-	const baseStyles = isDark ? 'bg-zinc-900 border-zinc-800' : 'bg-white border-zinc-200';
+	const baseStyles = isDark ? 'bg-zinc-800 border-zinc-700' : 'bg-white border-zinc-200';
 
-	const skeletonBg = isDark ? 'bg-zinc-800' : 'bg-zinc-200';
+	const skeletonBg = isDark ? 'bg-zinc-700' : 'bg-zinc-200';
 
 	const paddingStyles = {
 		sm: 'p-3',

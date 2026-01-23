@@ -30,7 +30,7 @@ export const WalletAddress: React.FC<WalletAddressProps> = ({
 	}, [address, onCopy]);
 
 	const textColor = isDark ? 'text-zinc-300' : 'text-zinc-600';
-	const iconColor = isDark ? 'text-zinc-400 hover:text-zinc-200' : 'text-zinc-500 hover:text-zinc-700';
+	const iconColor = isDark ? 'text-zinc-200 hover:text-zinc-100' : 'text-zinc-500 hover:text-zinc-700';
 	const walletIcon = isDark ? walletIconDark : walletIconLight;
 
 	return (

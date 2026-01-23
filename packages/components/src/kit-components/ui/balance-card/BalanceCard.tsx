@@ -57,7 +57,7 @@ export const BalanceCard: React.FC<BalanceCardProps> = ({
 
 	const isDark = variant === 'dark' || variant === 'default';
 
-	const cardStyles = isDark ? 'bg-zinc-900 border-zinc-800 text-white' : 'bg-white border-zinc-200 text-zinc-900';
+	const cardStyles = isDark ? 'bg-zinc-800 border-zinc-700 text-white' : 'bg-white border-zinc-200 text-zinc-900';
 
 	const labelColor = isDark ? 'text-zinc-400' : 'text-zinc-500';
 

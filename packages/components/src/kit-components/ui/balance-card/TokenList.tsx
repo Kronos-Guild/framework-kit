@@ -16,7 +16,7 @@ const TokenRow: React.FC<{
 	const isDark = variant === 'dark' || variant === 'default';
 
 	const textColor = isDark ? 'text-white' : 'text-zinc-900';
-	const hoverBg = isDark ? 'hover:bg-zinc-800' : 'hover:bg-zinc-50';
+	const hoverBg = isDark ? 'hover:bg-zinc-600' : 'hover:bg-zinc-50';
 
 	const displayBalance = token.fiatValue
 		? formatFiatValue(token.fiatValue, currency, locale)
@@ -62,8 +62,8 @@ export const TokenList: React.FC<TokenListProps> = ({
 
 	const textColor = isDark ? 'text-zinc-300' : 'text-zinc-600';
 	const headerTextColor = isDark ? 'text-zinc-400' : 'text-zinc-500';
-	const borderColor = isDark ? 'border-zinc-800' : 'border-zinc-200';
-	const iconColor = isDark ? 'text-zinc-400' : 'text-zinc-500';
+	const borderColor = isDark ? 'border-zinc-700' : 'border-zinc-200';
+	const iconColor = isDark ? 'text-zinc-100' : 'text-zinc-500';
 
 	return (
 		<div className={`border-t ${borderColor} ${className}`}>
