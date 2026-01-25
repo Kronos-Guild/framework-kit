@@ -1,5 +1,6 @@
 'use client';
 
+import type { Lamports } from '@solana/kit';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { cn } from '../../../lib/utils';
 import type { Theme } from './types';
@@ -12,8 +13,6 @@ import { WalletDropdown, WalletDropdownWrapper } from './WalletDropdown';
 export interface ConnectWalletButtonProps {
 	/** Theme for the button and dropdown */
 	theme?: Theme;
-	/** Enable Framer Motion animations */
-	animate?: boolean;
 	/** Additional className for the container */
 	className?: string;
 	/** Custom labels */
@@ -39,7 +38,7 @@ export interface ConnectWalletButtonProps {
 		icon?: string;
 	};
 	/** Wallet balance in lamports */
-	balance?: bigint | null;
+	balance?: Lamports;
 	/** Whether balance is still loading */
 	balanceLoading?: boolean;
 	/** Callback when connect button is clicked (opens wallet modal) */
@@ -74,7 +73,6 @@ export interface ConnectWalletButtonProps {
  */
 export function ConnectWalletButton({
 	theme = 'dark',
-	animate = true,
 	className,
 	labels,
 	status,
@@ -159,7 +157,6 @@ export function ConnectWalletButton({
 				connectionState={connectionState}
 				wallet={walletInfo}
 				isExpanded={isDropdownOpen}
-				animate={animate}
 				theme={theme}
 				onClick={handleButtonClick}
 				disabled={!isReady || status === 'connecting'}
@@ -174,11 +171,10 @@ export function ConnectWalletButton({
 					<WalletDropdown
 						wallet={walletInfo}
 						address={walletAddress}
-						balance={balance ?? undefined}
+						balance={balance}
 						balanceVisible={balanceVisible}
 						balanceLoading={balanceLoading}
 						theme={theme}
-						animate={animate}
 						onToggleBalance={() => setBalanceVisible((prev) => !prev)}
 						onDisconnect={handleDisconnect}
 						labels={{

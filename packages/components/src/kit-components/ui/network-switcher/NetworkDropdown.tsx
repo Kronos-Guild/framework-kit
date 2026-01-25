@@ -1,14 +1,13 @@
 'use client';
 
 import { cn } from '../../../lib/utils';
-import { NetworkHeader } from './NetworkHeader';
 import { NetworkOption } from './NetworkOption';
 import type { NetworkDropdownProps, Theme } from './types';
 
 /** Theme-specific container styles */
 const containerStyles: Record<Theme, string> = {
-	dark: 'bg-[#3f3f46]',
-	light: 'bg-[#fafafa]',
+	dark: 'bg-zinc-700',
+	light: 'bg-zinc-50',
 };
 
 /**
@@ -33,8 +32,6 @@ export function NetworkDropdown({
 			role="listbox"
 			aria-label="Select network"
 		>
-			<NetworkHeader isOpen theme={theme} />
-
 			{networks.map((network) => (
 				<NetworkOption
 					key={network.id}

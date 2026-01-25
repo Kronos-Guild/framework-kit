@@ -1,7 +1,6 @@
 'use client';
 
 import { cva, type VariantProps } from 'class-variance-authority';
-import { motion } from 'framer-motion';
 import { forwardRef } from 'react';
 import { cn } from '../../../lib/utils';
 import { ButtonContent } from './ButtonContent';
@@ -37,51 +36,51 @@ const walletButtonVariants = cva(
 		variants: {
 			variant: {
 				/** Outlined button - Light theme disconnected state
-				 * Figma (23:42, 23:44): bg=transparent, hover=#E4E4E7, text=#3F3F46, rounded=18px
+				 * Figma (23:42, 23:44): bg=transparent, hover=zinc-200, text=zinc-700, rounded=18px
 				 */
 				outline: [
 					'border border-zinc-200',
-					'bg-white hover:bg-[#E4E4E7]',
-					'text-[#3F3F46]',
+					'bg-white hover:bg-zinc-200',
+					'text-zinc-700',
 					'focus-visible:ring-zinc-400',
 					'gap-2 rounded-[18px]',
 				],
 				/** Filled button - Dark theme disconnected state
-				 * Figma (23:33): bg=#3F3F46, hover=#52525C, text=#FAFAFA, rounded=18px
+				 * Figma (23:33): bg=zinc-700, hover=zinc-600, text=zinc-50, rounded=18px
 				 */
 				filled: [
 					'border border-transparent',
-					'bg-[#3F3F46] hover:bg-[#52525C]',
-					'text-[#FAFAFA]',
+					'bg-zinc-700 hover:bg-zinc-600',
+					'text-zinc-50',
 					'focus-visible:ring-zinc-500',
 					'gap-2 rounded-[18px]',
 				],
 				/** Loading state - Dark theme
-				 * Figma (23:32, 23:37): bg=#52525C, rounded=18px
+				 * Figma (23:32, 23:37): bg=zinc-600, rounded=18px
 				 */
 				loading: [
 					'border border-transparent',
-					'bg-[#52525C]',
-					'text-[#FAFAFA]',
+					'bg-zinc-600',
+					'text-zinc-50',
 					'focus-visible:ring-zinc-500',
 					'rounded-[18px]',
 				],
 				/** Loading state - Light theme
-				 * Figma (23:46): bg=#F4F4F5, rounded=18px
+				 * Figma (23:46): bg=zinc-100, rounded=18px
 				 */
 				loadingLight: [
 					'border border-transparent',
-					'bg-[#F4F4F5]',
-					'text-[#3F3F46]',
+					'bg-zinc-100',
+					'text-zinc-700',
 					'focus-visible:ring-zinc-400',
 					'rounded-[18px]',
 				],
 				/** Connected state - Dark theme
-				 * Figma (23:98): bg=#3F3F46, rounded=9px, gap=10px
+				 * Figma (23:98): bg=zinc-700, rounded=9px, gap=10px
 				 */
 				connected: [
 					'border border-transparent',
-					'bg-[#3F3F46] hover:bg-[#52525C]',
+					'bg-zinc-700 hover:bg-zinc-600',
 					'text-white',
 					'focus-visible:ring-zinc-500',
 					'gap-2.5 rounded-[9px]',
@@ -89,8 +88,8 @@ const walletButtonVariants = cva(
 				/** Connected state - Light theme */
 				connectedLight: [
 					'border border-zinc-200',
-					'bg-white hover:bg-[#E4E4E7]',
-					'text-[#3F3F46]',
+					'bg-white hover:bg-zinc-200',
+					'text-zinc-700',
 					'focus-visible:ring-zinc-400',
 					'gap-2.5 rounded-[9px]',
 				],
@@ -151,7 +150,6 @@ export const WalletButton = forwardRef<HTMLButtonElement, WalletButtonFullProps>
 			connectionState,
 			wallet,
 			isExpanded = false,
-			animate = false,
 			variant,
 			size,
 			theme = 'dark',
@@ -200,7 +198,7 @@ export const WalletButton = forwardRef<HTMLButtonElement, WalletButtonFullProps>
 								size={20}
 								className="rounded-[20px]"
 							/>
-							<ChevronIcon direction={isExpanded ? 'up' : 'down'} animate={animate} />
+							<ChevronIcon direction={isExpanded ? 'up' : 'down'} />
 						</>
 					);
 				default:
@@ -209,31 +207,6 @@ export const WalletButton = forwardRef<HTMLButtonElement, WalletButtonFullProps>
 		};
 
 		const buttonClasses = cn(walletButtonVariants({ variant: resolvedVariant, size: resolvedSize }), className);
-
-		// Use motion.button for animated variant
-		if (animate) {
-			return (
-				<motion.button
-					ref={ref}
-					className={buttonClasses}
-					disabled={disabled || connectionState === 'connecting'}
-					whileHover={{ scale: 1.02 }}
-					whileTap={{ scale: 0.98 }}
-					transition={{ duration: 0.15 }}
-					aria-busy={connectionState === 'connecting'}
-					aria-expanded={connectionState === 'connected' ? isExpanded : undefined}
-					aria-label={
-						connectionState === 'connecting'
-							? 'Connecting wallet...'
-							: connectionState === 'connected'
-								? `${wallet?.name ?? 'Wallet'} ${isExpanded ? 'menu open' : 'menu closed'}`
-								: 'Connect wallet'
-					}
-				>
-					{renderContent()}
-				</motion.button>
-			);
-		}
 
 		return (
 			<button

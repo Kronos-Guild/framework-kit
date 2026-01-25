@@ -1,14 +1,15 @@
+import type { WalletConnectorMetadata } from '@solana/client';
 import { cn } from '../../../lib/utils';
-import type { WalletInfo, WalletModalTheme } from './types';
+import type { WalletModalTheme } from './types';
 import { WalletCard } from './WalletCard';
 
 export interface WalletListProps {
 	/** List of wallets to display */
-	wallets: WalletInfo[];
+	wallets: WalletConnectorMetadata[];
 	/** Theme variant */
 	theme?: WalletModalTheme;
 	/** Handler when a wallet is selected */
-	onSelect?: (wallet: WalletInfo) => void;
+	onSelect?: (wallet: WalletConnectorMetadata) => void;
 	/** Wallet ID that is currently connecting (to disable others) */
 	connectingWalletId?: string;
 	/** Additional class names */

@@ -62,10 +62,8 @@ export type {
 	ButtonIconProps,
 	ButtonSpinnerProps,
 	ChevronIconProps,
-	ConnectionState,
 	Theme,
 	WalletButtonProps,
-	WalletConnector,
 	WalletDropdownProps,
 } from './types';
 export type { WalletButtonFullProps } from './WalletButton';

@@ -1,12 +1,11 @@
+import type { ClusterMoniker, WalletStatus } from '@solana/client';
 import type { Meta, StoryObj } from '@storybook/react';
 import { useCallback, useState } from 'react';
 import {
 	DEFAULT_NETWORKS,
 	NetworkDropdown,
 	NetworkHeader,
-	type NetworkId,
 	NetworkOption,
-	type NetworkStatus,
 	NetworkSwitcher,
 	NetworkTrigger,
 	StatusIndicator,
@@ -142,10 +141,10 @@ export const StatusConnecting: Story = {
 /** Interactive - click to open/close and switch networks */
 export const Interactive: Story = {
 	render: function InteractiveRender() {
-		const [selectedNetwork, setSelectedNetwork] = useState<NetworkId>('mainnet-beta');
-		const [status, setStatus] = useState<NetworkStatus>('connected');
+		const [selectedNetwork, setSelectedNetwork] = useState<ClusterMoniker>('mainnet-beta');
+		const [status, setStatus] = useState<WalletStatus['status']>('connected');
 
-		const handleNetworkChange = useCallback((network: NetworkId) => {
+		const handleNetworkChange = useCallback((network: ClusterMoniker) => {
 			setStatus('connecting');
 			// Simulate connection delay
 			setTimeout(() => {
@@ -176,10 +175,10 @@ export const Interactive: Story = {
 /** Interactive Light Theme */
 export const InteractiveLight: Story = {
 	render: function InteractiveLightRender() {
-		const [selectedNetwork, setSelectedNetwork] = useState<NetworkId>('devnet');
-		const [status, setStatus] = useState<NetworkStatus>('connected');
+		const [selectedNetwork, setSelectedNetwork] = useState<ClusterMoniker>('devnet');
+		const [status, setStatus] = useState<WalletStatus['status']>('connected');
 
-		const handleNetworkChange = useCallback((network: NetworkId) => {
+		const handleNetworkChange = useCallback((network: ClusterMoniker) => {
 			setStatus('connecting');
 			setTimeout(() => {
 				setSelectedNetwork(network);

@@ -7,12 +7,12 @@ import type { NetworkOptionProps, Theme } from './types';
 /** Theme-specific styles */
 const themeStyles: Record<Theme, { selected: string; unselected: string }> = {
 	dark: {
-		selected: 'bg-[#52525c] text-[#fafafa]',
-		unselected: 'text-[rgba(250,250,250,0.7)] hover:bg-[#52525c]/50',
+		selected: 'bg-zinc-600 text-zinc-50',
+		unselected: 'text-zinc-50/70 hover:bg-zinc-600/50',
 	},
 	light: {
-		selected: 'bg-[rgba(228,228,231,0.4)] text-[#3f3f46]',
-		unselected: 'text-[#3f3f46] hover:bg-[rgba(228,228,231,0.3)]',
+		selected: 'bg-zinc-200/40 text-zinc-700',
+		unselected: 'text-zinc-700 hover:bg-zinc-200/30',
 	},
 };
 

@@ -1,5 +1,5 @@
 import { cn } from '../../../lib/utils';
-import errorIcon from './assets/error.png';
+import errorIcon from './assets/error-icon.svg';
 import { ModalHeader } from './ModalHeader';
 import type { WalletModalTheme } from './types';
 
@@ -50,15 +50,10 @@ export function ErrorView({
 
 			{/* Text content */}
 			<div className="w-full flex flex-col gap-1.5 items-center text-center">
-				<h3 className={cn('text-lg font-medium', theme === 'dark' ? 'text-[#FAFAFA]' : 'text-[#3F3F46]')}>
+				<h3 className={cn('text-lg font-medium', theme === 'dark' ? 'text-zinc-50' : 'text-zinc-700')}>
 					{title}
 				</h3>
-				<p
-					className={cn(
-						'text-sm max-w-[231px]',
-						theme === 'dark' ? 'text-[rgba(228,228,231,0.8)]' : 'text-[rgba(82,82,92,0.85)]',
-					)}
-				>
+				<p className={cn('text-sm max-w-[231px]', theme === 'dark' ? 'text-zinc-200/80' : 'text-zinc-600/85')}>
 					{message}
 				</p>
 			</div>

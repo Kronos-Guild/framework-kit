@@ -1,10 +1,11 @@
 'use client';
 
+import type { ClusterMoniker } from '@solana/client';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { cn } from '../../../lib/utils';
 import { NetworkDropdown } from './NetworkDropdown';
 import { NetworkTrigger } from './NetworkTrigger';
-import type { NetworkId, NetworkSwitcherProps } from './types';
+import type { NetworkSwitcherProps } from './types';
 import { DEFAULT_NETWORKS } from './types';
 
 /**
@@ -64,7 +65,7 @@ export function NetworkSwitcher({
 	}, [disabled, isOpen, handleOpenChange]);
 
 	const handleSelect = useCallback(
-		(network: NetworkId) => {
+		(network: ClusterMoniker) => {
 			onNetworkChange?.(network);
 			handleOpenChange(false);
 		},
@@ -99,16 +100,20 @@ export function NetworkSwitcher({
 
 	return (
 		<div ref={containerRef} className={cn('relative inline-block', className)}>
-			{isOpen ? (
-				<NetworkDropdown
-					selectedNetwork={selectedNetwork}
-					status={status}
-					networks={networks}
-					onSelect={handleSelect}
-					theme={theme}
-				/>
-			) : (
-				<NetworkTrigger isOpen={isOpen} theme={theme} onClick={handleToggle} disabled={disabled} />
+			{/* Trigger is always visible */}
+			<NetworkTrigger isOpen={isOpen} theme={theme} onClick={handleToggle} disabled={disabled} />
+
+			{/* Dropdown appears below trigger when open */}
+			{isOpen && (
+				<div className="absolute top-full left-0 mt-1 z-50">
+					<NetworkDropdown
+						selectedNetwork={selectedNetwork}
+						status={status}
+						networks={networks}
+						onSelect={handleSelect}
+						theme={theme}
+					/>
+				</div>
 			)}
 		</div>
 	);

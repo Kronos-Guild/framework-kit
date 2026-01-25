@@ -45,7 +45,7 @@ export interface ModalHeaderProps {
  * ```
  */
 export function ModalHeader({ title, theme = 'dark', showBack = false, onClose, onBack, className }: ModalHeaderProps) {
-	const iconColor = theme === 'dark' ? 'text-[#FAFAFA]' : 'text-[#3F3F46]';
+	const iconColor = theme === 'dark' ? 'text-zinc-50' : 'text-zinc-700';
 	const iconHover = theme === 'dark' ? 'hover:text-white' : 'hover:text-zinc-600';
 
 	return (
@@ -67,7 +67,7 @@ export function ModalHeader({ title, theme = 'dark', showBack = false, onClose, 
 					<ArrowLeft size={24} />
 				</button>
 			) : (
-				<h2 className={cn('text-lg font-semibold', theme === 'dark' ? 'text-[#FAFAFA]' : 'text-[#3F3F46]')}>
+				<h2 className={cn('text-lg font-semibold', theme === 'dark' ? 'text-zinc-50' : 'text-zinc-700')}>
 					{title}
 				</h2>
 			)}

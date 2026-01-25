@@ -1,3 +1,4 @@
+import type { WalletConnectorMetadata } from '@solana/client';
 import type { Meta, StoryObj } from '@storybook/react';
 import { useState } from 'react';
 import {
@@ -7,7 +8,6 @@ import {
 	type ModalView,
 	NoWalletLink,
 	WalletCard,
-	type WalletInfo,
 	WalletLabel,
 	WalletModal,
 } from '../kit-components/ui/wallet-modal';
@@ -17,26 +17,24 @@ import phantomIcon from '../kit-components/ui/wallet-modal/assets/phantom.png';
 import solflareIcon from '../kit-components/ui/wallet-modal/assets/solflare.png';
 
 // Mock wallet data
-const MOCK_WALLETS: WalletInfo[] = [
+const MOCK_WALLETS: WalletConnectorMetadata[] = [
 	{
 		id: 'phantom',
 		name: 'Phantom',
 		icon: phantomIcon,
-		label: 'recent',
-		installed: true,
+		ready: true,
 	},
 	{
 		id: 'solflare',
 		name: 'Solflare',
 		icon: solflareIcon,
-		label: 'detected',
-		installed: true,
+		ready: true,
 	},
 	{
 		id: 'backpack',
 		name: 'Backpack',
 		icon: backpackIcon,
-		installed: true,
+		ready: true,
 	},
 ];
 
@@ -186,10 +184,10 @@ export const Interactive: Story = {
 	},
 	render: function InteractiveModal(args) {
 		const [view, setView] = useState<ModalView>('list');
-		const [connectingWallet, setConnectingWallet] = useState<WalletInfo | null>(null);
+		const [connectingWallet, setConnectingWallet] = useState<WalletConnectorMetadata | null>(null);
 		const [error, setError] = useState<{ title?: string; message?: string } | null>(null);
 
-		const handleSelectWallet = (wallet: WalletInfo) => {
+		const handleSelectWallet = (wallet: WalletConnectorMetadata) => {
 			setConnectingWallet(wallet);
 			setView('connecting');
 
@@ -252,10 +250,10 @@ export const InteractiveLight: Story = {
 	},
 	render: function InteractiveModalLight(args) {
 		const [view, setView] = useState<ModalView>('list');
-		const [connectingWallet, setConnectingWallet] = useState<WalletInfo | null>(null);
+		const [connectingWallet, setConnectingWallet] = useState<WalletConnectorMetadata | null>(null);
 		const [error, setError] = useState<{ title?: string; message?: string } | null>(null);
 
-		const handleSelectWallet = (wallet: WalletInfo) => {
+		const handleSelectWallet = (wallet: WalletConnectorMetadata) => {
 			setConnectingWallet(wallet);
 			setView('connecting');
 
@@ -380,10 +378,10 @@ export const ConnectingViewStandalone: Story = {
 	args: { wallets: MOCK_WALLETS },
 	render: () => (
 		<div className="flex gap-4">
-			<div className="bg-[#3F3F46] p-6 rounded-[15px] w-[361px]">
+			<div className="bg-zinc-700 p-6 rounded-[15px] w-[361px]">
 				<ConnectingView wallet={MOCK_WALLETS[0]} theme="dark" />
 			</div>
-			<div className="bg-[#FAFAFA] p-6 rounded-[15px] w-[361px]">
+			<div className="bg-zinc-50 p-6 rounded-[15px] w-[361px]">
 				<ConnectingView wallet={MOCK_WALLETS[0]} theme="light" />
 			</div>
 		</div>
@@ -398,10 +396,10 @@ export const ErrorViewStandalone: Story = {
 	args: { wallets: MOCK_WALLETS },
 	render: () => (
 		<div className="flex gap-4">
-			<div className="bg-[#3F3F46] p-6 rounded-[15px] w-[361px]">
+			<div className="bg-zinc-700 p-6 rounded-[15px] w-[361px]">
 				<ErrorView theme="dark" />
 			</div>
-			<div className="bg-[#FAFAFA] p-6 rounded-[15px] w-[361px]">
+			<div className="bg-zinc-50 p-6 rounded-[15px] w-[361px]">
 				<ErrorView theme="light" />
 			</div>
 		</div>

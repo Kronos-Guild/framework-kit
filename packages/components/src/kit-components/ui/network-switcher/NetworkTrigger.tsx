@@ -7,14 +7,14 @@ import type { NetworkTriggerProps, Theme } from './types';
 /** Theme-specific styles */
 const themeStyles: Record<Theme, { bg: string; text: string; border: string }> = {
 	dark: {
-		bg: 'bg-[#3f3f46]',
-		text: 'text-[#fafafa]',
-		border: 'border-[rgba(228,228,231,0.2)]',
+		bg: 'bg-zinc-700',
+		text: 'text-zinc-50',
+		border: 'border-zinc-200/20',
 	},
 	light: {
-		bg: 'bg-[#fafafa]',
-		text: 'text-[#3f3f46]',
-		border: 'border-[rgba(228,228,231,0.2)]',
+		bg: 'bg-zinc-50',
+		text: 'text-zinc-700',
+		border: 'border-zinc-200/20',
 	},
 };
 

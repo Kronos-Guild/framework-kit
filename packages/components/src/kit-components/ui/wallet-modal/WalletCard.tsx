@@ -1,10 +1,13 @@
+import type { WalletConnectorMetadata } from '@solana/client';
 import { cn } from '../../../lib/utils';
-import type { WalletInfo, WalletModalTheme } from './types';
+import type { WalletLabelType, WalletModalTheme } from './types';
 import { WalletLabel } from './WalletLabel';
 
 export interface WalletCardProps {
 	/** Wallet information to display */
-	wallet: WalletInfo;
+	wallet: WalletConnectorMetadata;
+	/** Optional label to show (Recent, Detected, Installed) */
+	label?: WalletLabelType;
 	/** Theme variant */
 	theme?: WalletModalTheme;
 	/** Position in the list for border radius */
@@ -12,7 +15,7 @@ export interface WalletCardProps {
 	/** Whether this card is currently hovered/focused */
 	isHovered?: boolean;
 	/** Click handler when wallet is selected */
-	onSelect?: (wallet: WalletInfo) => void;
+	onSelect?: (wallet: WalletConnectorMetadata) => void;
 	/** Whether the card is disabled (e.g., during connection) */
 	disabled?: boolean;
 	/** Additional class names */
@@ -41,6 +44,7 @@ export interface WalletCardProps {
  */
 export function WalletCard({
 	wallet,
+	label,
 	theme = 'dark',
 	position = 'middle',
 	isHovered = false,
@@ -60,8 +64,8 @@ export function WalletCard({
 	const borderClasses =
 		position === 'middle'
 			? theme === 'dark'
-				? 'border-y-[0.5px] border-[rgba(228,228,231,0.2)]'
-				: 'border-y-[0.5px] border-[rgba(228,228,231,0.8)]'
+				? 'border-y-[0.5px] border-zinc-200/20'
+				: 'border-y-[0.5px] border-zinc-200/80'
 			: '';
 
 	return (
@@ -77,15 +81,9 @@ export function WalletCard({
 				// Border for middle items
 				borderClasses,
 				// Dark theme
-				theme === 'dark' && [
-					isHovered ? 'bg-[rgba(82,82,92,0.6)]' : 'bg-[rgba(82,82,92,0.2)]',
-					'hover:bg-[rgba(82,82,92,0.6)]',
-				],
+				theme === 'dark' && [isHovered ? 'bg-zinc-600/60' : 'bg-zinc-600/20', 'hover:bg-zinc-600/60'],
 				// Light theme
-				theme === 'light' && [
-					isHovered ? 'bg-[rgba(228,228,231,0.3)]' : 'bg-[rgba(244,244,245,0.4)]',
-					'hover:bg-[rgba(228,228,231,0.3)]',
-				],
+				theme === 'light' && [isHovered ? 'bg-zinc-200/30' : 'bg-zinc-100/40', 'hover:bg-zinc-200/30'],
 				// Disabled state
 				disabled && 'opacity-50 cursor-not-allowed',
 				// Focus styles
@@ -102,13 +100,13 @@ export function WalletCard({
 				</div>
 
 				{/* Wallet name */}
-				<span className={cn('text-base font-medium', theme === 'dark' ? 'text-[#FAFAFA]' : 'text-[#3F3F46]')}>
+				<span className={cn('text-base font-medium', theme === 'dark' ? 'text-zinc-50' : 'text-zinc-700')}>
 					{wallet.name}
 				</span>
 			</div>
 
 			{/* Label (Recent, Detected) */}
-			{wallet.label && <WalletLabel type={wallet.label} theme={theme} />}
+			{label && <WalletLabel type={label} theme={theme} />}
 		</button>
 	);
 }

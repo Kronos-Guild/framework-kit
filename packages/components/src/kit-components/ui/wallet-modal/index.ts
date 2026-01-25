@@ -13,7 +13,6 @@ export { NoWalletLink } from './NoWalletLink';
 export type {
 	ConnectionError,
 	ModalView,
-	WalletInfo,
 	WalletLabelType,
 	WalletModalTheme,
 } from './types';

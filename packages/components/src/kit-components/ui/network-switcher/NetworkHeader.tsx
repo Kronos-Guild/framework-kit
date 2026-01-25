@@ -6,8 +6,8 @@ import type { NetworkHeaderProps, Theme } from './types';
 
 /** Theme-specific styles */
 const themeStyles: Record<Theme, string> = {
-	dark: 'text-[#fafafa]',
-	light: 'text-[#3f3f46]',
+	dark: 'text-zinc-50',
+	light: 'text-zinc-700',
 };
 
 /**

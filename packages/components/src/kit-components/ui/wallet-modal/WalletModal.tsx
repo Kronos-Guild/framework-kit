@@ -1,24 +1,25 @@
+import type { WalletConnectorMetadata } from '@solana/client';
 import { cn } from '../../../lib/utils';
 import { ConnectingView } from './ConnectingView';
 import { ErrorView } from './ErrorView';
 import { ModalHeader } from './ModalHeader';
 import { NoWalletLink } from './NoWalletLink';
-import type { ModalView, WalletInfo, WalletModalTheme } from './types';
+import type { ModalView, WalletModalTheme } from './types';
 import { WalletList } from './WalletList';
 
 export interface WalletModalProps {
 	/** List of available wallets */
-	wallets: WalletInfo[];
+	wallets: WalletConnectorMetadata[];
 	/** Current view state */
 	view?: ModalView;
 	/** Wallet currently being connected (for connecting view) */
-	connectingWallet?: WalletInfo | null;
+	connectingWallet?: WalletConnectorMetadata | null;
 	/** Error info (for error view) */
 	error?: { title?: string; message?: string } | null;
 	/** Theme variant */
 	theme?: WalletModalTheme;
 	/** Handler when a wallet is selected */
-	onSelectWallet?: (wallet: WalletInfo) => void;
+	onSelectWallet?: (wallet: WalletConnectorMetadata) => void;
 	/** Handler for back button (connecting/error views) */
 	onBack?: () => void;
 	/** Handler for close button */
@@ -70,7 +71,7 @@ export function WalletModal({
 		<div
 			className={cn(
 				'w-[361px] p-6 rounded-[15px] flex flex-col gap-5',
-				theme === 'dark' ? 'bg-[#3F3F46]' : 'bg-[#FAFAFA]',
+				theme === 'dark' ? 'bg-zinc-700' : 'bg-zinc-50',
 				className,
 			)}
 			role="dialog"

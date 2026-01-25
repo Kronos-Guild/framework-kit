@@ -31,9 +31,9 @@ export function WalletLabel({ type, theme = 'dark', className }: WalletLabelProp
 			className={cn(
 				'inline-flex items-center justify-center px-1.5 py-0.5 rounded-[3px] text-xs font-normal',
 				// Dark theme
-				theme === 'dark' && ['bg-[rgba(82,82,92,0.6)]', 'text-[#E4E4E7] opacity-90'],
+				theme === 'dark' && ['bg-zinc-600/60', 'text-zinc-200 opacity-90'],
 				// Light theme
-				theme === 'light' && ['bg-[#F4F4F5]', 'text-[rgba(63,63,70,0.9)]'],
+				theme === 'light' && ['bg-zinc-100', 'text-zinc-700/90'],
 				className,
 			)}
 		>

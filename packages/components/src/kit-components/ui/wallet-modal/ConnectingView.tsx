@@ -1,11 +1,12 @@
+import type { WalletConnectorMetadata } from '@solana/client';
 import { Loader2 } from 'lucide-react';
 import { cn } from '../../../lib/utils';
 import { ModalHeader } from './ModalHeader';
-import type { WalletInfo, WalletModalTheme } from './types';
+import type { WalletModalTheme } from './types';
 
 export interface ConnectingViewProps {
 	/** The wallet currently being connected */
-	wallet: WalletInfo;
+	wallet: WalletConnectorMetadata;
 	/** Theme variant */
 	theme?: WalletModalTheme;
 	/** Handler for back button */
@@ -49,15 +50,10 @@ export function ConnectingView({ wallet, theme = 'dark', onBack, onClose, classN
 
 			{/* Text content */}
 			<div className="w-full flex flex-col gap-1.5 items-center text-center px-4">
-				<h3 className={cn('text-lg font-medium', theme === 'dark' ? 'text-[#FAFAFA]' : 'text-[#3F3F46]')}>
+				<h3 className={cn('text-lg font-medium', theme === 'dark' ? 'text-zinc-50' : 'text-zinc-700')}>
 					Connecting to {wallet.name}...
 				</h3>
-				<p
-					className={cn(
-						'text-sm max-w-[231px]',
-						theme === 'dark' ? 'text-[rgba(228,228,231,0.8)]' : 'text-[rgba(82,82,92,0.85)]',
-					)}
-				>
+				<p className={cn('text-sm max-w-[231px]', theme === 'dark' ? 'text-zinc-200/80' : 'text-zinc-600/85')}>
 					Check your wallet and approve the connection request.
 				</p>
 			</div>

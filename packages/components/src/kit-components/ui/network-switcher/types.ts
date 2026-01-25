@@ -1,8 +1,4 @@
-/** Available Solana networks */
-export type NetworkId = 'mainnet-beta' | 'testnet' | 'devnet' | 'localnet' | 'custom';
-
-/** Network connection status */
-export type NetworkStatus = 'connected' | 'error' | 'connecting';
+import type { ClusterMoniker, WalletStatus } from '@solana/client';
 
 /** Theme variant */
 export type Theme = 'dark' | 'light';
@@ -10,7 +6,7 @@ export type Theme = 'dark' | 'light';
 /** Network configuration */
 export interface Network {
 	/** Unique identifier */
-	id: NetworkId;
+	id: ClusterMoniker;
 	/** Display name */
 	label: string;
 	/** RPC endpoint URL (optional for custom) */
@@ -20,11 +16,11 @@ export interface Network {
 /** Props for NetworkSwitcher main component */
 export interface NetworkSwitcherProps {
 	/** Currently selected network */
-	selectedNetwork: NetworkId;
+	selectedNetwork: ClusterMoniker;
 	/** Network connection status */
-	status?: NetworkStatus;
+	status?: WalletStatus['status'];
 	/** Callback when network is changed */
-	onNetworkChange?: (network: NetworkId) => void;
+	onNetworkChange?: (network: ClusterMoniker) => void;
 	/** Whether dropdown is open (controlled) */
 	open?: boolean;
 	/** Callback when open state changes */
@@ -56,13 +52,13 @@ export interface NetworkTriggerProps {
 /** Props for NetworkDropdown component */
 export interface NetworkDropdownProps {
 	/** Currently selected network */
-	selectedNetwork: NetworkId;
+	selectedNetwork: ClusterMoniker;
 	/** Network connection status */
-	status?: NetworkStatus;
+	status?: WalletStatus['status'];
 	/** Networks to display */
 	networks: Network[];
 	/** Callback when network is selected */
-	onSelect?: (network: NetworkId) => void;
+	onSelect?: (network: ClusterMoniker) => void;
 	/** Theme variant */
 	theme?: Theme;
 	/** Additional CSS classes */
@@ -76,7 +72,7 @@ export interface NetworkOptionProps {
 	/** Whether this option is selected */
 	isSelected?: boolean;
 	/** Network status (only shown for selected) */
-	status?: NetworkStatus;
+	status?: WalletStatus['status'];
 	/** Theme variant */
 	theme?: Theme;
 	/** Click handler */
@@ -100,7 +96,7 @@ export interface NetworkHeaderProps {
 /** Props for StatusIndicator component */
 export interface StatusIndicatorProps {
 	/** Connection status */
-	status: NetworkStatus;
+	status: WalletStatus['status'];
 	/** Additional CSS classes */
 	className?: string;
 }
@@ -110,6 +106,5 @@ export const DEFAULT_NETWORKS: Network[] = [
 	{ id: 'mainnet-beta', label: 'Mainnet', endpoint: 'https://api.mainnet-beta.solana.com' },
 	{ id: 'testnet', label: 'Testnet', endpoint: 'https://api.testnet.solana.com' },
 	{ id: 'localnet', label: 'Localnet', endpoint: 'http://localhost:8899' },
-	{ id: 'custom', label: 'Custom RPC' },
 	{ id: 'devnet', label: 'Devnet', endpoint: 'https://api.devnet.solana.com' },
 ];
