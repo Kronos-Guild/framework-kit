@@ -1,5 +1,8 @@
+import { address } from '@solana/kit';
 import type { Meta, StoryObj } from '@storybook/react';
 import { AddressDisplay } from '../kit-components/ui/address-display';
+
+const sampleAddress = address('Hb6dzd4pYxmFYKkJDWuhzBEUkkaE93sFcvXYtriTkmw9');
 
 const meta: Meta<typeof AddressDisplay> = {
 	title: 'UI/AddressDisplay',
@@ -24,13 +27,13 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
 	args: {
-		address: 'Hb6dzd4pYxmFYKkJDWuhzBEUkkaE93sFcvXYtriTkmw9',
+		address: sampleAddress,
 	},
 };
 
 export const Dark: Story = {
 	args: {
-		address: 'Hb6dzd4pYxmFYKkJDWuhzBEUkkaE93sFcvXYtriTkmw9',
+		address: sampleAddress,
 		theme: 'dark',
 	},
 	parameters: {
@@ -40,14 +43,14 @@ export const Dark: Story = {
 
 export const Devnet: Story = {
 	args: {
-		address: 'Hb6dzd4pYxmFYKkJDWuhzBEUkkaE93sFcvXYtriTkmw9',
+		address: sampleAddress,
 		network: 'devnet',
 	},
 };
 
 export const WithoutExplorerLink: Story = {
 	args: {
-		address: 'Hb6dzd4pYxmFYKkJDWuhzBEUkkaE93sFcvXYtriTkmw9',
+		address: sampleAddress,
 		showExplorerLink: false,
 	},
 };

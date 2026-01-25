@@ -1,16 +1,19 @@
+import type { ClusterMoniker } from '@solana/client';
+import type { Address } from '@solana/kit';
 import { Check, Copy, ExternalLink } from 'lucide-react';
 import type React from 'react';
 import { useState } from 'react';
+import { cn } from '../../lib/utils';
 
 interface AddressDisplayProps {
 	/** Solana public key in base58 format */
-	address: string;
+	address: Address;
 	/** Callback fired after address is copied to clipboard */
 	onCopy?: () => void;
 	/** Show link to Solana Explorer (default: true) */
 	showExplorerLink?: boolean;
 	/** Solana network for Explorer URL (default: "mainnet-beta") */
-	network?: 'mainnet-beta' | 'devnet' | 'testnet';
+	network?: ClusterMoniker;
 	/** Color theme (default: "light") */
 	theme?: 'light' | 'dark';
 	/** Additional CSS classes to apply to the container */
@@ -26,7 +29,8 @@ export function truncateAddress(address: string): string {
 /** Builds Solana Explorer URL for the given address and network */
 export function getExplorerUrl(address: string, network: string): string {
 	const base = 'https://explorer.solana.com';
-	const cluster = network === 'mainnet-beta' ? '' : `?cluster=${network}`;
+	const isMainnet = network === 'mainnet-beta' || network === 'mainnet';
+	const cluster = isMainnet ? '' : `?cluster=${network}`;
 	return `${base}/address/${address}${cluster}`;
 }
 
@@ -40,15 +44,7 @@ export const AddressDisplay: React.FC<AddressDisplayProps> = ({
 }) => {
 	const [copied, setCopied] = useState(false);
 	const truncated = truncateAddress(address);
-
-	const colors = {
-		chip: theme === 'dark' ? 'rgba(63, 63, 70, 0.9)' : 'rgba(228, 228, 231, 0.4)',
-		text: theme === 'dark' ? 'rgba(250, 250, 250, 0.9)' : 'rgba(63, 63, 70, 0.9)',
-		icon: theme === 'dark' ? '#FAFAFA' : '#3F3F46',
-		tooltip: theme === 'dark' ? 'rgba(39, 39, 42, 0.95)' : 'rgba(255, 253, 237, 0.95)',
-		tooltipText: theme === 'dark' ? '#FAFAFA' : '#18181B',
-		tooltipBorder: theme === 'dark' ? 'rgba(82, 82, 91, 0.9)' : 'rgba(228, 228, 231, 0.8)',
-	};
+	const isDark = theme === 'dark';
 
 	const handleCopy = async () => {
 		try {
@@ -62,27 +58,34 @@ export const AddressDisplay: React.FC<AddressDisplayProps> = ({
 	};
 
 	return (
-		<span className={`relative inline-flex flex-col items-start gap-1 group ${className ?? ''}`}>
-			{/* Tooltip */}
-			<span
-				className="absolute top-full left-0 mt-1 px-3 py-1.5 rounded-md text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
-				style={{
-					backgroundColor: colors.tooltip,
-					color: colors.tooltipText,
-					fontSize: '9px',
-					border: `1px solid ${colors.tooltipBorder}`,
-				}}
-			>
-				{address}
-			</span>
-
+		<span className={cn('relative inline-flex flex-col items-start gap-1', className)}>
 			{/* Chip */}
 			<span
-				className="inline-flex items-center gap-2 rounded-md px-3 py-1.5 w-fit"
-				style={{ backgroundColor: colors.chip }}
+				className={cn(
+					'inline-flex items-center gap-2 rounded-md px-3 py-1.5 w-fit',
+					isDark ? 'bg-zinc-700/90' : 'bg-zinc-200/40',
+				)}
 			>
-				<span className="font-sans text-sm" style={{ color: colors.text }}>
+				{/* Address text with tooltip - hover only on address */}
+				<span
+					className={cn(
+						'group/address relative font-sans text-sm',
+						isDark ? 'text-zinc-50/90' : 'text-zinc-700/90',
+					)}
+				>
 					{truncated}
+					{/* Tooltip */}
+					<span
+						className={cn(
+							'absolute top-full left-0 mt-1 px-3 py-1.5 rounded-md text-[9px] whitespace-nowrap',
+							'opacity-0 group-hover/address:opacity-100 transition-opacity pointer-events-none z-10 border',
+							isDark
+								? 'bg-zinc-800/95 text-zinc-50 border-zinc-600/90'
+								: 'bg-zinc-100/95 text-zinc-900 border-zinc-200/80',
+						)}
+					>
+						{address}
+					</span>
 				</span>
 				<button
 					type="button"
@@ -91,9 +94,9 @@ export const AddressDisplay: React.FC<AddressDisplayProps> = ({
 					aria-label="Copy address to clipboard"
 				>
 					{copied ? (
-						<Check size={14} style={{ color: '#22c55e' }} />
+						<Check size={14} className="text-green-500" />
 					) : (
-						<Copy size={14} style={{ color: colors.icon }} />
+						<Copy size={14} className={cn(isDark ? 'text-zinc-50' : 'text-zinc-700')} />
 					)}
 				</button>
 				{showExplorerLink && (
@@ -104,7 +107,7 @@ export const AddressDisplay: React.FC<AddressDisplayProps> = ({
 						className="flex items-center justify-center hover:opacity-70 transition-opacity"
 						aria-label="View on Solana Explorer"
 					>
-						<ExternalLink size={14} style={{ color: colors.icon }} />
+						<ExternalLink size={14} className={cn(isDark ? 'text-zinc-50' : 'text-zinc-700')} />
 					</a>
 				)}
 			</span>

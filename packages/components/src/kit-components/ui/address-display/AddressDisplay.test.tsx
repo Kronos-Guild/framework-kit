@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 
+import { address } from '@solana/kit';
 import { cleanup, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
 import '@testing-library/jest-dom/vitest';
@@ -60,7 +61,8 @@ describe('getExplorerUrl', () => {
  * Tests for AddressDisplay component
  */
 describe('AddressDisplay', () => {
-	const testAddress = 'Hb6dzd4pYxmFYKkJDWuhzBEUkkaE93sFcvXYtriTkmw9';
+	const testAddressString = 'Hb6dzd4pYxmFYKkJDWuhzBEUkkaE93sFcvXYtriTkmw9';
+	const testAddress = address(testAddressString);
 
 	it('renders truncated address', () => {
 		render(<AddressDisplay address={testAddress} />);
@@ -69,7 +71,7 @@ describe('AddressDisplay', () => {
 
 	it('renders full address in tooltip', () => {
 		render(<AddressDisplay address={testAddress} />);
-		expect(screen.getByText(testAddress)).toBeInTheDocument();
+		expect(screen.getByText(testAddressString)).toBeInTheDocument();
 	});
 
 	it('renders copy button with accessible label', () => {
@@ -81,7 +83,7 @@ describe('AddressDisplay', () => {
 		render(<AddressDisplay address={testAddress} />);
 		const link = screen.getByRole('link', { name: /view on solana explorer/i });
 		expect(link).toBeInTheDocument();
-		expect(link).toHaveAttribute('href', `https://explorer.solana.com/address/${testAddress}`);
+		expect(link).toHaveAttribute('href', `https://explorer.solana.com/address/${testAddressString}`);
 	});
 
 	it('hides explorer link when showExplorerLink is false', () => {
@@ -92,7 +94,7 @@ describe('AddressDisplay', () => {
 	it('uses correct explorer URL for devnet', () => {
 		render(<AddressDisplay address={testAddress} network="devnet" />);
 		const link = screen.getByRole('link', { name: /view on solana explorer/i });
-		expect(link).toHaveAttribute('href', `https://explorer.solana.com/address/${testAddress}?cluster=devnet`);
+		expect(link).toHaveAttribute('href', `https://explorer.solana.com/address/${testAddressString}?cluster=devnet`);
 	});
 
 	it('applies custom className', () => {
