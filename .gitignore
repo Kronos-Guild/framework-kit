@@ -42,5 +42,3 @@ coverage/
 .temp/
 tmp/
 
-# Copilot instructions (local only)
-.github/copilot-instructions.md
