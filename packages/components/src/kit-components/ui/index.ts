@@ -1,3 +1,4 @@
+export * from './balance-card';
 export * from './button/Button';
 export * from './connect-wallet-button';
 export * from './header/Header';
