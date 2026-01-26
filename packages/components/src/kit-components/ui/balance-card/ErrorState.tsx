@@ -19,7 +19,7 @@ export const ErrorState: React.FC<ErrorStateProps> = ({ message, onRetry, varian
 				<button
 					type="button"
 					onClick={onRetry}
-					className={`text-sm underline ${linkColor} focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 rounded`}
+					className={`text-sm underline ${linkColor} focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-red-500 rounded`}
 				>
 					Try again
 				</button>
