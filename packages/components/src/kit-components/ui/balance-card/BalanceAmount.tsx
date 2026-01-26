@@ -7,9 +7,10 @@ import { formatBalance, formatFiatValue } from './utils';
  */
 export const BalanceAmount: React.FC<BalanceAmountProps> = ({
 	balance,
+	tokenDecimals = 9,
 	isFiat = false,
 	currency = 'USD',
-	decimals = 2,
+	displayDecimals = 2,
 	locale = 'en-US',
 	isPrivate = false,
 	size = 'md',
@@ -29,8 +30,8 @@ export const BalanceAmount: React.FC<BalanceAmountProps> = ({
 	const formattedBalance = isPrivate
 		? '••••••'
 		: isFiat
-			? formatFiatValue(balance, currency, locale)
-			: formatBalance(balance, { decimals, locale });
+			? formatFiatValue(balance, currency, locale, tokenDecimals)
+			: formatBalance(balance, { tokenDecimals, displayDecimals, locale });
 
 	return (
 		<div className={`${sizeStyles} ${textColor} ${className}`} aria-live="polite">

@@ -3,26 +3,47 @@
  */
 
 export interface FormatBalanceOptions {
-	decimals?: number;
+	/** Number of decimals in the token (e.g., 9 for SOL, 6 for USDC) */
+	tokenDecimals?: number;
+	/** Number of decimal places to display */
+	displayDecimals?: number;
 	locale?: string;
 	abbreviate?: boolean;
 	showLessThan?: boolean;
 }
 
 /**
- * Formats a balance number with proper locale formatting
- * @param balance - The balance to format (number or string)
+ * Converts a bigint balance to a decimal number
+ * @param balance - The balance in base units (bigint)
+ * @param tokenDecimals - Number of decimals for the token
+ * @returns The balance as a number
+ */
+function bigintToNumber(balance: bigint, tokenDecimals: number): number {
+	const divisor = 10 ** tokenDecimals;
+	// Convert to number, handling precision for large values
+	return Number(balance) / divisor;
+}
+
+/**
+ * Formats a bigint balance with proper locale formatting
+ * @param balance - The balance in base units (bigint)
  * @param options - Formatting options
  * @returns Formatted balance string
  */
-export function formatBalance(balance: number | string | null | undefined, options: FormatBalanceOptions = {}): string {
-	const { decimals = 2, locale = 'en-US', abbreviate = false, showLessThan = true } = options;
+export function formatBalance(balance: bigint | null | undefined, options: FormatBalanceOptions = {}): string {
+	const {
+		tokenDecimals = 9,
+		displayDecimals = 2,
+		locale = 'en-US',
+		abbreviate = false,
+		showLessThan = true,
+	} = options;
 
 	if (balance === null || balance === undefined) {
 		return '—';
 	}
 
-	const num = typeof balance === 'string' ? parseFloat(balance) : balance;
+	const num = bigintToNumber(balance, tokenDecimals);
 
 	if (Number.isNaN(num)) {
 		return '—';
@@ -49,24 +70,30 @@ export function formatBalance(balance: number | string | null | undefined, optio
 	}
 
 	return new Intl.NumberFormat(locale, {
-		minimumFractionDigits: decimals,
-		maximumFractionDigits: decimals,
+		minimumFractionDigits: displayDecimals,
+		maximumFractionDigits: displayDecimals,
 	}).format(num);
 }
 
 /**
- * Formats a fiat currency value
- * @param value - The value to format
+ * Formats a bigint value as currency
+ * @param value - The value in base units (bigint)
  * @param currency - Currency code (default: USD)
  * @param locale - Locale for formatting (default: en-US)
+ * @param tokenDecimals - Number of decimals for the token (default: 9 for SOL)
  * @returns Formatted currency string
  */
-export function formatFiatValue(value: number | string | null | undefined, currency = 'USD', locale = 'en-US'): string {
+export function formatFiatValue(
+	value: bigint | null | undefined,
+	currency = 'USD',
+	locale = 'en-US',
+	tokenDecimals = 9,
+): string {
 	if (value === null || value === undefined) {
 		return '';
 	}
 
-	const num = typeof value === 'string' ? parseFloat(value) : value;
+	const num = bigintToNumber(value, tokenDecimals);
 
 	if (Number.isNaN(num) || !Number.isFinite(num)) {
 		return '';

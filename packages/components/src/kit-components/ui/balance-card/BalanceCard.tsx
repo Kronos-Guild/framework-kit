@@ -34,9 +34,10 @@ import { WalletAddress } from './WalletAddress';
 export const BalanceCard: React.FC<BalanceCardProps> = ({
 	walletAddress,
 	totalBalance,
+	tokenDecimals = 9,
 	isFiatBalance = true,
 	currency = 'USD',
-	decimals = 2,
+	displayDecimals = 2,
 	tokens = [],
 	isLoading = false,
 	error,
@@ -85,9 +86,10 @@ export const BalanceCard: React.FC<BalanceCardProps> = ({
 			{/* Balance amount */}
 			<BalanceAmount
 				balance={totalBalance}
+				tokenDecimals={tokenDecimals}
 				isFiat={isFiatBalance}
 				currency={currency}
-				decimals={decimals}
+				displayDecimals={displayDecimals}
 				locale={locale}
 				size={size}
 				variant={variant}
