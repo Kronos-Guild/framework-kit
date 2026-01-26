@@ -1,0 +1,89 @@
+/**
+ * ConnectWalletButton Component Types
+ * @description Type definitions for the connect wallet button and its sub-components
+ */
+
+import type { WalletConnectorMetadata, WalletStatus } from '@solana/client';
+import type { Lamports } from '@solana/kit';
+import type React from 'react';
+
+/** Theme variants for the component */
+export type Theme = 'dark' | 'light';
+
+/** Props for the main WalletButton component */
+export interface WalletButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+	/** Current connection state */
+	connectionState: WalletStatus['status'];
+	/** Connected wallet info (required when connected) */
+	wallet?: WalletConnectorMetadata | null;
+	/** Whether the dropdown is expanded (connected state) */
+	isExpanded?: boolean;
+	/** Theme variant (dark/light) */
+	theme?: Theme;
+	/** Custom class name */
+	className?: string;
+}
+
+/** Props for the ButtonContent sub-component */
+export interface ButtonContentProps {
+	/** Text content to display */
+	children: React.ReactNode;
+	/** Custom class name */
+	className?: string;
+}
+
+/** Props for the ButtonSpinner sub-component */
+export interface ButtonSpinnerProps {
+	/** Spinner size in pixels */
+	size?: number;
+	/** Custom class name */
+	className?: string;
+}
+
+/** Props for the ButtonIcon sub-component */
+export interface ButtonIconProps {
+	/** Icon source URL or base64 data */
+	src?: string;
+	/** Alt text for accessibility */
+	alt?: string;
+	/** Icon size in pixels */
+	size?: number;
+	/** Custom class name */
+	className?: string;
+}
+
+/** Props for the ChevronIcon sub-component */
+export interface ChevronIconProps {
+	/** Direction of the chevron */
+	direction: 'up' | 'down';
+	/** Custom class name */
+	className?: string;
+}
+
+/** Props for the connected dropdown */
+export interface WalletDropdownProps {
+	/** Connected wallet info */
+	wallet: WalletConnectorMetadata;
+	/** Wallet address */
+	address: string;
+	/** Balance in lamports */
+	balance?: Lamports;
+	/** Whether balance is visible or hidden */
+	balanceVisible?: boolean;
+	/** Whether balance is still loading */
+	balanceLoading?: boolean;
+	/** Callback when balance visibility toggles */
+	onToggleBalance?: () => void;
+	/** Callback when disconnect is clicked */
+	onDisconnect?: () => void;
+	/** Callback when address is copied */
+	onCopyAddress?: () => void;
+	/** Theme variant (dark/light) */
+	theme?: Theme;
+	/** Custom class name */
+	className?: string;
+	/** Custom labels */
+	labels?: {
+		disconnect?: string;
+	};
+}
