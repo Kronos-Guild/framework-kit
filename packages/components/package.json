@@ -14,9 +14,13 @@
 		"lint": "biome check src"
 	},
 	"dependencies": {
-		"@solana/client": "workspace:*",
-		"@solana/kit": "^5.4.0",
+		"@solana/kit": "catalog:solana",
 		"@tailwindcss/vite": "^4.1.18",
+		"@solana/client": "^1.7.0",
+		"@solana/react-hooks": "^1.4.1",
+		"@tailwindcss/vite": "^4.1.18",
+		"@solana/kit": "catalog:solana",
+		"class-variance-authority": "^0.7.1",
 		"clsx": "^2.1.1",
 		"lucide-react": "^0.562.0",
 		"react": "^19.2.0",
