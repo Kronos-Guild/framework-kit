@@ -26,8 +26,6 @@ export interface TransactionToastData {
 export interface TransactionToastProps extends TransactionToastData {
 	// color theme (default: 'light')
 	theme?: 'light' | 'dark';
-	// auto-dismiss after timeout (default: 5000ms for success, infinity for pending/error)
-	duration?: number;
 	// additional CSS classes
 	className?: string;
 }
@@ -117,7 +115,7 @@ export const TransactionToast: React.FC<TransactionToastProps> = ({
 					'inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-xs',
 					isDark
 						? 'bg-zinc-700 text-zinc-50 hover:bg-zinc-600'
-						: 'bg-zinc-700 text-zinc-50 hover:bg-zinc-600',
+						: 'bg-zinc-200 text-zinc-700 hover:bg-zinc-300',
 				)}
 			>
 				View
