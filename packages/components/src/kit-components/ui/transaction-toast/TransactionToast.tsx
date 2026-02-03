@@ -4,7 +4,7 @@ import type React from 'react';
 import { cn } from '../../lib/utils';
 
 //define interfaces for Typescript types
-// for transacction status
+// for transaction status
 export type TransactionStatus = 'pending' | 'success' | 'error';
 
 //transaction type to determine the message shown

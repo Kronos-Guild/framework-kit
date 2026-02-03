@@ -52,7 +52,7 @@ export const TransactionToastProvider: React.FC<TransactionToastProviderProps> =
 					<ToastPrimitive.Root
 						key={t.id}
 						duration={DEFAULT_DURATION[t.status]}
-						onOpenChange={(open) => {
+						onOpenChange={(open: boolean) => {
 							if (!open) dismiss(t.id);
 						}}
 						className={cn(
