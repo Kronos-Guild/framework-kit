@@ -227,6 +227,62 @@ Components use the `zinc` color palette from Tailwind:
 - Light: `bg-zinc-50`, `text-zinc-900`
 - Dark: `bg-zinc-800`, `text-zinc-50`
 
+## Shadcn Compatibility
+
+Framework Kit components follow [shadcn/ui](https://ui.shadcn.com) patterns. If you're familiar with shadcn, you'll feel at home.
+
+### What This Means
+
+- **Radix UI primitives** — Components are built on [Radix](https://www.radix-ui.com/) for accessibility out of the box
+- **Tailwind styling** — All styles use Tailwind utilities, no CSS files to import
+- **`cn()` utility** — Class merging with [clsx](https://github.com/lukeed/clsx) + [tailwind-merge](https://github.com/dcastil/tailwind-merge)
+
+### The `cn()` Utility
+
+Components use `cn()` to merge classNames safely:
+
+```tsx
+import { cn } from "@solana/components";
+
+// Merges classes, handles conflicts automatically
+<div className={cn(
+  "flex items-center gap-2",
+  isDark && "bg-zinc-800",
+  className // your overrides win
+)} />
+```
+
+### Customizing Components
+
+Override styles via `className`:
+
+```tsx
+// Default styling
+<Skeleton className="h-4 w-32" />
+
+// Custom styling — your classes merge with defaults
+<Skeleton className="h-4 w-32 bg-blue-200 rounded-lg" />
+```
+
+### Using with Existing Shadcn Projects
+
+Framework Kit components work alongside your existing shadcn setup:
+
+```tsx
+import { Button } from "@/components/ui/button"; // your shadcn button
+import { AddressDisplay } from "@solana/components"; // framework kit
+
+function WalletButton({ address }) {
+  return (
+    <Button variant="outline">
+      <AddressDisplay address={address} theme="light" />
+    </Button>
+  );
+}
+```
+
+No conflicts. Same patterns. They compose naturally.
+
 ## Integration with React Hooks
 
 These components work seamlessly with `@solana/react-hooks`:
