@@ -4,7 +4,7 @@ import type React from 'react';
 import { cn } from '../../lib/utils';
 
 //define interfaces for Typescript types
-// for transacction status
+// for transaction status
 export type TransactionStatus = 'pending' | 'success' | 'error';
 
 //transaction type to determine the message shown
@@ -117,7 +117,7 @@ export const TransactionToast: React.FC<TransactionToastProps> = ({
 					'inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-xs',
 					isDark
 						? 'bg-zinc-700 text-zinc-50 hover:bg-zinc-600'
-						: 'bg-zinc-700 text-zinc-50 hover:bg-zinc-600',
+						: 'bg-zinc-200 text-zinc-700 hover:bg-zinc-300',
 				)}
 			>
 				View
