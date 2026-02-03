@@ -48,11 +48,11 @@ export const TransactionToastProvider: React.FC<TransactionToastProviderProps> =
 		<TransactionToastContext.Provider value={{ toast, dismiss, update }}>
 			<ToastPrimitive.Provider swipeDirection="right">
 				{children}
-				{toasts.map((t) => (
+				{toasts.map((t: ToastItem) => (
 					<ToastPrimitive.Root
 						key={t.id}
 						duration={DEFAULT_DURATION[t.status]}
-						onOpenChange={(open) => {
+						onOpenChange={(open: boolean) => {
 							if (!open) dismiss(t.id);
 						}}
 						className={cn(
