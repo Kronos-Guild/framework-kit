@@ -1,0 +1,277 @@
+---
+title: "UI Components"
+description: Pre-built React components for Solana applications
+---
+
+Ready-to-use React components for displaying Solana data, transaction feedback, and loading states. Built with Tailwind CSS and fully themeable.
+
+## Installation
+
+<Tabs groupId="pkg" items={['npm', 'pnpm', 'yarn', 'bun']} persist>
+  <Tab value="npm">
+```bash
+npm install @solana/components
+```
+  </Tab>
+  <Tab value="pnpm">
+```bash
+pnpm add @solana/components
+```
+  </Tab>
+  <Tab value="yarn">
+```bash
+yarn add @solana/components
+```
+  </Tab>
+  <Tab value="bun">
+```bash
+bun add @solana/components
+```
+  </Tab>
+</Tabs>
+
+## Setup
+
+### Tailwind CSS Configuration
+
+The components use Tailwind CSS. Add the package to your `tailwind.config.js`:
+
+```js
+module.exports = {
+  content: [
+    // ... your content paths
+    "./node_modules/@solana/components/**/*.{js,ts,jsx,tsx}",
+  ],
+  // ... rest of config
+};
+```
+
+## Display Components
+
+### AddressDisplay
+
+Displays a truncated Solana address with copy-to-clipboard and Explorer link:
+
+```tsx
+import { AddressDisplay } from "@solana/components";
+
+function WalletAddress({ address }) {
+  return (
+    <AddressDisplay
+      address={address}
+      network="mainnet-beta"
+      theme="light"
+      onCopy={() => console.log("Copied!")}
+    />
+  );
+}
+```
+
+The address is truncated to `6DMh...1DkK` format with a tooltip showing the full address on hover.
+
+**Props:**
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `address` | `Address` | required | Solana public key in base58 format |
+| `theme` | `'light' \| 'dark'` | `'light'` | Color theme |
+| `network` | `ClusterMoniker` | `'mainnet-beta'` | Network for Explorer URL |
+| `showExplorerLink` | `boolean` | `true` | Show link to Solana Explorer |
+| `onCopy` | `() => void` | - | Callback after address is copied |
+| `className` | `string` | - | Additional CSS classes |
+
+## Feedback Components
+
+### TransactionToast
+
+Displays transaction status notifications with Explorer link:
+
+```tsx
+import { TransactionToast } from "@solana/components";
+
+function TransactionStatus({ signature, status }) {
+  return (
+    <TransactionToast
+      signature={signature}
+      status={status}
+      type="sent"
+      network="devnet"
+    />
+  );
+}
+```
+
+**Props:**
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `signature` | `string` | required | Transaction signature |
+| `status` | `'pending' \| 'success' \| 'error'` | required | Transaction status |
+| `type` | `'sent' \| 'received' \| 'swapped'` | `'sent'` | Transaction type (affects message) |
+| `theme` | `'light' \| 'dark'` | `'light'` | Color theme |
+| `network` | `ClusterMoniker` | `'mainnet-beta'` | Network for Explorer URL |
+| `className` | `string` | - | Additional CSS classes |
+
+**Status Messages:**
+
+| Type | Pending | Success | Error |
+| --- | --- | --- | --- |
+| `sent` | Transaction pending... | Transaction sent successfully | Transaction failed |
+| `received` | Transaction pending... | Transaction received successfully | Transaction failed |
+| `swapped` | Swap pending... | Swap completed successfully | Swap failed |
+
+### TransactionToastProvider
+
+For managing multiple toasts, wrap your app with the provider:
+
+```tsx
+import {
+  TransactionToastProvider,
+  useTransactionToast,
+} from "@solana/components";
+
+function App() {
+  return (
+    <TransactionToastProvider theme="light">
+      <YourApp />
+    </TransactionToastProvider>
+  );
+}
+
+function SendButton() {
+  const { toast, update, dismiss } = useTransactionToast();
+
+  const handleSend = async () => {
+    // Show pending toast
+    const id = toast({
+      signature: "5UfDuX7h...",
+      status: "pending",
+      type: "sent",
+    });
+
+    try {
+      // Wait for confirmation...
+      await confirmTransaction();
+
+      // Update to success
+      update(id, { status: "success" });
+    } catch (error) {
+      // Update to error
+      update(id, { status: "error" });
+    }
+  };
+
+  return <button onClick={handleSend}>Send</button>;
+}
+```
+
+**Provider Props:**
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `children` | `ReactNode` | required | Child components |
+| `theme` | `'light' \| 'dark'` | `'light'` | Theme for all toasts |
+
+**Hook Return:**
+
+| Method | Description |
+| --- | --- |
+| `toast(data)` | Show a toast, returns ID |
+| `update(id, data)` | Update an existing toast |
+| `dismiss(id)` | Remove a toast |
+
+### Skeleton
+
+Loading placeholder that mimics content shape:
+
+```tsx
+import { Skeleton } from "@solana/components";
+
+function LoadingCard() {
+  return (
+    <div className="flex items-center gap-4">
+      <Skeleton className="h-12 w-12 rounded-full" />
+      <div className="space-y-2">
+        <Skeleton className="h-4 w-32" />
+        <Skeleton className="h-3 w-24" />
+      </div>
+    </div>
+  );
+}
+```
+
+Use `className` to define dimensions and shape (e.g., `rounded-full` for avatars).
+
+**Props:**
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `theme` | `'light' \| 'dark'` | `'light'` | Color theme |
+| `className` | `string` | - | Size and shape classes |
+
+## Theming
+
+All components support `light` and `dark` themes via the `theme` prop:
+
+```tsx
+// Individual component
+<AddressDisplay address={addr} theme="dark" />
+
+// Or via provider for toasts
+<TransactionToastProvider theme="dark">
+  <App />
+</TransactionToastProvider>
+```
+
+Components use the `zinc` color palette from Tailwind:
+- Light: `bg-zinc-50`, `text-zinc-900`
+- Dark: `bg-zinc-800`, `text-zinc-50`
+
+## Integration with React Hooks
+
+These components work seamlessly with `@solana/react-hooks`:
+
+```tsx
+import { useWallet, useBalance } from "@solana/react-hooks";
+import { AddressDisplay, Skeleton } from "@solana/components";
+
+function WalletCard() {
+  const { wallet, status } = useWallet();
+  const { lamports, fetching } = useBalance(wallet?.account.address);
+
+  if (status !== "connected") return null;
+
+  return (
+    <div>
+      <AddressDisplay address={wallet.account.address} />
+      {fetching ? (
+        <Skeleton className="h-4 w-24" />
+      ) : (
+        <p>{(lamports / 1e9).toFixed(4)} SOL</p>
+      )}
+    </div>
+  );
+}
+```
+
+## Components Reference
+
+### Display Components
+
+| Component | Description |
+| --- | --- |
+| `AddressDisplay` | Truncated address with copy and Explorer link |
+
+### Feedback Components
+
+| Component | Description |
+| --- | --- |
+| `TransactionToast` | Transaction status notification |
+| `TransactionToastProvider` | Provider for managing multiple toasts |
+| `Skeleton` | Loading placeholder |
+
+### Hooks
+
+| Hook | Description |
+| --- | --- |
+| `useTransactionToast` | Toast management within provider |
