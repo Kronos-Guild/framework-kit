@@ -7,6 +7,7 @@ const sampleAddress = address('Hb6dzd4pYxmFYKkJDWuhzBEUkkaE93sFcvXYtriTkmw9');
 const meta: Meta<typeof AddressDisplay> = {
 	title: 'UI/AddressDisplay',
 	component: AddressDisplay,
+	tags: ['autodocs'],
 	argTypes: {
 		theme: {
 			control: 'select',
