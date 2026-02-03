@@ -26,6 +26,8 @@ export interface TransactionToastData {
 export interface TransactionToastProps extends TransactionToastData {
 	// color theme (default: 'light')
 	theme?: 'light' | 'dark';
+	// auto-dismiss after timeout (default: 5000ms for success, infinity for pending/error)
+	duration?: number;
 	// additional CSS classes
 	className?: string;
 }
