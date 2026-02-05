@@ -209,6 +209,116 @@ Use `className` to define dimensions and shape (e.g., `rounded-full` for avatars
 | `theme` | `'light' \| 'dark'` | `'light'` | Color theme |
 | `className` | `string` | - | Size and shape classes |
 
+## Layout Components
+
+### DashboardShell
+
+Every Solana dApp needs a consistent layout — a place for your logo, wallet button, and main content. DashboardShell handles this structure so you can focus on building features.
+
+**What you get:**
+
+- Full-screen container with proper background colors
+- Header area (your logo on the left, wallet button on the right)
+- Main content area that fills the remaining space
+- Subtle dot grid pattern that matches modern dApp aesthetics
+- Light and dark theme support
+
+**Basic usage:**
+
+```tsx
+import { DashboardShell } from "@solana/components";
+
+function App() {
+  return (
+    <DashboardShell>
+      <h1>Welcome to my dApp</h1>
+    </DashboardShell>
+  );
+}
+```
+
+That's it. You now have a full-screen layout with the dot grid background.
+
+**Adding a header:**
+
+The `header` prop accepts any React content. It renders in a row with space-between alignment:
+
+```tsx
+<DashboardShell
+  header={
+    <>
+      <span className="font-semibold text-zinc-700">My Wallet</span>
+      <button className="px-4 py-2 bg-zinc-900 text-white rounded-lg">
+        Connect
+      </button>
+    </>
+  }
+>
+  <p>Your dashboard content here</p>
+</DashboardShell>
+```
+
+The header appears at the top. Your logo/title sits on the left, actions on the right.
+
+**Dark theme:**
+
+```tsx
+<DashboardShell theme="dark">
+  {/* Dark background (#18181b), lighter dot grid */}
+</DashboardShell>
+```
+
+**Hiding the dot grid:**
+
+Some designs call for a solid background:
+
+```tsx
+<DashboardShell showDotGrid={false}>
+  {/* Clean, solid background */}
+</DashboardShell>
+```
+
+**Props:**
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `theme` | `'light' \| 'dark'` | `'light'` | Background and dot grid colors |
+| `header` | `ReactNode` | - | Content for the header area |
+| `children` | `ReactNode` | required | Your main content |
+| `showDotGrid` | `boolean` | `true` | Toggle the dot grid pattern |
+| `className` | `string` | - | Additional CSS classes |
+
+**Real-world example with other components:**
+
+```tsx
+import { DashboardShell, AddressDisplay, Skeleton } from "@solana/components";
+
+function WalletDashboard({ address, isLoading }) {
+  return (
+    <DashboardShell
+      theme="light"
+      header={
+        <>
+          <span className="font-semibold">Solana Wallet</span>
+          <AddressDisplay address={address} network="mainnet-beta" />
+        </>
+      }
+    >
+      {isLoading ? (
+        <div className="space-y-4">
+          <Skeleton className="h-32 w-full rounded-xl" />
+          <Skeleton className="h-32 w-full rounded-xl" />
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 gap-4">
+          {/* Your balance cards, transaction lists, etc. */}
+        </div>
+      )}
+    </DashboardShell>
+  );
+}
+```
+
 ## Theming
 
 All components support `light` and `dark` themes via the `theme` prop:
@@ -325,6 +435,12 @@ function WalletCard() {
 | `TransactionToast` | Transaction status notification |
 | `TransactionToastProvider` | Provider for managing multiple toasts |
 | `Skeleton` | Loading placeholder |
+
+### Layout Components
+
+| Component | Description |
+| --- | --- |
+| `DashboardShell` | Full-screen layout with header, content area, and dot grid background |
 
 ### Hooks
 
