@@ -1,5 +1,10 @@
+import { address, lamports } from '@solana/kit';
 import type { Meta, StoryObj } from '@storybook/react';
 import { BalanceCard } from '../kit-components/ui/balance-card';
+
+// Sample wallet address for stories
+const sampleWalletAddress = address('6DMh7fYHrKdCJwCFUQfMfNAdLADi9xqsRKNzmZA31DkK');
+const altWalletAddress = address('9xQeWvG816hKfA2H2HnXHoGZTMbNJrPpT4Hz8knSjLm4');
 
 const meta = {
 	title: 'UI/BalanceCard',
@@ -50,8 +55,8 @@ const sampleTokens = [
  */
 export const Default: Story = {
 	args: {
-		walletAddress: '6DMh1234567890abcdef1DkK',
-		totalBalance: 34.81,
+		walletAddress: sampleWalletAddress,
+		totalBalance: lamports(34_810_000_000n),
 		isFiatBalance: true,
 		tokens: sampleTokens,
 		variant: 'dark',
@@ -63,8 +68,8 @@ export const Default: Story = {
  */
 export const Light: Story = {
 	args: {
-		walletAddress: '9xQeWvG1234567890A3Lm',
-		totalBalance: 0,
+		walletAddress: altWalletAddress,
+		totalBalance: lamports(0n),
 		isFiatBalance: false,
 		tokens: [],
 		variant: 'light',
@@ -77,8 +82,8 @@ export const Light: Story = {
  */
 export const Loading: Story = {
 	args: {
-		walletAddress: '6DMh1234567890abcdef1DkK',
-		totalBalance: 0,
+		walletAddress: sampleWalletAddress,
+		totalBalance: lamports(0n),
 		isLoading: true,
 		variant: 'dark',
 	},
@@ -89,8 +94,8 @@ export const Loading: Story = {
  */
 export const LoadingLight: Story = {
 	args: {
-		walletAddress: '6DMh1234567890abcdef1DkK',
-		totalBalance: 0,
+		walletAddress: sampleWalletAddress,
+		totalBalance: lamports(0n),
 		isLoading: true,
 		variant: 'light',
 	},
@@ -101,8 +106,8 @@ export const LoadingLight: Story = {
  */
 export const ZeroBalance: Story = {
 	args: {
-		walletAddress: '6DMh1234567890abcdef1DkK',
-		totalBalance: 0,
+		walletAddress: sampleWalletAddress,
+		totalBalance: lamports(0n),
 		isFiatBalance: false,
 		tokens: [],
 		variant: 'dark',
@@ -114,8 +119,8 @@ export const ZeroBalance: Story = {
  */
 export const ZeroBalanceExpanded: Story = {
 	args: {
-		walletAddress: '6DMh1234567890abcdef1DkK',
-		totalBalance: 0,
+		walletAddress: sampleWalletAddress,
+		totalBalance: lamports(0n),
 		isFiatBalance: false,
 		tokens: [],
 		variant: 'dark',
@@ -128,8 +133,8 @@ export const ZeroBalanceExpanded: Story = {
  */
 export const WithTokensExpanded: Story = {
 	args: {
-		walletAddress: '6DMh1234567890abcdef1DkK',
-		totalBalance: 34.81,
+		walletAddress: sampleWalletAddress,
+		totalBalance: lamports(34_810_000_000n),
 		isFiatBalance: true,
 		tokens: sampleTokens,
 		variant: 'dark',
@@ -142,8 +147,8 @@ export const WithTokensExpanded: Story = {
  */
 export const LightWithTokensExpanded: Story = {
 	args: {
-		walletAddress: '6DMh1234567890abcdef1DkK',
-		totalBalance: 34.81,
+		walletAddress: sampleWalletAddress,
+		totalBalance: lamports(34_810_000_000n),
 		isFiatBalance: true,
 		tokens: sampleTokens,
 		variant: 'light',
@@ -156,8 +161,8 @@ export const LightWithTokensExpanded: Story = {
  */
 export const WithError: Story = {
 	args: {
-		walletAddress: '6DMh1234567890abcdef1DkK',
-		totalBalance: 0,
+		walletAddress: sampleWalletAddress,
+		totalBalance: lamports(0n),
 		isFiatBalance: true,
 		error: 'Error loading tokens.',
 		onRetry: () => console.log('Retry clicked'),
@@ -170,8 +175,8 @@ export const WithError: Story = {
  */
 export const WithErrorLight: Story = {
 	args: {
-		walletAddress: '6DMh1234567890abcdef1DkK',
-		totalBalance: 0,
+		walletAddress: sampleWalletAddress,
+		totalBalance: lamports(0n),
 		isFiatBalance: true,
 		error: 'Error loading tokens.',
 		onRetry: () => console.log('Retry clicked'),
@@ -184,8 +189,8 @@ export const WithErrorLight: Story = {
  */
 export const SmallSize: Story = {
 	args: {
-		walletAddress: '6DMh1234567890abcdef1DkK',
-		totalBalance: 34.81,
+		walletAddress: sampleWalletAddress,
+		totalBalance: lamports(34_810_000_000n),
 		isFiatBalance: true,
 		tokens: sampleTokens,
 		variant: 'dark',
@@ -198,8 +203,8 @@ export const SmallSize: Story = {
  */
 export const LargeSize: Story = {
 	args: {
-		walletAddress: '6DMh1234567890abcdef1DkK',
-		totalBalance: 34.81,
+		walletAddress: sampleWalletAddress,
+		totalBalance: lamports(34_810_000_000n),
 		isFiatBalance: true,
 		tokens: sampleTokens,
 		variant: 'dark',
@@ -212,10 +217,10 @@ export const LargeSize: Story = {
  */
 export const CryptoBalance: Story = {
 	args: {
-		walletAddress: '6DMh1234567890abcdef1DkK',
-		totalBalance: 1.5234,
+		walletAddress: sampleWalletAddress,
+		totalBalance: lamports(1_523_400_000n),
 		isFiatBalance: false,
-		decimals: 4,
+		displayDecimals: 4,
 		tokens: [{ symbol: 'SOL', balance: 1.5234 }],
 		variant: 'dark',
 	},
