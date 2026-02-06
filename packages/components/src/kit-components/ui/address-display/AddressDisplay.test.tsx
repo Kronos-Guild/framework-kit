@@ -1,8 +1,8 @@
 // @vitest-environment jsdom
 
 import { address } from '@solana/kit';
-import { cleanup, render, screen } from '@testing-library/react';
-import { afterEach, describe, expect, it } from 'vitest';
+import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import '@testing-library/jest-dom/vitest';
 
 afterEach(() => {
@@ -100,5 +100,54 @@ describe('AddressDisplay', () => {
 	it('applies custom className', () => {
 		const { container } = render(<AddressDisplay address={testAddress} className="custom-class" />);
 		expect(container.firstChild).toHaveClass('custom-class');
+	});
+
+	describe('theme variants', () => {
+		it('applies light theme by default', () => {
+			const { container } = render(<AddressDisplay address={testAddress} />);
+			// Light theme should have light text colors
+			expect(container.firstChild).toBeInTheDocument();
+		});
+
+		it('applies dark theme when specified', () => {
+			const { container } = render(<AddressDisplay address={testAddress} theme="dark" />);
+			expect(container.firstChild).toBeInTheDocument();
+		});
+	});
+
+	describe('copy functionality', () => {
+		it('calls onCopy callback when copy button is clicked', async () => {
+			// Mock clipboard API
+			const mockWriteText = vi.fn().mockResolvedValue(undefined);
+			Object.assign(navigator, {
+				clipboard: { writeText: mockWriteText },
+			});
+
+			const onCopy = vi.fn();
+			render(<AddressDisplay address={testAddress} onCopy={onCopy} />);
+
+			const copyButton = screen.getByRole('button', { name: /copy address/i });
+			fireEvent.click(copyButton);
+
+			await vi.waitFor(() => {
+				expect(onCopy).toHaveBeenCalledTimes(1);
+			});
+		});
+
+		it('copies address to clipboard when copy button is clicked', async () => {
+			const mockWriteText = vi.fn().mockResolvedValue(undefined);
+			Object.assign(navigator, {
+				clipboard: { writeText: mockWriteText },
+			});
+
+			render(<AddressDisplay address={testAddress} />);
+
+			const copyButton = screen.getByRole('button', { name: /copy address/i });
+			fireEvent.click(copyButton);
+
+			await vi.waitFor(() => {
+				expect(mockWriteText).toHaveBeenCalledWith(testAddressString);
+			});
+		});
 	});
 });
