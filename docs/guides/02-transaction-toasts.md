@@ -52,7 +52,7 @@ Wrap your app with `TransactionToastProvider`. This manages all toasts in your a
 
 <Steps>
 
-<Step title="Add the provider">
+<Step title="Add the provider"> 
 
 ```tsx filename="App.tsx"
 import { TransactionToastProvider } from "@solana/components";
