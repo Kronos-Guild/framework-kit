@@ -163,7 +163,7 @@ export const InteractiveLight: Story = {
 	parameters: {
 		backgrounds: { default: 'light' },
 	},
-	render: function InteractiveLightRender(args) {
+	render: function InteractiveLightRender(_args) {
 		type Status = 'disconnected' | 'connecting' | 'connected';
 		const [status, setStatus] = useState<Status>('disconnected');
 
@@ -264,7 +264,7 @@ export const BothThemesInteractive: Story = {
 	parameters: {
 		backgrounds: { default: 'dark' },
 	},
-	render: function BothThemesRender(args) {
+	render: function BothThemesRender(_args) {
 		type Status = 'disconnected' | 'connecting' | 'connected';
 		const [darkStatus, setDarkStatus] = useState<Status>('disconnected');
 		const [lightStatus, setLightStatus] = useState<Status>('disconnected');
@@ -438,7 +438,7 @@ export const DropdownStandaloneLight: Story = {
 	parameters: {
 		backgrounds: { default: 'light' },
 	},
-	render: (args) => (
+	render: (_args) => (
 		<div className="relative pt-12">
 			<WalletDropdown
 				theme="light"
@@ -486,7 +486,7 @@ export const ButtonVariantsDark: Story = {
 		theme: 'dark',
 		status: 'disconnected',
 	},
-	render: (args) => (
+	render: (_args) => (
 		<div className="flex flex-col gap-4">
 			<div className="flex items-center gap-4">
 				<span className="text-zinc-500 text-sm w-24">Disconnected</span>
@@ -528,7 +528,7 @@ export const ButtonVariantsLight: Story = {
 	parameters: {
 		backgrounds: { default: 'light' },
 	},
-	render: (args) => (
+	render: (_args) => (
 		<div className="flex flex-col gap-4">
 			<div className="flex items-center gap-4">
 				<span className="text-zinc-600 text-sm w-24">Disconnected</span>
@@ -571,7 +571,7 @@ export const AllStatesGrid: Story = {
 		theme: 'dark',
 		status: 'disconnected',
 	},
-	render: (args) => (
+	render: (_args) => (
 		<div className="grid grid-cols-2 gap-8">
 			<div className="flex flex-col gap-4 p-6 rounded-xl bg-zinc-900">
 				<h3 className="text-zinc-400 font-semibold text-sm uppercase tracking-wider">Dark Theme</h3>
