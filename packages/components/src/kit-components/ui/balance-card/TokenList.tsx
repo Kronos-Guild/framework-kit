@@ -2,7 +2,21 @@ import { ChevronUp } from 'lucide-react';
 import type React from 'react';
 import { useId, useState } from 'react';
 import type { TokenInfo, TokenListProps } from './types';
-import { formatFiatValue } from './utils';
+
+/**
+ * Formats a number as currency
+ */
+function formatCurrency(value: number | string, currency: string, locale: string): string {
+	const num = typeof value === 'string' ? Number.parseFloat(value) : value;
+	if (Number.isNaN(num)) return String(value);
+
+	return new Intl.NumberFormat(locale, {
+		style: 'currency',
+		currency,
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2,
+	}).format(num);
+}
 
 /**
  * Token row component for displaying individual token info
@@ -19,7 +33,7 @@ const TokenRow: React.FC<{
 	const hoverBg = isDark ? 'hover:bg-zinc-600' : 'hover:bg-zinc-50';
 
 	const displayBalance = token.fiatValue
-		? formatFiatValue(token.fiatValue, currency, locale)
+		? formatCurrency(token.fiatValue, currency, locale)
 		: typeof token.balance === 'number'
 			? token.balance.toLocaleString(locale, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 			: token.balance;
