@@ -32,6 +32,15 @@ const meta: Meta<typeof AddressDisplay> = {
 				type: { summary: "'light' | 'dark'" },
 			},
 		},
+		variant: {
+			description: 'Display variant — "chip" (pill with background) or "inline" (bare text + icons)',
+			control: 'select',
+			options: ['chip', 'inline'],
+			table: {
+				defaultValue: { summary: 'chip' },
+				type: { summary: "'chip' | 'inline'" },
+			},
+		},
 		network: {
 			description: 'Solana network for Explorer URL generation',
 			control: 'select',
@@ -147,6 +156,31 @@ export const WithCopyCallback: Story = {
 	},
 };
 
+// for variant: inline
+
+export const InlineLight: Story = {
+	name: 'Variant: Inline (Light)',
+	args: {
+		address: sampleAddress,
+		variant: 'inline',
+		theme: 'light',
+		showExplorerLink: false,
+	},
+};
+
+export const InlineDark: Story = {
+	name: 'Variant: Inline (Dark)',
+	args: {
+		address: sampleAddress,
+		variant: 'inline',
+		theme: 'dark',
+		showExplorerLink: false,
+	},
+	parameters: {
+		backgrounds: { default: 'dark' },
+	},
+};
+
 // for playground
 
 export const Playground: Story = {
@@ -154,6 +188,7 @@ export const Playground: Story = {
 	args: {
 		address: sampleAddress,
 		theme: 'light',
+		variant: 'chip',
 		network: 'mainnet-beta',
 		showExplorerLink: true,
 	},

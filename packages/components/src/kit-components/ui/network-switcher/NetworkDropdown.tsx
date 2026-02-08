@@ -12,7 +12,7 @@ const containerStyles: Record<Theme, string> = {
 
 /**
  * NetworkDropdown - Expanded dropdown showing all network options.
- * Dimensions from Figma: 191px x auto (based on items)
+ * Dimensions from Figma: 191px x auto (standalone) or flexible (embedded)
  */
 export function NetworkDropdown({
 	selectedNetwork,
@@ -20,18 +20,25 @@ export function NetworkDropdown({
 	networks,
 	onSelect,
 	theme = 'dark',
+	variant = 'standalone',
 	className,
 }: NetworkDropdownProps) {
+	const isEmbedded = variant === 'embedded';
+
 	return (
 		<div
 			className={cn(
-				'w-[191px] flex flex-col gap-[4px] p-[8px] rounded-[10px]',
-				containerStyles[theme],
+				'flex flex-col gap-1',
+				// Standalone: own container with bg, width, padding, and radius
+				!isEmbedded && ['w-47.75 p-2 rounded-[10px]', containerStyles[theme]],
+				// Embedded: bare content, no own bg/radius (inherits from parent)
+				isEmbedded && 'w-full',
 				className,
 			)}
 			role="listbox"
 			aria-label="Select network"
 		>
+			{/* Network options */}
 			{networks.map((network) => (
 				<NetworkOption
 					key={network.id}
