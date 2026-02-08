@@ -21,16 +21,18 @@ const themeStyles: Record<Theme, { bg: string; text: string; border: string }> =
 /**
  * NetworkTrigger - Collapsed trigger button showing "Network" with chevron.
  * Used when the dropdown is closed.
- * Dimensions from Figma: 191px x 38px
+ * Dimensions from Figma: 191px x 38px (standalone) or flexible (embedded)
  */
 export function NetworkTrigger({
 	isOpen = false,
 	theme = 'dark',
+	variant = 'standalone',
 	onClick,
 	className,
 	disabled = false,
 }: NetworkTriggerProps) {
 	const styles = themeStyles[theme];
+	const isEmbedded = variant === 'embedded';
 
 	return (
 		<button
@@ -38,16 +40,23 @@ export function NetworkTrigger({
 			onClick={onClick}
 			disabled={disabled}
 			className={cn(
-				'w-[191px] h-[38px] flex items-center justify-between',
-				'px-[15px] py-[10px] rounded-[10px]',
-				'border-b-[0.5px] border-solid',
+				'flex items-center justify-between',
+				'px-[15px] py-[10px]',
 				"font-['Inter',sans-serif] font-medium text-[15px] leading-normal",
 				'cursor-pointer transition-colors',
 				'focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30',
 				'disabled:opacity-50 disabled:cursor-not-allowed',
-				styles.bg,
 				styles.text,
-				styles.border,
+				// Standalone: own container with bg, width, border, and radius
+				!isEmbedded && [
+					'w-[191px] h-[38px]',
+					'rounded-[10px]',
+					'border-b-[0.5px] border-solid',
+					styles.bg,
+					styles.border,
+				],
+				// Embedded: full-width row, no own bg/radius (inherits from parent)
+				isEmbedded && 'w-full',
 				className,
 			)}
 			aria-expanded={isOpen}

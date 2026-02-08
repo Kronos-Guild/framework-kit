@@ -1,6 +1,7 @@
 'use client';
 
-import type { Lamports } from '@solana/kit';
+import type { ClusterMoniker, WalletStatus } from '@solana/client';
+import type { Address, Lamports } from '@solana/kit';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { cn } from '../../../lib/utils';
 import type { Theme } from './types';
@@ -28,7 +29,7 @@ export interface ConnectWalletButtonProps {
 	isReady?: boolean;
 	/** Connected wallet session */
 	wallet?: {
-		address: string;
+		address: Address;
 		publicKey?: { toBase58(): string };
 	};
 	/** Current wallet connector info */
@@ -45,6 +46,13 @@ export interface ConnectWalletButtonProps {
 	onConnect?: () => void;
 	/** Callback to disconnect wallet */
 	onDisconnect?: () => Promise<void> | void;
+	// === Network Props ===
+	/** Currently selected network */
+	selectedNetwork?: ClusterMoniker;
+	/** Network connection status */
+	networkStatus?: WalletStatus['status'];
+	/** Callback when network is changed */
+	onNetworkChange?: (network: ClusterMoniker) => void;
 }
 
 /**
@@ -83,6 +91,9 @@ export function ConnectWalletButton({
 	balanceLoading = false,
 	onConnect,
 	onDisconnect,
+	selectedNetwork,
+	networkStatus,
+	onNetworkChange,
 }: ConnectWalletButtonProps) {
 	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 	const [balanceVisible, setBalanceVisible] = useState(true);
@@ -97,7 +108,7 @@ export function ConnectWalletButton({
 	})();
 
 	// Format wallet address for display
-	const walletAddress = wallet?.address ?? wallet?.publicKey?.toBase58() ?? '';
+	const walletAddress = wallet?.address ?? (wallet?.publicKey?.toBase58() as Address | undefined);
 
 	// Handle button click based on state
 	const handleButtonClick = useCallback(() => {
@@ -166,7 +177,7 @@ export function ConnectWalletButton({
 				{connectionState === 'disconnected' && (labels?.connect ?? 'Connect Wallet')}
 			</WalletButton>
 
-			{connectionState === 'connected' && walletInfo && (
+			{connectionState === 'connected' && walletInfo && walletAddress && (
 				<WalletDropdownWrapper isOpen={isDropdownOpen}>
 					<WalletDropdown
 						wallet={walletInfo}
@@ -177,6 +188,9 @@ export function ConnectWalletButton({
 						theme={theme}
 						onToggleBalance={() => setBalanceVisible((prev) => !prev)}
 						onDisconnect={handleDisconnect}
+						selectedNetwork={selectedNetwork}
+						networkStatus={networkStatus}
+						onNetworkChange={onNetworkChange}
 						labels={{
 							disconnect: labels?.disconnect,
 						}}

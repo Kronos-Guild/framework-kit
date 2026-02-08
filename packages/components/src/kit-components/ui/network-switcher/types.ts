@@ -33,6 +33,17 @@ export interface NetworkSwitcherProps {
 	className?: string;
 	/** Disable the switcher */
 	disabled?: boolean;
+	/**
+	 * Display variant:
+	 * - "standalone" (default): self-contained component with own container, positioning,
+	 *   click-outside/escape handlers. Trigger shows as a 191px button with bg/radius.
+	 *   Dropdown appears absolutely below the trigger.
+	 * - "embedded": for composing inside another component (e.g. WalletDropdown).
+	 *   Closed → renders NetworkTrigger as a bare row (no own bg/radius).
+	 *   Open → renders NetworkHeader (back button) + NetworkDropdown (bare list).
+	 *   No click-outside/escape, no absolute positioning — parent controls layout.
+	 */
+	variant?: 'standalone' | 'embedded';
 }
 
 /** Props for NetworkTrigger component */
@@ -41,6 +52,12 @@ export interface NetworkTriggerProps {
 	isOpen?: boolean;
 	/** Theme variant */
 	theme?: Theme;
+	/**
+	 * Display variant:
+	 * - "standalone" (default): full 191px button with own background, border-radius, and border
+	 * - "embedded": no own background/radius/width — for embedding as a row inside another container
+	 */
+	variant?: 'standalone' | 'embedded';
 	/** Click handler */
 	onClick?: () => void;
 	/** Additional CSS classes */
@@ -61,6 +78,12 @@ export interface NetworkDropdownProps {
 	onSelect?: (network: ClusterMoniker) => void;
 	/** Theme variant */
 	theme?: Theme;
+	/**
+	 * Display variant:
+	 * - "standalone" (default): own background, border-radius, and fixed width container
+	 * - "embedded": no own background/radius — bare content for embedding inside another container
+	 */
+	variant?: 'standalone' | 'embedded';
 	/** Additional CSS classes */
 	className?: string;
 }

@@ -75,10 +75,107 @@ The address is truncated to `6DMh...1DkK` format with a tooltip showing the full
 | --- | --- | --- | --- |
 | `address` | `Address` | required | Solana public key in base58 format |
 | `theme` | `'light' \| 'dark'` | `'light'` | Color theme |
+| `variant` | `'chip' \| 'inline'` | `'chip'` | Display variant — `chip` for standalone pill with tooltip, `inline` for embedding in other components |
 | `network` | `ClusterMoniker` | `'mainnet-beta'` | Network for Explorer URL |
 | `showExplorerLink` | `boolean` | `true` | Show link to Solana Explorer |
 | `onCopy` | `() => void` | - | Callback after address is copied |
 | `className` | `string` | - | Additional CSS classes |
+
+## Wallet Components
+
+### ConnectWalletButton
+
+A fully composable wallet connection button with dropdown. Handles all connection states—disconnected, connecting, and connected—with an integrated wallet dropdown that includes address display, balance toggle, network switching, and disconnect.
+
+```tsx
+import { ConnectWalletButton } from "@solana/components";
+
+function App() {
+  const { status, wallet, currentConnector, disconnect, isReady } = useWalletConnection();
+  const { lamports, fetching } = useBalance(wallet?.address);
+
+  return (
+    <ConnectWalletButton
+      status={status}
+      isReady={isReady}
+      wallet={wallet ? { address: wallet.address } : undefined}
+      currentConnector={currentConnector}
+      balance={lamports}
+      balanceLoading={fetching}
+      onConnect={openModal}
+      onDisconnect={disconnect}
+      selectedNetwork="mainnet-beta"
+      onNetworkChange={(network) => console.log("Switched to:", network)}
+      theme="dark"
+    />
+  );
+}
+```
+
+The dropdown uses `AddressDisplay` (inline variant) for the wallet address and `NetworkSwitcher` (embedded variant) for network selection—both composable components used as intended.
+
+**Props:**
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `status` | `'disconnected' \| 'connecting' \| 'connected' \| 'error'` | required | Current connection status |
+| `isReady` | `boolean` | `true` | Whether the hook has hydrated (SSR) |
+| `wallet` | `{ address: Address }` | - | Connected wallet session |
+| `currentConnector` | `{ id: string; name: string; icon?: string }` | - | Current wallet connector info |
+| `balance` | `Lamports` | - | Wallet balance in lamports |
+| `balanceLoading` | `boolean` | `false` | Whether balance is still loading |
+| `onConnect` | `() => void` | - | Callback when connect button is clicked |
+| `onDisconnect` | `() => Promise<void> \| void` | - | Callback to disconnect wallet |
+| `selectedNetwork` | `ClusterMoniker` | - | Currently selected network |
+| `networkStatus` | `WalletStatus['status']` | - | Network connection status |
+| `onNetworkChange` | `(network: ClusterMoniker) => void` | - | Callback when network is changed |
+| `theme` | `'light' \| 'dark'` | `'dark'` | Color theme |
+| `labels` | `{ connect?: string; connecting?: string; disconnect?: string }` | - | Custom labels |
+| `className` | `string` | - | Additional CSS classes |
+
+### NetworkSwitcher
+
+A dropdown component for switching between Solana networks. Works standalone or embedded inside other components like `ConnectWalletButton`.
+
+```tsx
+import { NetworkSwitcher } from "@solana/components";
+
+// Standalone usage
+<NetworkSwitcher
+  selectedNetwork="mainnet-beta"
+  status="connected"
+  onNetworkChange={(network) => console.log("Switched to:", network)}
+  theme="dark"
+/>
+
+// Embedded in another component (no click-outside/escape handlers)
+<NetworkSwitcher
+  variant="embedded"
+  selectedNetwork={currentNetwork}
+  status="connected"
+  open={isNetworkOpen}
+  onOpenChange={setIsNetworkOpen}
+  onNetworkChange={handleNetworkChange}
+  theme="dark"
+/>
+```
+
+**Props:**
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `selectedNetwork` | `ClusterMoniker` | required | Currently selected network |
+| `status` | `WalletStatus['status']` | `'connected'` | Connection status indicator |
+| `onNetworkChange` | `(network: ClusterMoniker) => void` | - | Callback when network is selected |
+| `open` | `boolean` | - | Controlled open state |
+| `onOpenChange` | `(open: boolean) => void` | - | Callback when open state changes |
+| `variant` | `'standalone' \| 'embedded'` | `'standalone'` | `standalone` for self-contained dropdown; `embedded` for use inside other components |
+| `networks` | `Network[]` | `DEFAULT_NETWORKS` | List of available networks |
+| `disabled` | `boolean` | `false` | Disable the switcher |
+| `theme` | `'light' \| 'dark'` | `'dark'` | Color theme |
+| `className` | `string` | - | Additional CSS classes |
+
+**Default Networks:** Mainnet Beta, Testnet, Localnet, Devnet.
 
 ## Feedback Components
 
@@ -224,8 +321,8 @@ All components support `light` and `dark` themes via the `theme` prop:
 ```
 
 Components use the `zinc` color palette from Tailwind:
-- Light: `bg-zinc-50`, `text-zinc-900`
-- Dark: `bg-zinc-800`, `text-zinc-50`
+- Light: `bg-zinc-50`, `text-zinc-700`
+- Dark: `bg-zinc-700`, `text-zinc-50`
 
 ## Shadcn Compatibility
 
@@ -316,7 +413,14 @@ function WalletCard() {
 
 | Component | Description |
 | --- | --- |
-| `AddressDisplay` | Truncated address with copy and Explorer link |
+| `AddressDisplay` | Truncated address with copy and Explorer link. Supports `chip` and `inline` variants |
+
+### Wallet Components
+
+| Component | Description |
+| --- | --- |
+| `ConnectWalletButton` | Full wallet connection button with dropdown (address, balance, network, disconnect) |
+| `NetworkSwitcher` | Network selection dropdown. Supports `standalone` and `embedded` variants |
 
 ### Feedback Components
 

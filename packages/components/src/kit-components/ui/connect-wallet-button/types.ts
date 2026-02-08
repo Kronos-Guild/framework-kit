@@ -3,8 +3,8 @@
  * @description Type definitions for the connect wallet button and its sub-components
  */
 
-import type { WalletConnectorMetadata, WalletStatus } from '@solana/client';
-import type { Lamports } from '@solana/kit';
+import type { ClusterMoniker, WalletConnectorMetadata, WalletStatus } from '@solana/client';
+import type { Address, Lamports } from '@solana/kit';
 import type React from 'react';
 
 /** Theme variants for the component */
@@ -64,8 +64,8 @@ export interface ChevronIconProps {
 export interface WalletDropdownProps {
 	/** Connected wallet info */
 	wallet: WalletConnectorMetadata;
-	/** Wallet address */
-	address: string;
+	/** Wallet address (typed as Address for proper Solana integration) */
+	address: Address;
 	/** Balance in lamports */
 	balance?: Lamports;
 	/** Whether balance is visible or hidden */
@@ -78,6 +78,13 @@ export interface WalletDropdownProps {
 	onDisconnect?: () => void;
 	/** Callback when address is copied */
 	onCopyAddress?: () => void;
+	// === Network Props ===
+	/** Currently selected network */
+	selectedNetwork?: ClusterMoniker;
+	/** Network connection status */
+	networkStatus?: WalletStatus['status'];
+	/** Callback when network is changed */
+	onNetworkChange?: (network: ClusterMoniker) => void;
 	/** Theme variant (dark/light) */
 	theme?: Theme;
 	/** Custom class name */
