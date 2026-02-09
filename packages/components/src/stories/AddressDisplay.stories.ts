@@ -140,6 +140,21 @@ export const WithoutExplorerLink: Story = {
 	},
 };
 
+export const WithoutTooltip: Story = {
+	name: 'Without Tooltip',
+	args: {
+		address: sampleAddress,
+		showTooltip: false,
+	},
+	parameters: {
+		docs: {
+			description: {
+				story: 'Hides the full-address tooltip on hover. Useful when the address is embedded in a tight layout like a dropdown.',
+			},
+		},
+	},
+};
+
 export const WithCopyCallback: Story = {
 	name: 'With Copy Callback',
 	args: {

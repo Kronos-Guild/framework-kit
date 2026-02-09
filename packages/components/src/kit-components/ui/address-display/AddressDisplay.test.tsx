@@ -69,9 +69,15 @@ describe('AddressDisplay', () => {
 		expect(screen.getByText('Hb6d...kmw9')).toBeInTheDocument();
 	});
 
-	it('renders full address in tooltip', () => {
+	it('renders full address in tooltip by default', () => {
 		render(<AddressDisplay address={testAddress} />);
 		expect(screen.getByText(testAddressString)).toBeInTheDocument();
+	});
+
+	it('hides tooltip when showTooltip is false', () => {
+		render(<AddressDisplay address={testAddress} showTooltip={false} />);
+		// The full address tooltip text should not be in the DOM
+		expect(screen.queryByText(testAddressString)).not.toBeInTheDocument();
 	});
 
 	it('renders copy button with accessible label', () => {
