@@ -89,8 +89,6 @@ export interface WalletDropdownProps {
 	theme?: Theme;
 	/** Custom class name */
 	className?: string;
-	/** Custom labels */
-	labels?: {
-		disconnect?: string;
-	};
+	/** Custom label for the disconnect button */
+	disconnectLabel?: string;
 }

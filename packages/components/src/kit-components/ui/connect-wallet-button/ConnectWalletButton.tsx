@@ -125,6 +125,11 @@ export function ConnectWalletButton({
 		await onDisconnect?.();
 	}, [onDisconnect]);
 
+	// Handle balance visibility toggle
+	const handleToggleBalance = useCallback(() => {
+		setBalanceVisible((prev) => !prev);
+	}, []);
+
 	// Close dropdown when clicking outside
 	useEffect(() => {
 		const handleClickOutside = (event: MouseEvent) => {
@@ -186,14 +191,12 @@ export function ConnectWalletButton({
 						balanceVisible={balanceVisible}
 						balanceLoading={balanceLoading}
 						theme={theme}
-						onToggleBalance={() => setBalanceVisible((prev) => !prev)}
+						onToggleBalance={handleToggleBalance}
 						onDisconnect={handleDisconnect}
 						selectedNetwork={selectedNetwork}
 						networkStatus={networkStatus}
 						onNetworkChange={onNetworkChange}
-						labels={{
-							disconnect: labels?.disconnect,
-						}}
+						disconnectLabel={labels?.disconnect}
 					/>
 				</WalletDropdownWrapper>
 			)}

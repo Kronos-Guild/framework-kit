@@ -12,16 +12,12 @@ interface AddressDisplayProps {
 	onCopy?: () => void;
 	/** Show link to Solana Explorer (default: true) */
 	showExplorerLink?: boolean;
+	/** Show full address tooltip on hover (default: true) */
+	showTooltip?: boolean;
 	/** Solana network for Explorer URL (default: "mainnet-beta") */
 	network?: ClusterMoniker;
 	/** Color theme (default: "light") */
 	theme?: 'light' | 'dark';
-	/**
-	 * Display variant:
-	 * - "chip" (default): rounded pill with background, padding, and tooltip
-	 * - "inline": bare text + icons with no background/padding — for embedding in other components
-	 */
-	variant?: 'chip' | 'inline';
 	/** Additional CSS classes to apply to the container */
 	className?: string;
 }
@@ -44,15 +40,14 @@ export const AddressDisplay: React.FC<AddressDisplayProps> = ({
 	address,
 	onCopy,
 	showExplorerLink = true,
+	showTooltip = true,
 	network = 'mainnet-beta',
 	theme = 'light',
-	variant = 'chip',
 	className,
 }) => {
 	const [copied, setCopied] = useState(false);
 	const truncated = truncateAddress(address);
 	const isDark = theme === 'dark';
-	const isInline = variant === 'inline';
 
 	const handleCopy = async () => {
 		try {
@@ -67,12 +62,11 @@ export const AddressDisplay: React.FC<AddressDisplayProps> = ({
 
 	return (
 		<span className={cn('relative inline-flex flex-col items-start gap-1', className)}>
-			{/* Chip / Inline wrapper */}
+			{/* Chip */}
 			<span
 				className={cn(
-					'inline-flex items-center gap-2',
-					!isInline && 'rounded-md px-3 py-1.5 w-fit',
-					!isInline && (isDark ? 'bg-zinc-700/90' : 'bg-zinc-200/40'),
+					'inline-flex items-center gap-2 rounded-md px-3 py-1.5 w-fit',
+					isDark ? 'bg-zinc-700/90' : 'bg-zinc-200/40',
 				)}
 			>
 				{/* Address text with tooltip - hover only on address */}
@@ -83,8 +77,8 @@ export const AddressDisplay: React.FC<AddressDisplayProps> = ({
 					)}
 				>
 					{truncated}
-					{/* Tooltip — only for chip variant */}
-					{!isInline && (
+					{/* Tooltip */}
+					{showTooltip && (
 						<span
 							className={cn(
 								'absolute top-full left-0 mt-1 px-3 py-1.5 rounded-md text-[9px] whitespace-nowrap',

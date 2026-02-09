@@ -14,25 +14,23 @@ const themeStyles: Record<Theme, { bg: string; text: string; border: string }> =
 	light: {
 		bg: 'bg-zinc-50',
 		text: 'text-zinc-700',
-		border: 'border-zinc-200/20',
+		border: 'border-zinc-700/10',
 	},
 };
 
 /**
  * NetworkTrigger - Collapsed trigger button showing "Network" with chevron.
  * Used when the dropdown is closed.
- * Dimensions from Figma: 191px x 38px (standalone) or flexible (embedded)
+ * Dimensions from Figma: 191px x 38px
  */
 export function NetworkTrigger({
 	isOpen = false,
 	theme = 'dark',
-	variant = 'standalone',
 	onClick,
 	className,
 	disabled = false,
 }: NetworkTriggerProps) {
 	const styles = themeStyles[theme];
-	const isEmbedded = variant === 'embedded';
 
 	return (
 		<button
@@ -40,29 +38,22 @@ export function NetworkTrigger({
 			onClick={onClick}
 			disabled={disabled}
 			className={cn(
-				'flex items-center justify-between',
-				'px-[15px] py-[10px]',
+				'w-[191px] h-[38px] flex items-center justify-between',
+				'px-[15px] py-2.5 rounded-[10px]',
+				'border-b-[0.5px] border-solid',
 				"font-['Inter',sans-serif] font-medium text-[15px] leading-normal",
 				'cursor-pointer transition-colors',
 				'focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30',
 				'disabled:opacity-50 disabled:cursor-not-allowed',
+				styles.bg,
 				styles.text,
-				// Standalone: own container with bg, width, border, and radius
-				!isEmbedded && [
-					'w-[191px] h-[38px]',
-					'rounded-[10px]',
-					'border-b-[0.5px] border-solid',
-					styles.bg,
-					styles.border,
-				],
-				// Embedded: full-width row, no own bg/radius (inherits from parent)
-				isEmbedded && 'w-full',
+				styles.border,
 				className,
 			)}
 			aria-expanded={isOpen}
 			aria-haspopup="listbox"
 		>
-			<div className="flex items-center gap-[8px]">
+			<div className="flex items-center gap-2">
 				<Network size={16} className="shrink-0" />
 				<span>Network</span>
 			</div>

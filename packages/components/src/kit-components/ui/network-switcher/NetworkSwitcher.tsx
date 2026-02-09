@@ -4,15 +4,12 @@ import type { ClusterMoniker } from '@solana/client';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { cn } from '../../../lib/utils';
 import { NetworkDropdown } from './NetworkDropdown';
-import { NetworkHeader } from './NetworkHeader';
 import { NetworkTrigger } from './NetworkTrigger';
 import type { NetworkSwitcherProps } from './types';
 import { DEFAULT_NETWORKS } from './types';
 
 /**
  * NetworkSwitcher - A dropdown component for switching between Solana networks.
- *
- * Can be used standalone or embedded in other components (like ConnectWalletButton).
  *
  * @example
  * ```tsx
@@ -23,11 +20,12 @@ import { DEFAULT_NETWORKS } from './types';
  *   onNetworkChange={(network) => console.log('Switched to:', network)}
  * />
  *
- * // Embedded in wallet dropdown (swap-in-place pattern)
+ * // Controlled open state
  * <NetworkSwitcher
  *   selectedNetwork={currentNetwork}
  *   onNetworkChange={handleNetworkChange}
- *   variant="embedded"
+ *   open={isOpen}
+ *   onOpenChange={setIsOpen}
  *   theme="dark"
  * />
  * ```
@@ -42,12 +40,10 @@ export function NetworkSwitcher({
 	networks = DEFAULT_NETWORKS,
 	className,
 	disabled = false,
-	variant = 'standalone',
 }: NetworkSwitcherProps) {
 	// Internal state for uncontrolled mode
 	const [internalOpen, setInternalOpen] = useState(false);
 	const containerRef = useRef<HTMLDivElement>(null);
-	const isEmbedded = variant === 'embedded';
 
 	// Use controlled state if provided, otherwise internal
 	const isOpen = controlledOpen ?? internalOpen;
@@ -76,10 +72,8 @@ export function NetworkSwitcher({
 		[onNetworkChange, handleOpenChange],
 	);
 
-	// Close on click outside (standalone only — embedded parent handles this)
+	// Close on click outside
 	useEffect(() => {
-		if (isEmbedded) return;
-
 		const handleClickOutside = (event: MouseEvent) => {
 			if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
 				handleOpenChange(false);
@@ -90,12 +84,10 @@ export function NetworkSwitcher({
 			document.addEventListener('mousedown', handleClickOutside);
 			return () => document.removeEventListener('mousedown', handleClickOutside);
 		}
-	}, [isOpen, isEmbedded, handleOpenChange]);
+	}, [isOpen, handleOpenChange]);
 
-	// Close on Escape (standalone only — embedded parent handles this)
+	// Close on Escape
 	useEffect(() => {
-		if (isEmbedded) return;
-
 		const handleEscape = (event: KeyboardEvent) => {
 			if (event.key === 'Escape' && isOpen) {
 				handleOpenChange(false);
@@ -104,41 +96,8 @@ export function NetworkSwitcher({
 
 		document.addEventListener('keydown', handleEscape);
 		return () => document.removeEventListener('keydown', handleEscape);
-	}, [isOpen, isEmbedded, handleOpenChange]);
+	}, [isOpen, handleOpenChange]);
 
-	// ─── Embedded mode: swap-in-place (trigger ↔ header + dropdown) ───
-	if (isEmbedded) {
-		if (isOpen) {
-			// Open: show header (back button) + network list
-			return (
-				<div className={cn('flex flex-col gap-1', className)}>
-					<NetworkHeader isOpen theme={theme} onClick={() => handleOpenChange(false)} />
-					<NetworkDropdown
-						selectedNetwork={selectedNetwork}
-						status={status}
-						networks={networks}
-						onSelect={handleSelect}
-						theme={theme}
-						variant="embedded"
-					/>
-				</div>
-			);
-		}
-
-		// Closed: show trigger row
-		return (
-			<NetworkTrigger
-				isOpen={false}
-				theme={theme}
-				variant="embedded"
-				onClick={handleToggle}
-				disabled={disabled}
-				className={className}
-			/>
-		);
-	}
-
-	// ─── Standalone mode: positioned dropdown below trigger ───
 	return (
 		<div ref={containerRef} className={cn('relative inline-block', className)}>
 			{/* Trigger is always visible */}

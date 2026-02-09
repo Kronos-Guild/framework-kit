@@ -4,7 +4,10 @@ import { LogOut } from 'lucide-react';
 import { useCallback, useState } from 'react';
 import { cn, formatSolBalance } from '../../../lib/utils';
 import { AddressDisplay } from '../address-display/AddressDisplay';
-import { NetworkSwitcher } from '../network-switcher/NetworkSwitcher';
+import { NetworkDropdown } from '../network-switcher/NetworkDropdown';
+import { NetworkHeader } from '../network-switcher/NetworkHeader';
+import { NetworkTrigger } from '../network-switcher/NetworkTrigger';
+import { DEFAULT_NETWORKS } from '../network-switcher/types';
 import { ButtonIcon } from './ButtonIcon';
 import type { WalletDropdownProps } from './types';
 
@@ -78,7 +81,7 @@ export function WalletDropdown({
 	onNetworkChange,
 	theme = 'dark',
 	className,
-	labels,
+	disconnectLabel = 'Disconnect',
 }: WalletDropdownProps): React.ReactElement {
 	// View state: 'wallet' (default) or 'network' (swaps in-place per Figma)
 	const [view, setView] = useState<'wallet' | 'network'>('wallet');
@@ -86,6 +89,7 @@ export function WalletDropdown({
 
 	const balanceVisible = controlledBalanceVisible ?? internalBalanceVisible;
 	const t = themes[theme];
+	const networks = DEFAULT_NETWORKS;
 
 	// ── Handlers ──────────────────────────────────────────────
 	const handleToggleBalance = useCallback(() => {
@@ -96,9 +100,13 @@ export function WalletDropdown({
 		}
 	}, [onToggleBalance]);
 
-	const handleNetworkOpenChange = useCallback((open: boolean) => {
-		setView(open ? 'network' : 'wallet');
-	}, []);
+	const handleNetworkSelect = useCallback(
+		(network: Parameters<NonNullable<typeof onNetworkChange>>[0]) => {
+			onNetworkChange?.(network);
+			setView('wallet');
+		},
+		[onNetworkChange],
+	);
 
 	// ── Derived ───────────────────────────────────────────────
 	const formattedBalance = balance !== undefined ? `SOL ${formatSolBalance(balance)}` : null;
@@ -107,7 +115,6 @@ export function WalletDropdown({
 		if (!balanceVisible) return '******';
 		return formattedBalance;
 	})();
-	const disconnectLabel = labels?.disconnect ?? 'Disconnect';
 
 	// Figma: px-15 py-10
 	const rowPx = 'px-[15px] py-[10px]';
@@ -117,20 +124,24 @@ export function WalletDropdown({
 	// ═══════════════════════════════════════════════════════════
 	// VIEW 2: Network selection (replaces wallet dropdown in-place)
 	// Figma node 210:711 / 210:851
-	// Uses the composable NetworkSwitcher in embedded mode
+	// Composes NetworkHeader + NetworkDropdown sub-components
+	// (exported building blocks — the consumer API for custom layouts)
 	// ═══════════════════════════════════════════════════════════
 	if (view === 'network') {
 		return (
 			<div className={containerCn} role="menu" aria-label="Select network">
-				<div className="p-2">
-					<NetworkSwitcher
-						variant="embedded"
+				<div className="flex flex-col gap-1 p-2">
+					{/* Header: "Network" + chevron-up → click goes back to wallet view */}
+					<NetworkHeader isOpen theme={theme} onClick={() => setView('wallet')} />
+
+					{/* Network options — className strips the default container styles */}
+					<NetworkDropdown
 						selectedNetwork={selectedNetwork}
 						status={networkStatus}
-						onNetworkChange={onNetworkChange}
-						open={true}
-						onOpenChange={handleNetworkOpenChange}
+						networks={networks}
+						onSelect={handleNetworkSelect}
 						theme={theme}
+						className="w-full! p-0! rounded-none! bg-transparent!"
 					/>
 				</div>
 			</div>
@@ -150,15 +161,15 @@ export function WalletDropdown({
 					<ButtonIcon src={wallet.icon} alt={wallet.name} size={32} className="shrink-0 rounded-4xl" />
 
 					<div className="flex flex-col items-start justify-center gap-0.5">
-						{/* Figma: address 14px medium + copy 16px, gap-8 */}
+						{/* AddressDisplay — className strips the default chip styles for inline use */}
 						<AddressDisplay
 							address={address}
-							variant="inline"
 							theme={theme}
 							showExplorerLink={false}
+							showTooltip={false}
 							network={selectedNetwork}
 							onCopy={onCopyAddress}
-							className="text-sm font-medium"
+							className="text-sm font-medium [&>span]:bg-transparent! [&>span]:p-0! [&>span]:rounded-none!"
 						/>
 
 						{/* Figma: balance 14px light, opacity 80% */}
@@ -183,37 +194,39 @@ export function WalletDropdown({
 			</div>
 
 			{/* ── Row 2: Network trigger → swaps to network view ── */}
-			{/* Uses composable NetworkSwitcher in embedded mode (controlled open state) */}
-			<div className={cn('border-b-[0.5px]', t.border)}>
-				<NetworkSwitcher
-					variant="embedded"
-					selectedNetwork={selectedNetwork}
-					status={networkStatus}
-					onNetworkChange={onNetworkChange}
-					open={false}
-					onOpenChange={handleNetworkOpenChange}
+			{/* NetworkTrigger with className overrides for inline-row layout */}
+			<div className={cn(onDisconnect && 'border-b-[0.5px]', onDisconnect && t.border)}>
+				<NetworkTrigger
 					theme={theme}
-					className={cn(t.hoverRow, 'transition-colors duration-200')}
+					onClick={() => setView('network')}
+					className={cn(
+						'w-full! h-auto! bg-transparent! border-0! rounded-none!',
+						t.text,
+						t.hoverRow,
+						'transition-colors duration-200',
+					)}
 				/>
 			</div>
 
-			{/* ── Row 3: Disconnect ── */}
-			<button
-				type="button"
-				onClick={onDisconnect}
-				className={cn(
-					'w-full flex items-center gap-2.5',
-					rowPx,
-					'text-sm font-medium',
-					t.text,
-					t.hoverRow,
-					'transition-colors duration-200 cursor-pointer',
-				)}
-				role="menuitem"
-			>
-				<LogOut size={16} className="shrink-0" />
-				<span>{disconnectLabel}</span>
-			</button>
+			{/* ── Row 3: Disconnect (only when onDisconnect is provided) ── */}
+			{onDisconnect && (
+				<button
+					type="button"
+					onClick={onDisconnect}
+					className={cn(
+						'w-full flex items-center gap-2.5',
+						rowPx,
+						'text-sm font-medium',
+						t.text,
+						t.hoverRow,
+						'transition-colors duration-200 cursor-pointer',
+					)}
+					role="menuitem"
+				>
+					<LogOut size={16} className="shrink-0" />
+					<span>{disconnectLabel}</span>
+				</button>
+			)}
 		</div>
 	);
 }
