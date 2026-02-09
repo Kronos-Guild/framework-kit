@@ -125,7 +125,7 @@ The dropdown composes `AddressDisplay` for the wallet address and `NetworkSwitch
 | `balance` | `Lamports` | - | Wallet balance in lamports |
 | `balanceLoading` | `boolean` | `false` | Whether balance is still loading |
 | `onConnect` | `() => void` | - | Callback when connect button is clicked |
-| `onDisconnect` | `() => Promise<void> \| void` | - | Callback to disconnect wallet |
+| `onDisconnect` | `() => Promise<void> \| void` | - | Callback to disconnect wallet. When omitted, the disconnect row is hidden. |
 | `selectedNetwork` | `ClusterMoniker` | - | Currently selected network |
 | `networkStatus` | `WalletStatus['status']` | - | Network connection status |
 | `onNetworkChange` | `(network: ClusterMoniker) => void` | - | Callback when network is changed |
