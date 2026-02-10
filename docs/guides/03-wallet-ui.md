@@ -64,7 +64,7 @@ The `ConnectWalletButton` is your entry point. It handles three states: disconne
 ### Disconnected State
 
 ```tsx filename="WalletButton.tsx"
-import { ConnectWalletButton } from '@solana/framework-kit';
+import { ConnectWalletButton } from '@solana/components';
 
 function WalletButton() {
   return (
@@ -89,11 +89,11 @@ The button disables and shows a loading indicator. Users know something is happe
 ### Connected State
 
 ```tsx filename="WalletButton.tsx"
-import { ConnectWalletButton } from '@solana/framework-kit';
-import { lamports } from '@solana/kit';
+import { ConnectWalletButton } from '@solana/components';
+import { address, lamports } from '@solana/kit';
 
 function WalletButton() {
-  const wallet = { address: '6DMh7fYHrKdCJwCFUQfMfNAdLADi9xqsRKNzmZA31DkK' };
+  const wallet = { address: address('6DMh7fYHrKdCJwCFUQfMfNAdLADi9xqsRKNzmZA31DkK') };
   const connector = { id: 'phantom', name: 'Phantom', icon: '/phantom.svg' };
   const balance = lamports(2_500_000_000n); // 2.5 SOL
 
@@ -120,14 +120,15 @@ The button manages its own dropdown state. You control the connection status; it
 ### Full Example with State
 
 ```tsx filename="WalletButton.tsx"
-import { ConnectWalletButton } from '@solana/framework-kit';
+import { ConnectWalletButton } from '@solana/components';
+import { type Address } from '@solana/kit';
 import { useState } from 'react';
 
 type Status = 'disconnected' | 'connecting' | 'connected';
 
 function WalletButton({ onOpenModal }: { onOpenModal: () => void }) {
   const [status, setStatus] = useState<Status>('disconnected');
-  const [wallet, setWallet] = useState<{ address: string } | null>(null);
+  const [wallet, setWallet] = useState<{ address: Address } | null>(null);
 
   const handleConnect = () => {
     onOpenModal();
@@ -157,16 +158,17 @@ When users click "Connect Wallet," they need to choose which wallet to use. The 
 ### List View
 
 ```tsx filename="WalletConnect.tsx"
-import { WalletModal } from '@solana/framework-kit';
+import { WalletModal } from '@solana/components';
+import type { WalletConnectorMetadata } from '@solana/client';
 
-const wallets = [
+const wallets: WalletConnectorMetadata[] = [
   { id: 'phantom', name: 'Phantom', icon: 'https://phantom.app/icon.png' },
   { id: 'solflare', name: 'Solflare', icon: 'https://solflare.com/icon.png' },
   { id: 'backpack', name: 'Backpack', icon: 'https://backpack.app/icon.png' },
 ];
 
 function WalletConnect({ onClose }: { onClose: () => void }) {
-  const handleSelect = (wallet) => {
+  const handleSelect = (wallet: WalletConnectorMetadata) => {
     console.log('Selected:', wallet.name);
     // Start connection flow
   };
@@ -243,7 +245,7 @@ Once connected, users want to see their balance. The `BalanceCard` handles this 
 ### Basic Usage
 
 ```tsx filename="WalletDashboard.tsx"
-import { BalanceCard } from '@solana/framework-kit';
+import { BalanceCard } from '@solana/components';
 import { address, lamports } from '@solana/kit';
 
 function WalletDashboard() {
@@ -345,11 +347,12 @@ Let users switch between mainnet, devnet, and testnet with `NetworkSwitcher`.
 ### Basic Usage
 
 ```tsx filename="NetworkControl.tsx"
-import { NetworkSwitcher } from '@solana/framework-kit';
+import { NetworkSwitcher } from '@solana/components';
+import type { ClusterMoniker } from '@solana/client';
 import { useState } from 'react';
 
 function NetworkControl() {
-  const [network, setNetwork] = useState<'mainnet-beta' | 'devnet' | 'testnet'>('mainnet-beta');
+  const [network, setNetwork] = useState<ClusterMoniker>('mainnet-beta');
 
   return (
     <NetworkSwitcher
@@ -409,8 +412,9 @@ import {
   WalletModal,
   BalanceCard,
   NetworkSwitcher,
-} from '@solana/framework-kit';
-import { address, lamports } from '@solana/kit';
+} from '@solana/components';
+import { address, lamports, type Address } from '@solana/kit';
+import type { ClusterMoniker } from '@solana/client';
 import { useState } from 'react';
 
 type ConnectionStatus = 'disconnected' | 'connecting' | 'connected';
@@ -424,7 +428,7 @@ const WALLETS = [
 export function CompleteWalletUI() {
   // Connection state
   const [status, setStatus] = useState<ConnectionStatus>('disconnected');
-  const [wallet, setWallet] = useState<{ address: string } | null>(null);
+  const [wallet, setWallet] = useState<{ address: Address } | null>(null);
   const [connector, setConnector] = useState<typeof WALLETS[0] | null>(null);
 
   // Modal state
@@ -434,7 +438,7 @@ export function CompleteWalletUI() {
   const [error, setError] = useState<{ title: string; message: string } | null>(null);
 
   // Network state
-  const [network, setNetwork] = useState<'mainnet-beta' | 'devnet'>('devnet');
+  const [network, setNetwork] = useState<ClusterMoniker>('devnet');
 
   // Mock balance (in real app, fetch from RPC)
   const balance = lamports(2_500_000_000n);
@@ -449,7 +453,7 @@ export function CompleteWalletUI() {
       await new Promise((r) => setTimeout(r, 1500));
 
       // Success
-      setWallet({ address: '6DMh7fYHrKdCJwCFUQfMfNAdLADi9xqsRKNzmZA31DkK' });
+      setWallet({ address: address('6DMh7fYHrKdCJwCFUQfMfNAdLADi9xqsRKNzmZA31DkK') });
       setConnector(selected);
       setStatus('connected');
       setModalOpen(false);
@@ -566,7 +570,6 @@ When `isReady` is false, the button shows "Connect Wallet" and is disabled, prev
 All components include proper ARIA attributes out of the box:
 - Modal has `role="dialog"` and `aria-modal="true"`
 - Buttons have `aria-expanded` and `aria-haspopup` where appropriate
-- Focus is trapped in the modal
 - Escape key closes dropdowns and modals
 
 ### Error Recovery
