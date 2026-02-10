@@ -76,15 +76,15 @@ export function formatBalance(balance: bigint | null | undefined, options: Forma
 }
 
 /**
- * Formats a bigint value as currency
- * @param value - The value in base units (bigint)
+ * Formats a value as currency
+ * @param value - The value as bigint (base units), number, or string
  * @param currency - Currency code (default: USD)
  * @param locale - Locale for formatting (default: en-US)
- * @param tokenDecimals - Number of decimals for the token (default: 9 for SOL)
+ * @param tokenDecimals - Number of decimals for the token (default: 9 for SOL, only used for bigint values)
  * @returns Formatted currency string
  */
 export function formatFiatValue(
-	value: bigint | null | undefined,
+	value: bigint | number | string | null | undefined,
 	currency = 'USD',
 	locale = 'en-US',
 	tokenDecimals = 9,
@@ -93,7 +93,14 @@ export function formatFiatValue(
 		return '';
 	}
 
-	const num = bigintToNumber(value, tokenDecimals);
+	let num: number;
+	if (typeof value === 'bigint') {
+		num = bigintToNumber(value, tokenDecimals);
+	} else if (typeof value === 'string') {
+		num = Number.parseFloat(value);
+	} else {
+		num = value;
+	}
 
 	if (Number.isNaN(num) || !Number.isFinite(num)) {
 		return '';
