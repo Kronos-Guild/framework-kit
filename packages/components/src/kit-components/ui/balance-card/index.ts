@@ -1,11 +1,12 @@
 // Main component
 
+// Sub-components
 export { BalanceAmount } from './BalanceAmount';
 export { BalanceCard } from './BalanceCard';
-// Sub-components
 export { BalanceCardSkeleton } from './BalanceCardSkeleton';
 export { ErrorState } from './ErrorState';
 export { TokenList } from './TokenList';
+
 // Types
 export type {
 	BalanceAmountProps,
@@ -14,7 +15,6 @@ export type {
 	ErrorStateProps,
 	TokenInfo,
 	TokenListProps,
-	WalletAddressProps,
 } from './types';
 export type { FormatBalanceOptions } from './utils';
 
@@ -27,4 +27,3 @@ export {
 	stringToColor,
 	truncateAddress,
 } from './utils';
-export { WalletAddress } from './WalletAddress';
