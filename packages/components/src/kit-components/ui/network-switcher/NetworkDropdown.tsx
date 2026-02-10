@@ -24,11 +24,7 @@ export function NetworkDropdown({
 }: NetworkDropdownProps) {
 	return (
 		<div
-			className={cn(
-				'w-[191px] flex flex-col gap-[4px] p-[8px] rounded-[10px]',
-				containerStyles[theme],
-				className,
-			)}
+			className={cn('w-[191px] flex flex-col gap-1 p-2 rounded-[10px]', containerStyles[theme], className)}
 			role="listbox"
 			aria-label="Select network"
 		>

@@ -11,8 +11,6 @@ import { DEFAULT_NETWORKS } from './types';
 /**
  * NetworkSwitcher - A dropdown component for switching between Solana networks.
  *
- * Can be used standalone or embedded in other components (like ConnectWalletButton).
- *
  * @example
  * ```tsx
  * // Standalone usage
@@ -22,10 +20,12 @@ import { DEFAULT_NETWORKS } from './types';
  *   onNetworkChange={(network) => console.log('Switched to:', network)}
  * />
  *
- * // Embedded in wallet dropdown
+ * // Controlled open state
  * <NetworkSwitcher
  *   selectedNetwork={currentNetwork}
  *   onNetworkChange={handleNetworkChange}
+ *   open={isOpen}
+ *   onOpenChange={setIsOpen}
  *   theme="dark"
  * />
  * ```

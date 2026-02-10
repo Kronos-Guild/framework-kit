@@ -14,7 +14,7 @@ const themeStyles: Record<Theme, { bg: string; text: string; border: string }> =
 	light: {
 		bg: 'bg-zinc-50',
 		text: 'text-zinc-700',
-		border: 'border-zinc-200/20',
+		border: 'border-zinc-700/10',
 	},
 };
 
@@ -39,7 +39,7 @@ export function NetworkTrigger({
 			disabled={disabled}
 			className={cn(
 				'w-[191px] h-[38px] flex items-center justify-between',
-				'px-[15px] py-[10px] rounded-[10px]',
+				'px-[15px] py-2.5 rounded-[10px]',
 				'border-b-[0.5px] border-solid',
 				"font-['Inter',sans-serif] font-medium text-[15px] leading-normal",
 				'cursor-pointer transition-colors',
@@ -53,7 +53,7 @@ export function NetworkTrigger({
 			aria-expanded={isOpen}
 			aria-haspopup="listbox"
 		>
-			<div className="flex items-center gap-[8px]">
+			<div className="flex items-center gap-2">
 				<Network size={16} className="shrink-0" />
 				<span>Network</span>
 			</div>

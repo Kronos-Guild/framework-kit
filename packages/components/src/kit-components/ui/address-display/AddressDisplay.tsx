@@ -12,6 +12,8 @@ interface AddressDisplayProps {
 	onCopy?: () => void;
 	/** Show link to Solana Explorer (default: true) */
 	showExplorerLink?: boolean;
+	/** Show full address tooltip on hover (default: true) */
+	showTooltip?: boolean;
 	/** Solana network for Explorer URL (default: "mainnet-beta") */
 	network?: ClusterMoniker;
 	/** Color theme (default: "light") */
@@ -38,6 +40,7 @@ export const AddressDisplay: React.FC<AddressDisplayProps> = ({
 	address,
 	onCopy,
 	showExplorerLink = true,
+	showTooltip = true,
 	network = 'mainnet-beta',
 	theme = 'light',
 	className,
@@ -75,17 +78,19 @@ export const AddressDisplay: React.FC<AddressDisplayProps> = ({
 				>
 					{truncated}
 					{/* Tooltip */}
-					<span
-						className={cn(
-							'absolute top-full left-0 mt-1 px-3 py-1.5 rounded-md text-[9px] whitespace-nowrap',
-							'opacity-0 group-hover/address:opacity-100 transition-opacity pointer-events-none z-10 border',
-							isDark
-								? 'bg-zinc-800/95 text-zinc-50 border-zinc-600/90'
-								: 'bg-zinc-100/95 text-zinc-900 border-zinc-200/80',
-						)}
-					>
-						{address}
-					</span>
+					{showTooltip && (
+						<span
+							className={cn(
+								'absolute top-full left-0 mt-1 px-3 py-1.5 rounded-md text-[9px] whitespace-nowrap',
+								'opacity-0 group-hover/address:opacity-100 transition-opacity pointer-events-none z-10 border',
+								isDark
+									? 'bg-zinc-800/95 text-zinc-50 border-zinc-600/90'
+									: 'bg-zinc-100/95 text-zinc-900 border-zinc-200/80',
+							)}
+						>
+							{address}
+						</span>
+					)}
 				</span>
 				<button
 					type="button"

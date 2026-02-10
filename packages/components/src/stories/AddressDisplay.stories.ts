@@ -49,6 +49,14 @@ const meta: Meta<typeof AddressDisplay> = {
 				type: { summary: 'boolean' },
 			},
 		},
+		showTooltip: {
+			description: 'Whether to show the full address tooltip on hover',
+			control: 'boolean',
+			table: {
+				defaultValue: { summary: 'true' },
+				type: { summary: 'boolean' },
+			},
+		},
 		onCopy: {
 			description: 'Callback fired after address is copied to clipboard',
 			table: {
@@ -129,6 +137,21 @@ export const WithoutExplorerLink: Story = {
 	args: {
 		address: sampleAddress,
 		showExplorerLink: false,
+	},
+};
+
+export const WithoutTooltip: Story = {
+	name: 'Without Tooltip',
+	args: {
+		address: sampleAddress,
+		showTooltip: false,
+	},
+	parameters: {
+		docs: {
+			description: {
+				story: 'Hides the full-address tooltip on hover. Useful when the address is embedded in a tight layout like a dropdown.',
+			},
+		},
 	},
 };
 

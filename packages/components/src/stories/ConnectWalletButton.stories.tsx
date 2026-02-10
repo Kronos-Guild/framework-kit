@@ -1,6 +1,7 @@
-import type { WalletConnectorMetadata } from '@solana/client';
+import type { ClusterMoniker, WalletConnectorMetadata } from '@solana/client';
 import { lamports } from '@solana/client';
 import type { Lamports } from '@solana/kit';
+import { address } from '@solana/kit';
 import type { Meta, StoryObj } from '@storybook/react';
 import { useCallback, useState } from 'react';
 import { ConnectWalletButton, WalletButton, WalletDropdown } from '../kit-components/ui/connect-wallet-button';
@@ -71,7 +72,7 @@ const mockPhantomWallet: WalletConnectorMetadata = {
 	icon: backpackIcon, // Using backpack icon as placeholder
 };
 
-const mockAddress = '6DMh7gJwvuTq3Bpf8rPVGPjzqnz1DkK3H1mVh9kP1DkK';
+const mockAddress = address('6DMh7gJwvuTq3Bpf8rPVGPjzqnz1DkK3H1mVh9kP1DkK');
 const mockBalance = lamports(1120000000n); // 1.12 SOL
 
 // ============================================
@@ -98,6 +99,7 @@ export const Interactive: Story = {
 
 		const [status, setStatus] = useState<Status>('disconnected');
 		const [selectedWallet, setSelectedWallet] = useState<WalletType>('backpack');
+		const [selectedNetwork, setSelectedNetwork] = useState<ClusterMoniker>('devnet');
 
 		const wallets: Record<WalletType, WalletConnectorMetadata> = {
 			backpack: mockBackpackWallet,
@@ -112,6 +114,10 @@ export const Interactive: Story = {
 
 		const handleDisconnect = useCallback(async () => {
 			setStatus('disconnected');
+		}, []);
+
+		const handleNetworkChange = useCallback((network: ClusterMoniker) => {
+			setSelectedNetwork(network);
 		}, []);
 
 		return (
@@ -142,10 +148,19 @@ export const Interactive: Story = {
 					balanceLoading={false}
 					onConnect={handleConnect}
 					onDisconnect={handleDisconnect}
+					selectedNetwork={selectedNetwork}
+					networkStatus="connected"
+					onNetworkChange={handleNetworkChange}
 				/>
 
 				<div className="text-xs text-zinc-500">
 					Status: <span className="text-zinc-300 font-mono">{status}</span>
+					{status === 'connected' && (
+						<>
+							{' '}
+							| Network: <span className="text-zinc-300 font-mono">{selectedNetwork}</span>
+						</>
+					)}
 				</div>
 			</div>
 		);
@@ -163,9 +178,10 @@ export const InteractiveLight: Story = {
 	parameters: {
 		backgrounds: { default: 'light' },
 	},
-	render: function InteractiveLightRender(args) {
+	render: function InteractiveLightRender(_args) {
 		type Status = 'disconnected' | 'connecting' | 'connected';
 		const [status, setStatus] = useState<Status>('disconnected');
+		const [selectedNetwork, setSelectedNetwork] = useState<ClusterMoniker>('mainnet-beta');
 
 		const handleConnect = useCallback(() => {
 			setStatus('connecting');
@@ -174,6 +190,10 @@ export const InteractiveLight: Story = {
 
 		const handleDisconnect = useCallback(async () => {
 			setStatus('disconnected');
+		}, []);
+
+		const handleNetworkChange = useCallback((network: ClusterMoniker) => {
+			setSelectedNetwork(network);
 		}, []);
 
 		return (
@@ -187,9 +207,18 @@ export const InteractiveLight: Story = {
 					balance={lamports(2500000000n)}
 					onConnect={handleConnect}
 					onDisconnect={handleDisconnect}
+					selectedNetwork={selectedNetwork}
+					networkStatus="connected"
+					onNetworkChange={handleNetworkChange}
 				/>
 				<div className="text-xs text-zinc-600">
 					Status: <span className="text-zinc-800 font-mono">{status}</span>
+					{status === 'connected' && (
+						<>
+							{' '}
+							| Network: <span className="text-zinc-800 font-mono">{selectedNetwork}</span>
+						</>
+					)}
 				</div>
 			</div>
 		);
@@ -264,10 +293,12 @@ export const BothThemesInteractive: Story = {
 	parameters: {
 		backgrounds: { default: 'dark' },
 	},
-	render: function BothThemesRender(args) {
+	render: function BothThemesRender(_args) {
 		type Status = 'disconnected' | 'connecting' | 'connected';
 		const [darkStatus, setDarkStatus] = useState<Status>('disconnected');
 		const [lightStatus, setLightStatus] = useState<Status>('disconnected');
+		const [darkNetwork, setDarkNetwork] = useState<ClusterMoniker>('devnet');
+		const [lightNetwork, setLightNetwork] = useState<ClusterMoniker>('mainnet-beta');
 
 		const handleDarkConnect = useCallback(() => {
 			setDarkStatus('connecting');
@@ -292,6 +323,9 @@ export const BothThemesInteractive: Story = {
 						balance={mockBalance}
 						onConnect={handleDarkConnect}
 						onDisconnect={async () => setDarkStatus('disconnected')}
+						selectedNetwork={darkNetwork}
+						networkStatus="connected"
+						onNetworkChange={setDarkNetwork}
 					/>
 				</div>
 				<div className="flex flex-col items-center gap-3 p-6 rounded-xl bg-zinc-100">
@@ -305,6 +339,9 @@ export const BothThemesInteractive: Story = {
 						balance={mockBalance}
 						onConnect={handleLightConnect}
 						onDisconnect={async () => setLightStatus('disconnected')}
+						selectedNetwork={lightNetwork}
+						networkStatus="connected"
+						onNetworkChange={setLightNetwork}
 					/>
 				</div>
 			</div>
