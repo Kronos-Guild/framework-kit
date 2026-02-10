@@ -25,7 +25,7 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({
 	return (
 		<div
 			className={cn(
-				'min-h-screen w-full flex flex-col',
+				'relative min-h-screen w-full flex flex-col',
 				isDark ? 'bg-zinc-900' : 'bg-zinc-100',
 				'rounded-3xl',
 				className,
