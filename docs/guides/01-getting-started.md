@@ -65,15 +65,13 @@ If you're working within the monorepo, the components are at `packages/component
 
 <Step title="Configure Tailwind">
 
-Add the components path to your Tailwind config:
+Add the components path to your CSS file. Tailwind v4 uses CSS-based configuration:
 
-```js filename="tailwind.config.js"
-module.exports = {
-  content: [
-    "./src/**/*.{js,ts,jsx,tsx}",
-    "./node_modules/@solana/components/**/*.{js,ts,jsx,tsx}",
-  ],
-};
+```css filename="globals.css"
+@import "tailwindcss";
+
+@source "./src/**/*.{ts,tsx}";
+@source "./node_modules/@solana/components/**/*.{ts,tsx}";
 ```
 
 </Step>
