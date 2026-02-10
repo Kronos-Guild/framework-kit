@@ -11,18 +11,33 @@ function toCssSize(size: NonNullable<TransactionTableSkeletonProps['size']>) {
 				row: 'py-2 px-4',
 				icon: 'size-4',
 				token: 'size-5',
+				label: 'h-3 w-16',
+				time: 'h-3 w-24',
+				address: 'h-3 w-28',
+				amountMain: 'h-3 w-16',
+				amountFiat: 'h-2.5 w-12',
 			};
 		case 'lg':
 			return {
 				row: 'py-3.5 px-5',
 				icon: 'size-5',
 				token: 'size-7',
+				label: 'h-5 w-24',
+				time: 'h-5 w-32',
+				address: 'h-5 w-36',
+				amountMain: 'h-4 w-24',
+				amountFiat: 'h-3.5 w-16',
 			};
 		default:
 			return {
 				row: 'py-2.5 px-4',
 				icon: 'size-4',
 				token: 'size-6',
+				label: 'h-4 w-20',
+				time: 'h-4 w-28',
+				address: 'h-4 w-32',
+				amountMain: 'h-3.5 w-20',
+				amountFiat: 'h-3 w-14',
 			};
 	}
 }
@@ -63,18 +78,18 @@ export const TransactionTableSkeleton: React.FC<TransactionTableSkeletonProps> =
 					{/* Type */}
 					<div className="flex items-center gap-3 min-w-0">
 						<Skeleton theme={theme} className={cn(css.icon, 'rounded-full')} />
-						<Skeleton theme={theme} className="h-4 w-20" />
+						<Skeleton theme={theme} className={css.label} />
 					</div>
 					{/* Time */}
-					<Skeleton theme={theme} className="h-4 w-28" />
+					<Skeleton theme={theme} className={css.time} />
 					{/* Address */}
-					<Skeleton theme={theme} className="h-4 w-32" />
+					<Skeleton theme={theme} className={css.address} />
 					{/* Amount */}
 					<div className="flex items-center gap-2 min-w-0">
 						<Skeleton theme={theme} className={cn(css.token, 'rounded-full')} />
 						<div className="min-w-0">
-							<Skeleton theme={theme} className="h-3.5 w-20" />
-							<Skeleton theme={theme} className="mt-1.5 h-3 w-14" />
+							<Skeleton theme={theme} className={css.amountMain} />
+							<Skeleton theme={theme} className={cn('mt-1.5', css.amountFiat)} />
 						</div>
 					</div>
 				</div>
