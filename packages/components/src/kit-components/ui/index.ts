@@ -6,5 +6,6 @@ export * from './header/Header';
 export * from './network-switcher';
 export * from './page/Page';
 export * from './skeleton';
+export * from './transaction-table';
 export * from './transaction-toast';
 export * from './wallet-modal';
