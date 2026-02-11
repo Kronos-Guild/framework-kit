@@ -1,10 +1,12 @@
 import type React from 'react';
+import { AddressDisplay } from '../address-display/AddressDisplay';
+import walletIconDark from './assets/wallet-icon-dark.png';
+import walletIconLight from './assets/wallet-icon-light.png';
 import { BalanceAmount } from './BalanceAmount';
 import { BalanceCardSkeleton } from './BalanceCardSkeleton';
 import { ErrorState } from './ErrorState';
 import { TokenList } from './TokenList';
 import type { BalanceCardProps } from './types';
-import { WalletAddress } from './WalletAddress';
 
 /**
  * A comprehensive balance card component for displaying wallet balances
@@ -77,7 +79,21 @@ export const BalanceCard: React.FC<BalanceCardProps> = ({
 		>
 			{/* Wallet address */}
 			{walletAddress && (
-				<WalletAddress address={walletAddress} onCopy={onCopyAddress} variant={variant} className="mb-4" />
+				<div className="flex items-center gap-2 mb-4">
+					<img
+						src={isDark ? walletIconDark : walletIconLight}
+						alt=""
+						className="w-5 h-5"
+						aria-hidden="true"
+					/>
+					<AddressDisplay
+						address={walletAddress}
+						onCopy={onCopyAddress ? () => onCopyAddress(walletAddress) : undefined}
+						theme={isDark ? 'dark' : 'light'}
+						showExplorerLink={false}
+						className="[&>span]:bg-transparent! [&>span]:p-0! [&>span]:rounded-none!"
+					/>
+				</div>
 			)}
 
 			{/* Balance label */}

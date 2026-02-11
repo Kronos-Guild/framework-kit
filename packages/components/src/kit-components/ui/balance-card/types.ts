@@ -74,24 +74,6 @@ export interface BalanceCardSkeletonProps {
 }
 
 /**
- * Props for the WalletAddress component
- */
-export interface WalletAddressProps {
-	/** Full wallet address */
-	address: Address;
-	/** Number of characters to show at start (default: 4) */
-	startChars?: number;
-	/** Number of characters to show at end (default: 4) */
-	endChars?: number;
-	/** Callback when copy is clicked */
-	onCopy?: (address: Address) => void;
-	/** Visual variant */
-	variant?: 'default' | 'dark' | 'light';
-	/** Additional CSS classes */
-	className?: string;
-}
-
-/**
  * Props for the BalanceAmount component
  */
 export interface BalanceAmountProps {
