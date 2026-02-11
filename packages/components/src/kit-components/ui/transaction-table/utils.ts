@@ -1,3 +1,4 @@
+import type { Address } from '@solana/kit';
 import type { ClassifiedTransaction } from 'tx-indexer';
 
 export type DerivedDirection = 'sent' | 'received' | 'other';
@@ -7,7 +8,7 @@ function asNumber(value: number | bigint | null | undefined): number | null {
 	return typeof value === 'bigint' ? Number(value) : value;
 }
 
-export function getTransactionDirection(tx: ClassifiedTransaction, walletAddress?: string): DerivedDirection {
+export function getTransactionDirection(tx: ClassifiedTransaction, walletAddress?: Address): DerivedDirection {
 	if (!walletAddress) return 'other';
 
 	// Prefer legs if present because it captures more cases (swaps, protocol interactions, etc.)
@@ -27,7 +28,7 @@ export function getTransactionDirection(tx: ClassifiedTransaction, walletAddress
 	return 'other';
 }
 
-export function getCounterpartyAddress(tx: ClassifiedTransaction, walletAddress?: string): string | null {
+export function getCounterpartyAddress(tx: ClassifiedTransaction, walletAddress?: Address): string | null {
 	if (tx.classification.counterparty?.address) return tx.classification.counterparty.address;
 
 	const direction = getTransactionDirection(tx, walletAddress);

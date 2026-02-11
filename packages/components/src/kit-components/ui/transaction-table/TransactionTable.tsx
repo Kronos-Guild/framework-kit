@@ -125,7 +125,7 @@ export const TransactionTable: React.FC<TransactionTableProps> = ({
 	}, [transactions, typeFilter, walletAddress, dateFilter]);
 
 	const containerStyles = cn(
-		'rounded-2xl border overflow-hidden',
+		'rounded-2xl border',
 		isDark ? 'border-zinc-700 bg-zinc-800' : 'border-zinc-200 bg-white',
 		className,
 	);
@@ -173,7 +173,7 @@ export const TransactionTable: React.FC<TransactionTableProps> = ({
 					{emptyMessage}
 				</div>
 			) : (
-				<div>
+				<div className="overflow-hidden rounded-b-2xl">
 					{filteredTransactions.map((tx) => (
 						<TransactionRow
 							key={String(tx.tx.signature)}

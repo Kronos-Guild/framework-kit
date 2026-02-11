@@ -1,3 +1,4 @@
+import type { Address } from '@solana/kit';
 import type React from 'react';
 import type { ClassifiedTransaction } from 'tx-indexer';
 
@@ -11,7 +12,7 @@ export interface TransactionTableProps {
 	/** Classified transactions (typically from useClassifiedTransactions). */
 	transactions: ReadonlyArray<ClassifiedTransaction>;
 	/** Wallet address used to classify direction (sent vs received). */
-	walletAddress?: string;
+	walletAddress?: Address;
 	/** Loading state. */
 	isLoading?: boolean;
 	/** Visual theme. */
@@ -44,7 +45,7 @@ export interface TransactionTableProps {
 
 export interface TransactionRowProps {
 	tx: ClassifiedTransaction;
-	walletAddress?: string;
+	walletAddress?: Address;
 	theme?: TransactionTableTheme;
 	size?: TransactionTableSize;
 	locale?: string;

@@ -1,3 +1,4 @@
+import { address } from '@solana/kit';
 import type { Meta, StoryObj } from '@storybook/react';
 import type { ClassifiedTransaction } from 'tx-indexer';
 import { TransactionTable } from '../kit-components/ui/transaction-table';
@@ -44,8 +45,8 @@ const meta: Meta<typeof TransactionTable> = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-const WALLET = '6DMh7fYHrKdCJwCFUQfMfNAdLADi9xqsRKNzmZA31DkK';
-const OTHER = 'Hb6dzd4pYxmFYKkJDWuhzBEUkkaE93sFcvXYtriTkmw9';
+const WALLET = address('6DMh7fYHrKdCJwCFUQfMfNAdLADi9xqsRKNzmZA31DkK');
+const OTHER = address('Hb6dzd4pYxmFYKkJDWuhzBEUkkaE93sFcvXYtriTkmw9');
 
 function makeTransferTx(params: {
 	signature: string;
