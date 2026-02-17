@@ -85,7 +85,7 @@ The address is truncated to `6DMh...1DkK` format with a tooltip showing the full
 
 ### ConnectWalletButton
 
-A fully composable wallet connection button with dropdown. Handles all connection states—disconnected, connecting, and connected—with an integrated wallet dropdown that includes address display, balance toggle, network switching, and disconnect.
+A fully composable wallet connection button with dropdown. Handles all connection states (disconnected, connecting, and connected) with an integrated wallet dropdown that includes address display, balance toggle, network switching, and disconnect.
 
 ```tsx
 import { ConnectWalletButton } from "@solana/components";
@@ -112,7 +112,7 @@ function App() {
 }
 ```
 
-The dropdown composes `AddressDisplay` for the wallet address and `NetworkSwitcher` sub-components for network selection—using `className` overrides to adapt them to the dropdown layout, just as any consumer would.
+The dropdown composes `AddressDisplay` for the wallet address and `NetworkSwitcher` sub-components for network selection, using `className` overrides to adapt them to the dropdown layout, just as any consumer would.
 
 **Props:**
 
@@ -174,6 +174,371 @@ import { NetworkSwitcher } from "@solana/components";
 | `className` | `string` | - | Additional CSS classes |
 
 **Default Networks:** Mainnet Beta, Testnet, Localnet, Devnet.
+
+### BalanceCard
+
+Your users connected their wallet. Now show them what's in it. BalanceCard displays a wallet's total balance with an expandable breakdown of individual tokens.
+
+**What you get:**
+
+- Wallet address with copy functionality (uses `AddressDisplay` under the hood)
+- Total balance in fiat (USD, EUR, etc.) or raw crypto units
+- Expandable token list showing individual holdings
+- Built-in loading skeleton and error states
+- Three visual variants (`default`, `dark`, `light`) and three sizes (`sm`, `md`, `lg`)
+
+**Basic usage:**
+
+```tsx
+import { BalanceCard } from "@solana/components";
+
+function WalletOverview({ address, balance }) {
+  return (
+    <BalanceCard
+      walletAddress={address}
+      totalBalance={balance}
+      isFiatBalance
+      variant="dark"
+    />
+  );
+}
+```
+
+That gives you a dark card with the wallet address and a formatted USD balance.
+
+**Adding tokens:**
+
+Pass a `tokens` array and users can expand the list to see individual holdings:
+
+```tsx
+<BalanceCard
+  walletAddress={address}
+  totalBalance={balance}
+  isFiatBalance
+  tokens={[
+    { symbol: "USDC", balance: 15.5, fiatValue: 15.5 },
+    { symbol: "USDT", balance: 10.18, fiatValue: 10.18 },
+    { symbol: "USDG", balance: 9.13, fiatValue: 9.13 },
+  ]}
+  defaultExpanded
+  variant="dark"
+/>
+```
+
+The token list starts collapsed by default. Use `defaultExpanded` to open it, or control it yourself with `isExpanded` and `onExpandedChange`.
+
+**Displaying crypto instead of fiat:**
+
+Not everything is denominated in dollars. For raw token balances:
+
+```tsx
+<BalanceCard
+  walletAddress={address}
+  totalBalance={balance}
+  isFiatBalance={false}
+  tokenDecimals={9}
+  displayDecimals={4}
+  variant="light"
+/>
+```
+
+This displays the balance in SOL (9 decimals) with 4 decimal places shown.
+
+**Loading and error states:**
+
+Both are handled for you. Pass `isLoading` and the card renders a skeleton. Pass `error` and it shows an error message with an optional retry button:
+
+```tsx
+// Loading
+<BalanceCard walletAddress={address} totalBalance={0n} isLoading />
+
+// Error with retry
+<BalanceCard
+  walletAddress={address}
+  totalBalance={0n}
+  error="Failed to fetch balance"
+  onRetry={() => refetch()}
+  variant="dark"
+/>
+```
+
+**Props:**
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `walletAddress` | `Address` | - | Wallet address to display |
+| `totalBalance` | `Lamports` | required | Total balance in lamports (bigint) |
+| `tokenDecimals` | `number` | `9` | Decimals for the token (9 for SOL, 6 for USDC) |
+| `isFiatBalance` | `boolean` | `true` | Display as fiat with currency symbol |
+| `currency` | `string` | `'USD'` | Currency code for fiat display |
+| `displayDecimals` | `number` | `2` | Decimal places to show |
+| `tokens` | `TokenInfo[]` | `[]` | Tokens for the expandable list |
+| `isLoading` | `boolean` | `false` | Show loading skeleton |
+| `error` | `string \| Error` | - | Error message to display |
+| `onRetry` | `() => void` | - | Callback for retry button in error state |
+| `onCopyAddress` | `(address: Address) => void` | - | Callback when address is copied |
+| `defaultExpanded` | `boolean` | `false` | Whether token list starts expanded |
+| `isExpanded` | `boolean` | - | Controlled expanded state |
+| `onExpandedChange` | `(expanded: boolean) => void` | - | Callback when expansion toggles |
+| `variant` | `'default' \| 'dark' \| 'light'` | `'default'` | Visual variant |
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Size variant |
+| `className` | `string` | - | Additional CSS classes |
+| `locale` | `string` | `'en-US'` | Locale for number formatting |
+
+**TokenInfo shape:**
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `symbol` | `string` | Yes | Token symbol (e.g., "USDC") |
+| `name` | `string` | No | Token name (e.g., "USD Coin") |
+| `balance` | `number \| string` | Yes | Token balance |
+| `icon` | `string \| ReactNode` | No | Token icon URL or component |
+| `fiatValue` | `number \| string` | No | Fiat value of the holding |
+| `mintAddress` | `Address` | No | Token mint address |
+
+BalanceCard also exports its internal pieces as standalone components: `BalanceAmount` for formatted balance display, `TokenList` for the expandable token breakdown, `BalanceCardSkeleton` for loading states, and `ErrorState` for error messages with retry.
+
+### TransactionTable
+
+Your users want to see where their SOL went. TransactionTable displays a list of classified transactions with built-in filtering by date and type.
+
+**What you get:**
+
+- Table with columns for type (sent/received), time, counterparty address, and amount
+- Built-in date filter (All time, 7 days, 30 days, 90 days)
+- Built-in type filter (All, Sent, Received)
+- Token icons and fiat values alongside token amounts
+- Row action button for viewing transactions on Explorer
+- Loading skeleton and empty states
+- Light and dark themes, three sizes (`sm`, `md`, `lg`)
+
+**Basic usage:**
+
+```tsx
+import { TransactionTable } from "@solana/components";
+
+function RecentActivity({ transactions, walletAddress }) {
+  return (
+    <TransactionTable
+      transactions={transactions}
+      walletAddress={walletAddress}
+      theme="dark"
+    />
+  );
+}
+```
+
+Pass your classified transactions and the current wallet address. The table handles filtering, formatting, and direction labels (sent vs received) based on the wallet address you provide.
+
+**Opening transactions in Explorer:**
+
+Add `onViewTransaction` and each row gets a view icon on hover:
+
+```tsx
+<TransactionTable
+  transactions={transactions}
+  walletAddress={walletAddress}
+  onViewTransaction={(tx) => {
+    window.open(
+      `https://explorer.solana.com/tx/${tx.tx.signature}`,
+      "_blank"
+    );
+  }}
+  theme="dark"
+/>
+```
+
+**Controlling filters externally:**
+
+The filters work out of the box with internal state, but you can control them yourself if you need to sync with URL params or other UI:
+
+```tsx
+const [dateFilter, setDateFilter] = useState("all");
+const [typeFilter, setTypeFilter] = useState("all");
+
+<TransactionTable
+  transactions={transactions}
+  walletAddress={walletAddress}
+  dateFilter={dateFilter}
+  onDateFilterChange={setDateFilter}
+  typeFilter={typeFilter}
+  onTypeFilterChange={setTypeFilter}
+  theme="dark"
+/>
+```
+
+**Custom row actions:**
+
+Need something other than the default view icon? Use `renderRowAction` to render your own:
+
+```tsx
+<TransactionTable
+  transactions={transactions}
+  walletAddress={walletAddress}
+  renderRowAction={(tx) => (
+    <button onClick={() => copySignature(tx.tx.signature)}>
+      Copy
+    </button>
+  )}
+  theme="light"
+/>
+```
+
+**Loading and empty states:**
+
+Same pattern as BalanceCard. Pass `isLoading` for a skeleton, or let the empty state show when there are no transactions:
+
+```tsx
+// Loading
+<TransactionTable
+  transactions={[]}
+  walletAddress={walletAddress}
+  isLoading
+  theme="dark"
+/>
+```
+
+The empty state message defaults to "No transactions yet" but you can customize it with the `emptyMessage` prop.
+
+**Props:**
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `transactions` | `ReadonlyArray<ClassifiedTransaction>` | required | Classified transactions to display |
+| `walletAddress` | `Address` | - | Wallet address for determining sent vs received |
+| `isLoading` | `boolean` | `false` | Show loading skeleton |
+| `theme` | `'light' \| 'dark'` | `'dark'` | Visual theme |
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Row density |
+| `dateFilter` | `'all' \| '7d' \| '30d' \| '90d'` | `'all'` | Controlled date filter |
+| `onDateFilterChange` | `(value) => void` | - | Callback when date filter changes |
+| `dateFilterOptions` | `FilterDropdownOption[]` | All time / 7d / 30d / 90d | Custom date filter options |
+| `typeFilter` | `'all' \| 'sent' \| 'received'` | `'all'` | Controlled type filter |
+| `onTypeFilterChange` | `(value) => void` | - | Callback when type filter changes |
+| `typeFilterOptions` | `FilterDropdownOption[]` | All / Sent / Received | Custom type filter options |
+| `emptyMessage` | `string` | `'No transactions yet'` | Message when no transactions match |
+| `onViewTransaction` | `(tx: ClassifiedTransaction) => void` | - | Callback when row view icon is clicked |
+| `renderRowAction` | `(tx: ClassifiedTransaction) => ReactNode` | - | Custom row action renderer (overrides view icon) |
+| `className` | `string` | - | Additional CSS classes |
+| `locale` | `string` | `'en-US'` | Locale for date and number formatting |
+
+Transactions use the `ClassifiedTransaction` type from the `tx-indexer` package, which provides structured data including sender, receiver, token amounts, and fiat values.
+
+TransactionTable also exports its internal pieces as standalone components: `TransactionRow` for rendering individual rows, `TransactionTableSkeleton` for custom loading layouts, and `FilterDropdown` for reusable filter controls.
+
+### WalletModal
+
+When a user clicks "Connect Wallet", they need to pick which wallet to use. WalletModal handles that selection flow, including the connecting and error states.
+
+**What you get:**
+
+- A wallet selection list with icons and status labels (Recent, Detected, Installed)
+- A connecting view with animated spinner while the wallet approves
+- An error view with retry when connection fails
+- "I don't have a wallet" link pointing to Solana's wallet explorer
+- Light and dark themes
+
+**Note:** WalletModal renders the panel content only, not a backdrop or overlay. Wrap it in your own modal system (a `<dialog>`, a portal with overlay, or whatever your app uses).
+
+**Basic usage:**
+
+```tsx
+import { WalletModal } from "@solana/components";
+
+function WalletSelector({ wallets, onSelect, onClose }) {
+  return (
+    <WalletModal
+      wallets={wallets}
+      view="list"
+      onSelectWallet={onSelect}
+      onClose={onClose}
+      theme="dark"
+    />
+  );
+}
+```
+
+That shows the wallet list. When a user taps a wallet, `onSelectWallet` fires with the wallet metadata.
+
+**Managing the connection flow:**
+
+The modal has three views you control with the `view` prop. Here's a realistic example wiring up the full flow from selection to connection to error handling:
+
+```tsx
+import { WalletModal } from "@solana/components";
+import { useState } from "react";
+
+function ConnectFlow({ wallets, connect, onClose }) {
+  const [view, setView] = useState("list");
+  const [selectedWallet, setSelectedWallet] = useState(null);
+  const [error, setError] = useState(null);
+
+  const handleSelect = async (wallet) => {
+    setSelectedWallet(wallet);
+    setView("connecting");
+    setError(null);
+
+    try {
+      await connect(wallet);
+      onClose();
+    } catch (err) {
+      setError({
+        title: "Connection failed",
+        message: err.message || "Unable to connect. Please try again.",
+      });
+      setView("error");
+    }
+  };
+
+  return (
+    <WalletModal
+      wallets={wallets}
+      view={view}
+      connectingWallet={selectedWallet}
+      error={error}
+      onSelectWallet={handleSelect}
+      onBack={() => setView("list")}
+      onRetry={() => handleSelect(selectedWallet)}
+      onClose={onClose}
+      theme="dark"
+    />
+  );
+}
+```
+
+The flow goes: user picks a wallet (`list`) → modal shows spinner (`connecting`) → connection succeeds and modal closes, or fails and shows retry (`error`). The back button returns to the wallet list.
+
+**Hiding the "no wallet" link:**
+
+The "I don't have a wallet" link shows by default and opens the Solana wallet explorer. You can hide it or point it somewhere else:
+
+```tsx
+// Hide it
+<WalletModal wallets={wallets} showNoWalletLink={false} />
+
+// Custom URL
+<WalletModal wallets={wallets} walletGuideUrl="https://yoursite.com/wallet-guide" />
+```
+
+**Props:**
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `wallets` | `WalletConnectorMetadata[]` | required | Available wallets to display |
+| `view` | `'list' \| 'connecting' \| 'error'` | `'list'` | Current modal view |
+| `connectingWallet` | `WalletConnectorMetadata` | - | Wallet being connected (for connecting view) |
+| `error` | `{ title?: string; message?: string }` | - | Error info (for error view) |
+| `theme` | `'light' \| 'dark'` | `'dark'` | Visual theme |
+| `onSelectWallet` | `(wallet: WalletConnectorMetadata) => void` | - | Callback when a wallet is selected |
+| `onBack` | `() => void` | - | Callback for back button |
+| `onClose` | `() => void` | - | Callback for close button |
+| `onRetry` | `() => void` | - | Callback for retry button (error view) |
+| `showNoWalletLink` | `boolean` | `true` | Show "I don't have a wallet" link |
+| `walletGuideUrl` | `string` | Solana wallet explorer | Custom URL for wallet guide link |
+| `className` | `string` | - | Additional CSS classes |
+
+Wallets use the `WalletConnectorMetadata` type from `@solana/client`, which provides the wallet's `id`, `name`, and `icon`.
+
+WalletModal also exports its internal pieces as standalone components: `WalletList` for the wallet selection list, `WalletCard` for individual wallet rows, `ConnectingView` for the loading state, `ErrorView` for the error state with retry, `ModalHeader` for the header with back/close buttons, `NoWalletLink` for the wallet guide link, and `WalletLabel` for status badges.
 
 ## Feedback Components
 
@@ -438,9 +803,9 @@ Framework Kit components follow [shadcn/ui](https://ui.shadcn.com) patterns. If 
 
 ### What This Means
 
-- **Radix UI primitives** — Components are built on [Radix](https://www.radix-ui.com/) for accessibility out of the box
-- **Tailwind styling** — All styles use Tailwind utilities, no CSS files to import
-- **`cn()` utility** — Class merging with [clsx](https://github.com/lukeed/clsx) + [tailwind-merge](https://github.com/dcastil/tailwind-merge)
+- **Radix UI primitives**: Components are built on [Radix](https://www.radix-ui.com/) for accessibility out of the box
+- **Tailwind styling**: All styles use Tailwind utilities, no CSS files to import
+- **`cn()` utility**: Class merging with [clsx](https://github.com/lukeed/clsx) + [tailwind-merge](https://github.com/dcastil/tailwind-merge)
 
 ### The `cn()` Utility
 
@@ -465,7 +830,7 @@ Override styles via `className`:
 // Default styling
 <Skeleton className="h-4 w-32" />
 
-// Custom styling — your classes merge with defaults
+// Custom styling - your classes merge with defaults
 <Skeleton className="h-4 w-32 bg-blue-200 rounded-lg" />
 ```
 
@@ -529,6 +894,9 @@ function WalletCard() {
 | --- | --- |
 | `ConnectWalletButton` | Full wallet connection button with dropdown (address, balance, network, disconnect) |
 | `NetworkSwitcher` | Network selection dropdown with composable sub-components |
+| `BalanceCard` | Wallet balance display with expandable token list, loading, and error states |
+| `TransactionTable` | Transaction history with date and type filtering, loading, and empty states |
+| `WalletModal` | Wallet selection modal with connecting and error states |
 
 ### Feedback Components
 
