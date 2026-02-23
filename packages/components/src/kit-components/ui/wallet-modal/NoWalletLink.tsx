@@ -1,5 +1,5 @@
 import { Wallet } from 'lucide-react';
-import { cn } from '../../../lib/utils';
+import { cn } from '@/lib/utils';
 import type { WalletModalTheme } from './types';
 
 export interface NoWalletLinkProps {

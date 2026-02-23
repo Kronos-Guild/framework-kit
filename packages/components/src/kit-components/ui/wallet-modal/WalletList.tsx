@@ -1,5 +1,5 @@
 import type { WalletConnectorMetadata } from '@solana/client';
-import { cn } from '../../../lib/utils';
+import { cn } from '@/lib/utils';
 import type { WalletModalTheme } from './types';
 import { WalletCard } from './WalletCard';
 

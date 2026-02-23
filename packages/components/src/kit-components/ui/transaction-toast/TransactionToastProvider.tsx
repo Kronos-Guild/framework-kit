@@ -1,7 +1,7 @@
 import * as ToastPrimitive from '@radix-ui/react-toast';
 import type React from 'react';
 import { createContext, useCallback, useState } from 'react';
-import { cn } from '@/kit-components/lib/utils';
+import { cn } from '@/lib/utils';
 import { DEFAULT_DURATION, TransactionToast, type TransactionToastData } from './TransactionToast';
 
 // define context type

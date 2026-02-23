@@ -1,7 +1,6 @@
 import { HelpCircle } from 'lucide-react';
 import type React from 'react';
-import { truncateAddress } from '../../../lib/utils';
-import { cn } from '../../lib/utils';
+import { cn, truncateAddress } from '@/lib/utils';
 import receiveIcon from './assets/receive.png';
 import sentIcon from './assets/sent.png';
 import viewDarkIcon from './assets/view-dark.png';

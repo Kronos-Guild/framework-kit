@@ -2,7 +2,7 @@
 
 import { LogOut } from 'lucide-react';
 import { useCallback, useState } from 'react';
-import { cn, formatSolBalance } from '../../../lib/utils';
+import { cn, formatSolBalance } from '@/lib/utils';
 import { AddressDisplay } from '../address-display/AddressDisplay';
 import { NetworkDropdown } from '../network-switcher/NetworkDropdown';
 import { NetworkHeader } from '../network-switcher/NetworkHeader';

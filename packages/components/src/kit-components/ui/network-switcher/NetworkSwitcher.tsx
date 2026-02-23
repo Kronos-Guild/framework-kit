@@ -2,7 +2,7 @@
 
 import type { ClusterMoniker } from '@solana/client';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { cn } from '../../../lib/utils';
+import { cn } from '@/lib/utils';
 import { NetworkDropdown } from './NetworkDropdown';
 import { NetworkTrigger } from './NetworkTrigger';
 import type { NetworkSwitcherProps } from './types';
