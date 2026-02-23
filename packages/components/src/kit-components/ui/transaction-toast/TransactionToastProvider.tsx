@@ -64,7 +64,7 @@ export const TransactionToastProvider: React.FC<TransactionToastProviderProps> =
 					</ToastPrimitive.Root>
 				))}
 				<ToastPrimitive.Viewport
-					className={cn('fixed top-4 right-4 z-50 flex flex-col gap-2', 'w-auto max-w-[400px]')}
+					className={cn('fixed top-4 right-4 z-50 flex flex-col gap-2', 'w-auto max-w-sm')}
 				/>
 			</ToastPrimitive.Provider>
 		</TransactionToastContext.Provider>

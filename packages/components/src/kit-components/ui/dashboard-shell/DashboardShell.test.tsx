@@ -170,8 +170,8 @@ describe('DashboardShell', () => {
 		expect(main).toHaveClass('md:p-6');
 		expect(main).toHaveClass('lg:p-8');
 	});
-	// test lowered z-index on header and main
-	it('uses z-[1] instead of z-10', () => {
+	// z-index keeps content above decorative dot grid
+	it('uses z-10 for header and main layers', () => {
 		render(
 			<DashboardShell header={<span>Nav</span>}>
 				<p>Content</p>
@@ -179,9 +179,7 @@ describe('DashboardShell', () => {
 		);
 		const header = screen.getByRole('banner');
 		const main = screen.getByRole('main');
-		expect(header).toHaveClass('z-[1]');
-		expect(main).toHaveClass('z-[1]');
-		expect(header).not.toHaveClass('z-10');
-		expect(main).not.toHaveClass('z-10');
+		expect(header).toHaveClass('z-10');
+		expect(main).toHaveClass('z-10');
 	});
 });

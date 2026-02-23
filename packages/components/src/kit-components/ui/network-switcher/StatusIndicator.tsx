@@ -25,7 +25,7 @@ export function StatusIndicator({ status, className }: StatusIndicatorProps) {
 	return (
 		<output
 			className={cn(
-				'size-[8px] rounded-full shrink-0',
+				'size-2 rounded-full shrink-0',
 				status === 'connected' && 'bg-success',
 				status === 'error' && 'bg-destructive',
 				className,

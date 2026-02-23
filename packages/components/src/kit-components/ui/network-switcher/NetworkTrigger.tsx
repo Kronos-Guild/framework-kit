@@ -24,7 +24,7 @@ export function NetworkTrigger({
 			className={cn(
 				'w-full min-w-44 min-h-10 flex items-center justify-between',
 				'px-4 py-2.5 rounded-lg',
-				'border-b-[0.5px] border-solid',
+				'border-b border-solid',
 				"font-['Inter',sans-serif] font-medium text-sm leading-normal",
 				'cursor-pointer transition-colors',
 				'focus:outline-none focus-visible:ring-2 focus-visible:ring-ring',

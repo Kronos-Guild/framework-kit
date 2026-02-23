@@ -202,7 +202,7 @@ export const TokenInput: React.FC<TokenInputProps> = ({
 								className={cn(
 									'absolute right-0 top-full mt-1 z-20',
 									'bg-card border border-border rounded-lg shadow-lg',
-									'overflow-y-auto max-h-[200px] w-48',
+									'overflow-y-auto max-h-52 w-48',
 								)}
 							>
 								{tokens.map((t) => {
