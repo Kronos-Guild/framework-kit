@@ -68,7 +68,7 @@ export const AddressDisplay: React.FC<AddressDisplayProps> = ({
 					{showTooltip && (
 						<span
 							className={cn(
-								'absolute top-full left-0 mt-1 px-3 py-1.5 rounded-md text-[9px] whitespace-nowrap',
+								'absolute top-full left-0 mt-1 px-3 py-1.5 rounded-md text-xs whitespace-nowrap',
 								'opacity-0 group-hover/address:opacity-100 transition-opacity pointer-events-none z-50 border',
 								'bg-popover text-popover-foreground border-border shadow-md',
 							)}
