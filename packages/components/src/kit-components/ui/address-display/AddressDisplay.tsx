@@ -5,7 +5,7 @@ import type React from 'react';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 
-interface AddressDisplayProps {
+export interface AddressDisplayProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, 'onCopy'> {
 	/** Solana public key in base58 format */
 	address: Address;
 	/** Callback fired after address is copied to clipboard */
@@ -16,8 +16,6 @@ interface AddressDisplayProps {
 	showTooltip?: boolean;
 	/** Solana network for Explorer URL (default: "mainnet-beta") */
 	network?: ClusterMoniker;
-	/** Color theme (default: "light") */
-	theme?: 'light' | 'dark';
 	/** Additional CSS classes to apply to the container */
 	className?: string;
 }
@@ -42,12 +40,11 @@ export const AddressDisplay: React.FC<AddressDisplayProps> = ({
 	showExplorerLink = true,
 	showTooltip = true,
 	network = 'mainnet-beta',
-	theme = 'light',
 	className,
+	...props
 }) => {
 	const [copied, setCopied] = useState(false);
 	const truncated = truncateAddress(address);
-	const isDark = theme === 'dark';
 
 	const handleCopy = async () => {
 		try {
@@ -61,31 +58,19 @@ export const AddressDisplay: React.FC<AddressDisplayProps> = ({
 	};
 
 	return (
-		<span className={cn('relative inline-flex flex-col items-start gap-1', className)}>
+		<span className={cn('relative inline-flex flex-col items-start gap-1', className)} {...props}>
 			{/* Chip */}
-			<span
-				className={cn(
-					'inline-flex items-center gap-2 rounded-md px-3 py-1.5 w-fit',
-					isDark ? 'bg-zinc-700/90' : 'bg-zinc-200/40',
-				)}
-			>
+			<span className={cn('inline-flex items-center gap-2 rounded-md px-3 py-1.5 w-fit', 'bg-card')}>
 				{/* Address text with tooltip - hover only on address */}
-				<span
-					className={cn(
-						'group/address relative font-sans text-sm',
-						isDark ? 'text-zinc-50/90' : 'text-zinc-700/90',
-					)}
-				>
+				<span className={cn('group/address relative font-sans text-sm', 'text-card-foreground')}>
 					{truncated}
 					{/* Tooltip */}
 					{showTooltip && (
 						<span
 							className={cn(
 								'absolute top-full left-0 mt-1 px-3 py-1.5 rounded-md text-[9px] whitespace-nowrap',
-								'opacity-0 group-hover/address:opacity-100 transition-opacity pointer-events-none z-10 border',
-								isDark
-									? 'bg-zinc-800/95 text-zinc-50 border-zinc-600/90'
-									: 'bg-zinc-100/95 text-zinc-900 border-zinc-200/80',
+								'opacity-0 group-hover/address:opacity-100 transition-opacity pointer-events-none z-50 border',
+								'bg-popover text-popover-foreground border-border shadow-md',
 							)}
 						>
 							{address}
@@ -99,9 +84,9 @@ export const AddressDisplay: React.FC<AddressDisplayProps> = ({
 					aria-label="Copy address to clipboard"
 				>
 					{copied ? (
-						<Check size={14} className="text-green-500" />
+						<Check size={14} className="text-success" />
 					) : (
-						<Copy size={14} className={cn(isDark ? 'text-zinc-50' : 'text-zinc-700')} />
+						<Copy size={14} className="text-muted-foreground" />
 					)}
 				</button>
 				{showExplorerLink && (
@@ -112,7 +97,7 @@ export const AddressDisplay: React.FC<AddressDisplayProps> = ({
 						className="flex items-center justify-center hover:opacity-70 transition-opacity"
 						aria-label="View on Solana Explorer"
 					>
-						<ExternalLink size={14} className={cn(isDark ? 'text-zinc-50' : 'text-zinc-700')} />
+						<ExternalLink size={14} className="text-muted-foreground" />
 					</a>
 				)}
 			</span>

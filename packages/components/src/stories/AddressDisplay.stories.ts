@@ -23,15 +23,6 @@ const meta: Meta<typeof AddressDisplay> = {
 				type: { summary: 'Address' },
 			},
 		},
-		theme: {
-			description: 'Color theme for the component',
-			control: 'select',
-			options: ['light', 'dark'],
-			table: {
-				defaultValue: { summary: 'light' },
-				type: { summary: "'light' | 'dark'" },
-			},
-		},
 		network: {
 			description: 'Solana network for Explorer URL generation',
 			control: 'select',
@@ -80,27 +71,6 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
 	args: {
 		address: sampleAddress,
-	},
-};
-
-// for theme variants
-
-export const Light: Story = {
-	name: 'Theme: Light',
-	args: {
-		address: sampleAddress,
-		theme: 'light',
-	},
-};
-
-export const Dark: Story = {
-	name: 'Theme: Dark',
-	args: {
-		address: sampleAddress,
-		theme: 'dark',
-	},
-	parameters: {
-		backgrounds: { default: 'dark' },
 	},
 };
 
@@ -176,7 +146,6 @@ export const Playground: Story = {
 	name: 'Playground',
 	args: {
 		address: sampleAddress,
-		theme: 'light',
 		network: 'mainnet-beta',
 		showExplorerLink: true,
 	},
