@@ -11,10 +11,6 @@ const meta: Meta<typeof TransactionTable> = {
 		layout: 'fullscreen',
 	},
 	argTypes: {
-		theme: {
-			control: 'select',
-			options: ['dark', 'light'],
-		},
 		size: {
 			control: 'select',
 			options: ['sm', 'md', 'lg'],
@@ -182,17 +178,6 @@ const handleViewTransaction = (tx: ClassifiedTransaction) => {
 export const Default: Story = {
 	args: {
 		walletAddress: WALLET,
-		theme: 'dark',
-		transactions: SAMPLE_TXS,
-		onViewTransaction: handleViewTransaction,
-	},
-};
-
-export const Light: Story = {
-	name: 'Theme: Light',
-	args: {
-		walletAddress: WALLET,
-		theme: 'light',
 		transactions: SAMPLE_TXS,
 		onViewTransaction: handleViewTransaction,
 	},
@@ -201,7 +186,6 @@ export const Light: Story = {
 export const Loading: Story = {
 	args: {
 		walletAddress: WALLET,
-		theme: 'dark',
 		transactions: SAMPLE_TXS,
 		isLoading: true,
 	},
@@ -210,7 +194,6 @@ export const Loading: Story = {
 export const Empty: Story = {
 	args: {
 		walletAddress: WALLET,
-		theme: 'dark',
 		transactions: [],
 	},
 };

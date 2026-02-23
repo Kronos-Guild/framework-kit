@@ -47,16 +47,14 @@ function toCssSize(size: NonNullable<TransactionTableSkeletonProps['size']>) {
  *
  * @example
  * ```tsx
- * <TransactionTableSkeleton theme="dark" rowCount={5} />
+ * <TransactionTableSkeleton rowCount={5} />
  * ```
  */
 export const TransactionTableSkeleton: React.FC<TransactionTableSkeletonProps> = ({
-	theme = 'dark',
 	size = 'md',
 	rowCount = 4,
 	className,
 }) => {
-	const isDark = theme === 'dark';
 	const css = toCssSize(size);
 	const keysRef = useRef<string[]>([]);
 	if (keysRef.current.length !== rowCount) {
@@ -69,27 +67,25 @@ export const TransactionTableSkeleton: React.FC<TransactionTableSkeletonProps> =
 		keysRef.current = next;
 	}
 
-	const borderColor = isDark ? 'border-zinc-700' : 'border-zinc-200';
-
 	return (
-		<output className={cn('divide-y', borderColor, className)} aria-label="Loading transactions">
+		<output className={cn('divide-y divide-border', className)} aria-label="Loading transactions">
 			{keysRef.current.map((key) => (
 				<div key={key} className={cn('grid grid-cols-4 items-center gap-6', css.row)}>
 					{/* Type */}
 					<div className="flex items-center gap-3 min-w-0">
-						<Skeleton theme={theme} className={cn(css.icon, 'rounded-full')} />
-						<Skeleton theme={theme} className={css.label} />
+						<Skeleton className={cn(css.icon, 'rounded-full')} />
+						<Skeleton className={css.label} />
 					</div>
 					{/* Time */}
-					<Skeleton theme={theme} className={css.time} />
+					<Skeleton className={css.time} />
 					{/* Address */}
-					<Skeleton theme={theme} className={css.address} />
+					<Skeleton className={css.address} />
 					{/* Amount */}
 					<div className="flex items-center gap-2 min-w-0">
-						<Skeleton theme={theme} className={cn(css.token, 'rounded-full')} />
+						<Skeleton className={cn(css.token, 'rounded-full')} />
 						<div className="min-w-0">
-							<Skeleton theme={theme} className={css.amountMain} />
-							<Skeleton theme={theme} className={cn('mt-1.5', css.amountFiat)} />
+							<Skeleton className={css.amountMain} />
+							<Skeleton className={cn('mt-1.5', css.amountFiat)} />
 						</div>
 					</div>
 				</div>

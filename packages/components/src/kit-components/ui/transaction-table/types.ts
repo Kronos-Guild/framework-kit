@@ -2,7 +2,6 @@ import type { Address } from '@solana/kit';
 import type React from 'react';
 import type { ClassifiedTransaction } from 'tx-indexer';
 
-export type TransactionTableTheme = 'light' | 'dark';
 export type TransactionTableSize = 'sm' | 'md' | 'lg';
 
 export type TransactionTypeFilter = 'all' | 'sent' | 'received';
@@ -15,8 +14,6 @@ export interface TransactionTableProps {
 	walletAddress?: Address;
 	/** Loading state. */
 	isLoading?: boolean;
-	/** Visual theme. */
-	theme?: TransactionTableTheme;
 	/** Density/size. */
 	size?: TransactionTableSize;
 	/** Controlled date filter. */
@@ -46,7 +43,6 @@ export interface TransactionTableProps {
 export interface TransactionRowProps {
 	tx: ClassifiedTransaction;
 	walletAddress?: Address;
-	theme?: TransactionTableTheme;
 	size?: TransactionTableSize;
 	locale?: string;
 	onViewTransaction?: (tx: ClassifiedTransaction) => void;
@@ -56,7 +52,6 @@ export interface TransactionRowProps {
 }
 
 export interface TransactionTableSkeletonProps {
-	theme?: TransactionTableTheme;
 	size?: TransactionTableSize;
 	rowCount?: number;
 	className?: string;
@@ -72,7 +67,6 @@ export interface FilterDropdownProps<TValue extends string = string> {
 	value: TValue;
 	options: ReadonlyArray<FilterDropdownOption<TValue>>;
 	onChange: (value: TValue) => void;
-	theme?: TransactionTableTheme;
 	/** Additional CSS classes for the dropdown root. */
 	className?: string;
 }

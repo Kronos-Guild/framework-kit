@@ -31,6 +31,8 @@ export interface BalanceCardProps {
 	tokenDecimals?: number;
 	/** Whether the balance is displayed as fiat (with currency symbol) */
 	isFiatBalance?: boolean;
+	/** Token symbol to display after balance (e.g. "SOL"). Only used when isFiatBalance is false. */
+	tokenSymbol?: string;
 	/** Currency code for fiat display (default: "USD") */
 	currency?: string;
 	/** Number of decimal places to display (default: 2) */
@@ -51,8 +53,6 @@ export interface BalanceCardProps {
 	isExpanded?: boolean;
 	/** Callback when expanded state changes */
 	onExpandedChange?: (expanded: boolean) => void;
-	/** Visual variant of the card */
-	variant?: 'default' | 'dark' | 'light';
 	/** Size variant */
 	size?: 'sm' | 'md' | 'lg';
 	/** Additional CSS classes */
@@ -65,8 +65,6 @@ export interface BalanceCardProps {
  * Props for the BalanceCardSkeleton component
  */
 export interface BalanceCardSkeletonProps {
-	/** Visual variant */
-	variant?: 'default' | 'dark' | 'light';
 	/** Size variant */
 	size?: 'sm' | 'md' | 'lg';
 	/** Additional CSS classes */
@@ -83,6 +81,8 @@ export interface BalanceAmountProps {
 	tokenDecimals?: number;
 	/** Whether to display as fiat with currency symbol */
 	isFiat?: boolean;
+	/** Token symbol to display after balance (e.g. "SOL"). Only used when isFiat is false. */
+	tokenSymbol?: string;
 	/** Currency code for fiat display */
 	currency?: string;
 	/** Number of decimal places to display */
@@ -93,8 +93,6 @@ export interface BalanceAmountProps {
 	isPrivate?: boolean;
 	/** Size variant */
 	size?: 'sm' | 'md' | 'lg';
-	/** Visual variant */
-	variant?: 'default' | 'dark' | 'light';
 	/** Additional CSS classes */
 	className?: string;
 }
@@ -105,12 +103,12 @@ export interface BalanceAmountProps {
 export interface TokenListProps {
 	/** List of tokens to display */
 	tokens: TokenInfo[];
-	/** Whether the list is expanded */
+	/** Whether the list is expanded (controlled) */
 	isExpanded?: boolean;
+	/** Initial expanded state for uncontrolled mode (default: false) */
+	defaultExpanded?: boolean;
 	/** Callback when expansion state changes */
 	onExpandedChange?: (expanded: boolean) => void;
-	/** Visual variant */
-	variant?: 'default' | 'dark' | 'light';
 	/** Additional CSS classes */
 	className?: string;
 	/** Locale for number formatting */
@@ -127,8 +125,6 @@ export interface ErrorStateProps {
 	message: string;
 	/** Callback when retry is clicked */
 	onRetry?: () => void | Promise<void>;
-	/** Visual variant */
-	variant?: 'default' | 'dark' | 'light';
 	/** Additional CSS classes */
 	className?: string;
 }
