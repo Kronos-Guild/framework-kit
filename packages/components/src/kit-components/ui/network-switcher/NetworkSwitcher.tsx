@@ -97,7 +97,7 @@ export function NetworkSwitcher({
 	}, [isOpen, handleOpenChange]);
 
 	return (
-		<div ref={containerRef} className={cn('relative inline-block', className)}>
+		<div ref={containerRef} className={cn('relative inline-block min-w-44', className)}>
 			{/* Trigger is always visible */}
 			<NetworkTrigger
 				isOpen={isOpen}
@@ -109,7 +109,7 @@ export function NetworkSwitcher({
 
 			{/* Dropdown appears below trigger when open */}
 			{isOpen && (
-				<div className="absolute top-full left-0 mt-1 z-50">
+				<div className="absolute top-full inset-x-0 mt-1 z-50">
 					<NetworkDropdown
 						selectedNetwork={selectedNetwork}
 						status={status}

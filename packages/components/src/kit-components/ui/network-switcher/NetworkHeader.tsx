@@ -6,7 +6,6 @@ import type { NetworkHeaderProps } from './types';
 
 /**
  * NetworkHeader - Header row inside dropdown with "Network" label and chevron.
- * Dimensions from Figma: 175px (auto from container) x 29px
  */
 export function NetworkHeader({ isOpen = true, onClick, className }: NetworkHeaderProps) {
 	return (
@@ -14,8 +13,8 @@ export function NetworkHeader({ isOpen = true, onClick, className }: NetworkHead
 			type="button"
 			onClick={onClick}
 			className={cn(
-				'w-full h-[29px] flex items-center justify-between p-[6px] rounded-[3px]',
-				"font-['Inter',sans-serif] font-medium text-[14px] leading-normal",
+				'w-full min-h-7 flex items-center justify-between px-1.5 py-1 rounded-sm',
+				"font-['Inter',sans-serif] font-medium text-sm leading-normal",
 				'cursor-pointer transition-colors',
 				'focus:outline-none focus-visible:ring-1 focus-visible:ring-ring',
 				'text-card-foreground',
