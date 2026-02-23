@@ -226,14 +226,18 @@ describe('WalletModal', () => {
 
 		it('handles missing connectingWallet in connecting view gracefully', () => {
 			render(<WalletModal wallets={mockWallets} view="connecting" connectingWallet={undefined} />);
-			// Should not crash, but also won't show connecting view content
+			// Should not crash, but connecting view content should not be rendered
 			expect(screen.getByRole('dialog')).toBeInTheDocument();
+			expect(screen.queryByText(/connecting/i)).not.toBeInTheDocument();
 		});
 
 		it('handles missing error in error view gracefully', () => {
 			render(<WalletModal wallets={mockWallets} view="error" error={undefined} />);
-			// Should render error view without crashing
+			// Should render error view with default ErrorView content
 			expect(screen.getByRole('dialog')).toBeInTheDocument();
+			// ErrorView renders default title and message when props are undefined
+			expect(screen.getByText('Connection failed')).toBeInTheDocument();
+			expect(screen.getByText('Unable to connect. Please try again.')).toBeInTheDocument();
 		});
 
 		it('handles wallet selection without onSelectWallet handler', () => {
