@@ -164,7 +164,7 @@ export function ConnectWalletButton({
 		: undefined;
 
 	return (
-		<div ref={containerRef} className={cn('relative inline-block', className)}>
+		<div ref={containerRef} className={cn('relative inline-block', isDropdownOpen && 'z-50', className)}>
 			<WalletButton
 				connectionState={connectionState}
 				wallet={walletInfo}
