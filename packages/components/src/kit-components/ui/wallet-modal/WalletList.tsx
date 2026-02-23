@@ -1,13 +1,10 @@
 import type { WalletConnectorMetadata } from '@solana/client';
 import { cn } from '@/lib/utils';
-import type { WalletModalTheme } from './types';
 import { WalletCard } from './WalletCard';
 
 export interface WalletListProps {
 	/** List of wallets to display */
 	wallets: WalletConnectorMetadata[];
-	/** Theme variant */
-	theme?: WalletModalTheme;
 	/** Handler when a wallet is selected */
 	onSelect?: (wallet: WalletConnectorMetadata) => void;
 	/** Wallet ID that is currently connecting (to disable others) */
@@ -32,12 +29,11 @@ export interface WalletListProps {
  *     { id: 'solflare', name: 'Solflare', icon: '/solflare.png', label: 'detected' },
  *     { id: 'backpack', name: 'Backpack', icon: '/backpack.png' },
  *   ]}
- *   theme="dark"
  *   onSelect={(wallet) => console.log('Selected:', wallet.name)}
  * />
  * ```
  */
-export function WalletList({ wallets, theme = 'dark', onSelect, connectingWalletId, className }: WalletListProps) {
+export function WalletList({ wallets, onSelect, connectingWalletId, className }: WalletListProps) {
 	// Determine position for each wallet card
 	const getPosition = (index: number): 'first' | 'middle' | 'last' | 'only' => {
 		if (wallets.length === 1) return 'only';
@@ -48,15 +44,7 @@ export function WalletList({ wallets, theme = 'dark', onSelect, connectingWallet
 
 	if (wallets.length === 0) {
 		return (
-			<div
-				className={cn(
-					'w-full py-8 text-center rounded-[15px]',
-					theme === 'dark'
-						? 'bg-[rgba(82,82,92,0.2)] text-[rgba(228,228,231,0.6)]'
-						: 'bg-[rgba(244,244,245,0.4)] text-[rgba(63,63,70,0.6)]',
-					className,
-				)}
-			>
+			<div className={cn('w-full py-8 text-center rounded-[15px]', 'bg-muted text-muted-foreground', className)}>
 				<p className="text-sm">No wallets found</p>
 			</div>
 		);
@@ -68,7 +56,6 @@ export function WalletList({ wallets, theme = 'dark', onSelect, connectingWallet
 				<WalletCard
 					key={wallet.id}
 					wallet={wallet}
-					theme={theme}
 					position={getPosition(index)}
 					onSelect={onSelect}
 					disabled={!!connectingWalletId && connectingWalletId !== wallet.id}

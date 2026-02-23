@@ -53,10 +53,6 @@ const meta = {
 	},
 	tags: ['autodocs'],
 	argTypes: {
-		theme: {
-			control: 'select',
-			options: ['dark', 'light'],
-		},
 		view: {
 			control: 'select',
 			options: ['list', 'connecting', 'error'],
@@ -71,76 +67,32 @@ type Story = StoryObj<typeof meta>;
 // MAIN MODAL STORIES
 // ============================================
 
-/** Default wallet list view - Dark theme */
-export const ListViewDark: Story = {
+/** Default wallet list view */
+export const ListView: Story = {
 	args: {
 		wallets: MOCK_WALLETS,
 		view: 'list',
-		theme: 'dark',
 	},
 };
 
-/** Default wallet list view - Light theme */
-export const ListViewLight: Story = {
-	args: {
-		wallets: MOCK_WALLETS,
-		view: 'list',
-		theme: 'light',
-	},
-	parameters: {
-		backgrounds: { default: 'light' },
-	},
-};
-
-/** Connecting state - Dark theme */
-export const ConnectingDark: Story = {
+/** Connecting state */
+export const Connecting: Story = {
 	args: {
 		wallets: MOCK_WALLETS,
 		view: 'connecting',
-		theme: 'dark',
 		connectingWallet: MOCK_WALLETS[0],
 	},
 };
 
-/** Connecting state - Light theme */
-export const ConnectingLight: Story = {
-	args: {
-		wallets: MOCK_WALLETS,
-		view: 'connecting',
-		theme: 'light',
-		connectingWallet: MOCK_WALLETS[0],
-	},
-	parameters: {
-		backgrounds: { default: 'light' },
-	},
-};
-
-/** Error state - Dark theme */
-export const ErrorDark: Story = {
+/** Error state */
+export const ErrorState: Story = {
 	args: {
 		wallets: MOCK_WALLETS,
 		view: 'error',
-		theme: 'dark',
 		error: {
 			title: 'Connection failed',
 			message: 'Unable to connect. Please try again.',
 		},
-	},
-};
-
-/** Error state - Light theme */
-export const ErrorLight: Story = {
-	args: {
-		wallets: MOCK_WALLETS,
-		view: 'error',
-		theme: 'light',
-		error: {
-			title: 'Connection failed',
-			message: 'Unable to connect. Please try again.',
-		},
-	},
-	parameters: {
-		backgrounds: { default: 'light' },
 	},
 };
 
@@ -149,7 +101,6 @@ export const EmptyWalletList: Story = {
 	args: {
 		wallets: [],
 		view: 'list',
-		theme: 'dark',
 	},
 };
 
@@ -158,7 +109,6 @@ export const SingleWallet: Story = {
 	args: {
 		wallets: [MOCK_WALLETS[0]],
 		view: 'list',
-		theme: 'dark',
 	},
 };
 
@@ -167,7 +117,6 @@ export const WithoutNoWalletLink: Story = {
 	args: {
 		wallets: MOCK_WALLETS,
 		view: 'list',
-		theme: 'dark',
 		showNoWalletLink: false,
 	},
 };
@@ -180,7 +129,6 @@ export const WithoutNoWalletLink: Story = {
 export const Interactive: Story = {
 	args: {
 		wallets: MOCK_WALLETS,
-		theme: 'dark',
 	},
 	render: function InteractiveModal(args) {
 		const [view, setView] = useState<ModalView>('list');
@@ -239,66 +187,6 @@ export const Interactive: Story = {
 	},
 };
 
-/** Interactive - Light theme */
-export const InteractiveLight: Story = {
-	args: {
-		wallets: MOCK_WALLETS,
-		theme: 'light',
-	},
-	parameters: {
-		backgrounds: { default: 'light' },
-	},
-	render: function InteractiveModalLight(args) {
-		const [view, setView] = useState<ModalView>('list');
-		const [connectingWallet, setConnectingWallet] = useState<WalletConnectorMetadata | null>(null);
-		const [error, setError] = useState<{ title?: string; message?: string } | null>(null);
-
-		const handleSelectWallet = (wallet: WalletConnectorMetadata) => {
-			setConnectingWallet(wallet);
-			setView('connecting');
-
-			setTimeout(() => {
-				if (Math.random() > 0.5) {
-					alert(`Connected to ${wallet.name}!`);
-					setView('list');
-					setConnectingWallet(null);
-				} else {
-					setError({
-						title: 'Connection failed',
-						message: 'User rejected the connection request.',
-					});
-					setView('error');
-				}
-			}, 2000);
-		};
-
-		const handleBack = () => {
-			setView('list');
-			setConnectingWallet(null);
-			setError(null);
-		};
-
-		const handleRetry = () => {
-			if (connectingWallet) {
-				handleSelectWallet(connectingWallet);
-			}
-		};
-
-		return (
-			<WalletModal
-				{...args}
-				view={view}
-				connectingWallet={connectingWallet}
-				error={error}
-				onSelectWallet={handleSelectWallet}
-				onBack={handleBack}
-				onRetry={handleRetry}
-				onClose={() => alert('Modal closed')}
-			/>
-		);
-	},
-};
-
 // ============================================
 // SUB-COMPONENT STORIES
 // ============================================
@@ -309,45 +197,22 @@ export const WalletCardPositions: Story = {
 		wallets: MOCK_WALLETS,
 	},
 	render: () => (
-		<div className="flex flex-col gap-8">
-			<div>
-				<h3 className="text-white text-sm mb-2">Dark Theme</h3>
-				<div className="w-[313px]">
-					<WalletCard wallet={MOCK_WALLETS[0]} theme="dark" position="first" />
-					<WalletCard wallet={MOCK_WALLETS[1]} theme="dark" position="middle" />
-					<WalletCard wallet={MOCK_WALLETS[2]} theme="dark" position="last" />
-				</div>
-			</div>
-			<div>
-				<h3 className="text-zinc-800 text-sm mb-2">Light Theme</h3>
-				<div className="w-[313px]">
-					<WalletCard wallet={MOCK_WALLETS[0]} theme="light" position="first" />
-					<WalletCard wallet={MOCK_WALLETS[1]} theme="light" position="middle" />
-					<WalletCard wallet={MOCK_WALLETS[2]} theme="light" position="last" />
-				</div>
-			</div>
+		<div className="w-[313px]">
+			<WalletCard wallet={MOCK_WALLETS[0]} position="first" />
+			<WalletCard wallet={MOCK_WALLETS[1]} position="middle" />
+			<WalletCard wallet={MOCK_WALLETS[2]} position="last" />
 		</div>
 	),
-	parameters: {
-		backgrounds: { default: 'dark' },
-	},
 };
 
 /** WalletLabel - All variants */
 export const WalletLabelVariants: Story = {
 	args: { wallets: MOCK_WALLETS },
 	render: () => (
-		<div className="flex flex-col gap-4">
-			<div className="flex gap-2">
-				<WalletLabel type="recent" theme="dark" />
-				<WalletLabel type="detected" theme="dark" />
-				<WalletLabel type="installed" theme="dark" />
-			</div>
-			<div className="flex gap-2 bg-zinc-100 p-2 rounded">
-				<WalletLabel type="recent" theme="light" />
-				<WalletLabel type="detected" theme="light" />
-				<WalletLabel type="installed" theme="light" />
-			</div>
+		<div className="flex gap-2">
+			<WalletLabel type="recent" />
+			<WalletLabel type="detected" />
+			<WalletLabel type="installed" />
 		</div>
 	),
 };
@@ -358,16 +223,10 @@ export const ModalHeaderVariants: Story = {
 	render: () => (
 		<div className="flex flex-col gap-4 w-[313px]">
 			<div className="bg-zinc-700 p-4 rounded">
-				<ModalHeader title="Connect Wallet" theme="dark" />
+				<ModalHeader title="Connect Wallet" />
 			</div>
 			<div className="bg-zinc-700 p-4 rounded">
-				<ModalHeader title="" theme="dark" showBack />
-			</div>
-			<div className="bg-zinc-100 p-4 rounded">
-				<ModalHeader title="Connect Wallet" theme="light" />
-			</div>
-			<div className="bg-zinc-100 p-4 rounded">
-				<ModalHeader title="" theme="light" showBack />
+				<ModalHeader title="" showBack />
 			</div>
 		</div>
 	),
@@ -377,49 +236,28 @@ export const ModalHeaderVariants: Story = {
 export const ConnectingViewStandalone: Story = {
 	args: { wallets: MOCK_WALLETS },
 	render: () => (
-		<div className="flex gap-4">
-			<div className="bg-zinc-700 p-6 rounded-[15px] w-[361px]">
-				<ConnectingView wallet={MOCK_WALLETS[0]} theme="dark" />
-			</div>
-			<div className="bg-zinc-50 p-6 rounded-[15px] w-[361px]">
-				<ConnectingView wallet={MOCK_WALLETS[0]} theme="light" />
-			</div>
+		<div className="bg-zinc-700 p-6 rounded-[15px] w-[361px]">
+			<ConnectingView wallet={MOCK_WALLETS[0]} />
 		</div>
 	),
-	parameters: {
-		backgrounds: { default: 'dark' },
-	},
 };
 
 /** ErrorView - Standalone */
 export const ErrorViewStandalone: Story = {
 	args: { wallets: MOCK_WALLETS },
 	render: () => (
-		<div className="flex gap-4">
-			<div className="bg-zinc-700 p-6 rounded-[15px] w-[361px]">
-				<ErrorView theme="dark" />
-			</div>
-			<div className="bg-zinc-50 p-6 rounded-[15px] w-[361px]">
-				<ErrorView theme="light" />
-			</div>
+		<div className="bg-zinc-700 p-6 rounded-[15px] w-[361px]">
+			<ErrorView />
 		</div>
 	),
-	parameters: {
-		backgrounds: { default: 'dark' },
-	},
 };
 
 /** NoWalletLink - Standalone */
 export const NoWalletLinkStandalone: Story = {
 	args: { wallets: MOCK_WALLETS },
 	render: () => (
-		<div className="flex flex-col gap-4 w-[313px]">
-			<div className="bg-zinc-700 p-4 rounded">
-				<NoWalletLink theme="dark" />
-			</div>
-			<div className="bg-zinc-100 p-4 rounded">
-				<NoWalletLink theme="light" />
-			</div>
+		<div className="w-[313px] bg-zinc-700 p-4 rounded">
+			<NoWalletLink />
 		</div>
 	),
 };
@@ -428,29 +266,10 @@ export const NoWalletLinkStandalone: Story = {
 export const AllStatesGrid: Story = {
 	args: { wallets: MOCK_WALLETS },
 	render: () => (
-		<div className="grid grid-cols-2 gap-6">
-			{/* Dark theme */}
-			<div className="flex flex-col gap-4">
-				<h3 className="text-white font-semibold">Dark Theme</h3>
-				<WalletModal wallets={MOCK_WALLETS} view="list" theme="dark" />
-				<WalletModal wallets={MOCK_WALLETS} view="connecting" theme="dark" connectingWallet={MOCK_WALLETS[0]} />
-				<WalletModal wallets={MOCK_WALLETS} view="error" theme="dark" />
-			</div>
-			{/* Light theme */}
-			<div className="flex flex-col gap-4">
-				<h3 className="text-zinc-200 font-semibold">Light Theme</h3>
-				<WalletModal wallets={MOCK_WALLETS} view="list" theme="light" />
-				<WalletModal
-					wallets={MOCK_WALLETS}
-					view="connecting"
-					theme="light"
-					connectingWallet={MOCK_WALLETS[0]}
-				/>
-				<WalletModal wallets={MOCK_WALLETS} view="error" theme="light" />
-			</div>
+		<div className="flex flex-col gap-4">
+			<WalletModal wallets={MOCK_WALLETS} view="list" />
+			<WalletModal wallets={MOCK_WALLETS} view="connecting" connectingWallet={MOCK_WALLETS[0]} />
+			<WalletModal wallets={MOCK_WALLETS} view="error" />
 		</div>
 	),
-	parameters: {
-		backgrounds: { default: 'dark' },
-	},
 };

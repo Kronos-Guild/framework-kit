@@ -2,9 +2,6 @@
  * Shared types for the WalletModal component
  */
 
-/** Theme variants for the wallet modal */
-export type WalletModalTheme = 'dark' | 'light';
-
 /** Wallet label types */
 export type WalletLabelType = 'recent' | 'detected' | 'installed';
 

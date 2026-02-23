@@ -62,7 +62,6 @@ export type {
 	ButtonIconProps,
 	ButtonSpinnerProps,
 	ChevronIconProps,
-	Theme,
 	WalletButtonProps,
 	WalletDropdownProps,
 } from './types';

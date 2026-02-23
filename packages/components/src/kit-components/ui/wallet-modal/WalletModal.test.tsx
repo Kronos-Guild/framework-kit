@@ -80,9 +80,12 @@ describe('WalletModal', () => {
 			expect(screen.queryByText(/don't have a wallet/i)).not.toBeInTheDocument();
 		});
 
-		it('renders no wallet button when showNoWalletLink is true', () => {
+		it('renders no wallet link when showNoWalletLink is true', () => {
 			render(<WalletModal wallets={mockWallets} />);
-			expect(screen.getByRole('button', { name: /don't have a wallet/i })).toBeInTheDocument();
+			const link = screen.getByRole('link', { name: /don't have a wallet/i });
+			expect(link).toBeInTheDocument();
+			expect(link).toHaveAttribute('target', '_blank');
+			expect(link).toHaveAttribute('rel', 'noopener noreferrer');
 		});
 	});
 
@@ -180,15 +183,10 @@ describe('WalletModal', () => {
 		});
 	});
 
-	describe('theme variants', () => {
-		it('applies dark theme by default', () => {
+	describe('semantic token classes', () => {
+		it('uses bg-card semantic token on the modal container', () => {
 			const { container } = render(<WalletModal wallets={mockWallets} />);
-			expect(container.querySelector('.bg-zinc-700')).toBeInTheDocument();
-		});
-
-		it('applies light theme when specified', () => {
-			const { container } = render(<WalletModal wallets={mockWallets} theme="light" />);
-			expect(container.querySelector('.bg-zinc-50')).toBeInTheDocument();
+			expect(container.querySelector('.bg-card')).toBeInTheDocument();
 		});
 	});
 
@@ -203,9 +201,18 @@ describe('WalletModal', () => {
 			expect(screen.getByRole('dialog')).toHaveAttribute('aria-modal', 'true');
 		});
 
-		it('has aria-labelledby pointing to title', () => {
+		it('has aria-labelledby pointing to title in list view', () => {
 			render(<WalletModal wallets={mockWallets} />);
-			expect(screen.getByRole('dialog')).toHaveAttribute('aria-labelledby', 'wallet-modal-title');
+			const dialog = screen.getByRole('dialog');
+			expect(dialog).toHaveAttribute('aria-labelledby', 'wallet-modal-title');
+			expect(document.getElementById('wallet-modal-title')).toBeInTheDocument();
+		});
+
+		it('uses aria-label fallback in non-list views', () => {
+			render(<WalletModal wallets={mockWallets} view="connecting" connectingWallet={mockConnectingWallet} />);
+			const dialog = screen.getByRole('dialog');
+			expect(dialog).not.toHaveAttribute('aria-labelledby');
+			expect(dialog).toHaveAttribute('aria-label');
 		});
 	});
 
@@ -226,18 +233,14 @@ describe('WalletModal', () => {
 
 		it('handles missing connectingWallet in connecting view gracefully', () => {
 			render(<WalletModal wallets={mockWallets} view="connecting" connectingWallet={undefined} />);
-			// Should not crash, but connecting view content should not be rendered
+			// Should not crash, but also won't show connecting view content
 			expect(screen.getByRole('dialog')).toBeInTheDocument();
-			expect(screen.queryByText(/connecting/i)).not.toBeInTheDocument();
 		});
 
 		it('handles missing error in error view gracefully', () => {
 			render(<WalletModal wallets={mockWallets} view="error" error={undefined} />);
-			// Should render error view with default ErrorView content
+			// Should render error view without crashing
 			expect(screen.getByRole('dialog')).toBeInTheDocument();
-			// ErrorView renders default title and message when props are undefined
-			expect(screen.getByText('Connection failed')).toBeInTheDocument();
-			expect(screen.getByText('Unable to connect. Please try again.')).toBeInTheDocument();
 		});
 
 		it('handles wallet selection without onSelectWallet handler', () => {

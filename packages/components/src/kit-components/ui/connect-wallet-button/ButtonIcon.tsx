@@ -19,11 +19,11 @@ export function ButtonIcon({ src, alt = 'Wallet icon', size = 24, className }: B
 	if (!src) {
 		return (
 			<div
-				className={cn('flex items-center justify-center rounded-full bg-zinc-700', className)}
+				className={cn('flex items-center justify-center rounded-full bg-secondary', className)}
 				style={{ width: size, height: size }}
 				aria-hidden="true"
 			>
-				<Wallet size={size * 0.6} className="text-zinc-400" />
+				<Wallet size={size * 0.6} className="text-muted-foreground" />
 			</div>
 		);
 	}

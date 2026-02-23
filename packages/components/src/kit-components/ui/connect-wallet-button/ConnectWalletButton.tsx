@@ -4,7 +4,6 @@ import type { ClusterMoniker, WalletStatus } from '@solana/client';
 import type { Address, Lamports } from '@solana/kit';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { cn } from '@/lib/utils';
-import type { Theme } from './types';
 import { WalletButton } from './WalletButton';
 import { WalletDropdown, WalletDropdownWrapper } from './WalletDropdown';
 
@@ -12,8 +11,6 @@ import { WalletDropdown, WalletDropdownWrapper } from './WalletDropdown';
  * Props for the ConnectWalletButton component.
  */
 export interface ConnectWalletButtonProps {
-	/** Theme for the button and dropdown */
-	theme?: Theme;
 	/** Additional className for the container */
 	className?: string;
 	/** Custom labels */
@@ -80,7 +77,6 @@ export interface ConnectWalletButtonProps {
  * ```
  */
 export function ConnectWalletButton({
-	theme = 'dark',
 	className,
 	labels,
 	status,
@@ -173,7 +169,6 @@ export function ConnectWalletButton({
 				connectionState={connectionState}
 				wallet={walletInfo}
 				isExpanded={isDropdownOpen}
-				theme={theme}
 				onClick={handleButtonClick}
 				disabled={!isReady || status === 'connecting'}
 				aria-haspopup={connectionState === 'connected' ? 'menu' : undefined}
@@ -190,7 +185,6 @@ export function ConnectWalletButton({
 						balance={balance}
 						balanceVisible={balanceVisible}
 						balanceLoading={balanceLoading}
-						theme={theme}
 						onToggleBalance={handleToggleBalance}
 						onDisconnect={handleDisconnect}
 						selectedNetwork={selectedNetwork}

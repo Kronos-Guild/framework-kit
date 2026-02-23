@@ -4,7 +4,7 @@ import { ConnectingView } from './ConnectingView';
 import { ErrorView } from './ErrorView';
 import { ModalHeader } from './ModalHeader';
 import { NoWalletLink } from './NoWalletLink';
-import type { ModalView, WalletModalTheme } from './types';
+import type { ModalView } from './types';
 import { WalletList } from './WalletList';
 
 export interface WalletModalProps {
@@ -16,8 +16,6 @@ export interface WalletModalProps {
 	connectingWallet?: WalletConnectorMetadata | null;
 	/** Error info (for error view) */
 	error?: { title?: string; message?: string } | null;
-	/** Theme variant */
-	theme?: WalletModalTheme;
 	/** Handler when a wallet is selected */
 	onSelectWallet?: (wallet: WalletConnectorMetadata) => void;
 	/** Handler for back button (connecting/error views) */
@@ -47,7 +45,6 @@ export interface WalletModalProps {
  * <WalletModal
  *   wallets={detectedWallets}
  *   view="list"
- *   theme="dark"
  *   onSelectWallet={(w) => connect(w)}
  *   onClose={() => setOpen(false)}
  * />
@@ -58,7 +55,6 @@ export function WalletModal({
 	view = 'list',
 	connectingWallet,
 	error,
-	theme = 'dark',
 	onSelectWallet,
 	onBack,
 	onClose,
@@ -69,38 +65,29 @@ export function WalletModal({
 }: WalletModalProps) {
 	return (
 		<div
-			className={cn(
-				'w-[361px] p-6 rounded-[15px] flex flex-col gap-5',
-				theme === 'dark' ? 'bg-zinc-700' : 'bg-zinc-50',
-				className,
-			)}
+			className={cn('w-[361px] p-6 rounded-[15px] flex flex-col gap-5', 'bg-card', className)}
 			role="dialog"
 			aria-modal="true"
-			aria-labelledby="wallet-modal-title"
+			aria-labelledby={view === 'list' ? 'wallet-modal-title' : undefined}
+			aria-label={view !== 'list' ? 'Wallet connection' : undefined}
 		>
 			{/* List View */}
 			{view === 'list' && (
 				<>
-					<ModalHeader title="Connect Wallet" theme={theme} onClose={onClose} />
-					<WalletList wallets={wallets} theme={theme} onSelect={onSelectWallet} />
-					{showNoWalletLink && <NoWalletLink theme={theme} href={walletGuideUrl} />}
+					<ModalHeader title="Connect Wallet" titleId="wallet-modal-title" onClose={onClose} />
+					<WalletList wallets={wallets} onSelect={onSelectWallet} />
+					{showNoWalletLink && <NoWalletLink href={walletGuideUrl} />}
 				</>
 			)}
 
 			{/* Connecting View */}
 			{view === 'connecting' && connectingWallet && (
-				<ConnectingView wallet={connectingWallet} theme={theme} onBack={onBack} onClose={onClose} />
+				<ConnectingView wallet={connectingWallet} onBack={onBack} onClose={onClose} />
 			)}
 
 			{/* Error View */}
 			{view === 'error' && (
-				<ErrorView
-					title={error?.title}
-					message={error?.message}
-					theme={theme}
-					onRetry={onRetry}
-					onClose={onClose}
-				/>
+				<ErrorView title={error?.title} message={error?.message} onRetry={onRetry} onClose={onClose} />
 			)}
 		</div>
 	);
