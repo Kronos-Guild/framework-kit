@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 
-import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, within } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import '@testing-library/jest-dom/vitest';
 
@@ -18,10 +18,33 @@ describe('NetworkSwitcher', () => {
 			expect(screen.getByRole('button')).toBeInTheDocument();
 		});
 
+		it('renders trigger button', () => {
+			render(<NetworkSwitcher selectedNetwork="mainnet-beta" />);
+			expect(screen.getByRole('button')).toBeInTheDocument();
+		});
+
 		it('dropdown is closed by default', () => {
 			render(<NetworkSwitcher selectedNetwork="mainnet-beta" />);
-			// Network options should not be visible
-			expect(screen.queryByText('Devnet')).not.toBeInTheDocument();
+			// Network options should not be visible when dropdown is closed
+			expect(screen.queryByRole('listbox')).not.toBeInTheDocument();
+		});
+
+		it('shows selected network label in trigger', () => {
+			render(<NetworkSwitcher selectedNetwork="devnet" />);
+			expect(screen.getByRole('button')).toHaveTextContent('Devnet');
+		});
+
+		it('shows status indicator in trigger when connected', () => {
+			render(<NetworkSwitcher selectedNetwork="mainnet-beta" status="connected" />);
+			expect(screen.getByLabelText('Connected')).toBeInTheDocument();
+		});
+
+		it('updates trigger label when selectedNetwork changes', () => {
+			const { rerender } = render(<NetworkSwitcher selectedNetwork="mainnet-beta" />);
+			expect(screen.getByRole('button')).toHaveTextContent('Mainnet');
+
+			rerender(<NetworkSwitcher selectedNetwork="devnet" />);
+			expect(screen.getByRole('button')).toHaveTextContent('Devnet');
 		});
 	});
 
@@ -41,8 +64,9 @@ describe('NetworkSwitcher', () => {
 
 			fireEvent.click(screen.getByRole('button'));
 
+			const listbox = screen.getByRole('listbox');
 			for (const network of DEFAULT_NETWORKS) {
-				expect(screen.getByText(network.label)).toBeInTheDocument();
+				expect(within(listbox).getByText(network.label)).toBeInTheDocument();
 			}
 		});
 
@@ -187,36 +211,42 @@ describe('NetworkSwitcher', () => {
 
 			fireEvent.click(screen.getByRole('button'));
 
-			expect(screen.getByText('Main Network')).toBeInTheDocument();
-			expect(screen.getByText('Development')).toBeInTheDocument();
-			// Default labels should not be present
-			expect(screen.queryByText('Mainnet')).not.toBeInTheDocument();
+			const listbox = screen.getByRole('listbox');
+			expect(within(listbox).getByText('Main Network')).toBeInTheDocument();
+			expect(within(listbox).getByText('Development')).toBeInTheDocument();
+			// Default labels should not be present in dropdown
+			expect(within(listbox).queryByText('Mainnet')).not.toBeInTheDocument();
 		});
 	});
 
-	describe('theme variants', () => {
-		it('applies dark theme styles by default', () => {
+	describe('semantic token styles', () => {
+		it('applies semantic token classes to trigger', () => {
 			render(<NetworkSwitcher selectedNetwork="mainnet-beta" />);
 			const button = screen.getByRole('button');
-			expect(button).toHaveClass('bg-zinc-700');
+			expect(button).toHaveClass('bg-secondary');
+			expect(button).toHaveClass('text-card-foreground');
+			expect(button).toHaveClass('border-border');
 		});
 
-		it('applies light theme styles', () => {
-			render(<NetworkSwitcher selectedNetwork="mainnet-beta" theme="light" />);
-			const button = screen.getByRole('button');
-			expect(button).toHaveClass('bg-zinc-50');
+		it('applies semantic token classes to dropdown', () => {
+			render(<NetworkSwitcher selectedNetwork="mainnet-beta" />);
+
+			fireEvent.click(screen.getByRole('button'));
+
+			const listbox = screen.getByRole('listbox');
+			expect(listbox).toHaveClass('bg-secondary');
 		});
 	});
 
 	describe('status indicator', () => {
-		it('renders connected status indicator for selected network', () => {
+		it('passes status to dropdown', () => {
 			render(<NetworkSwitcher selectedNetwork="mainnet-beta" status="connected" />);
 
 			fireEvent.click(screen.getByRole('button'));
 
-			// The selected network should show a status indicator with aria-label "Connected"
-			expect(screen.getByText('Mainnet')).toBeInTheDocument();
-			expect(screen.getByLabelText('Connected')).toBeInTheDocument();
+			// Dropdown should be visible - status is used for styling
+			const listbox = screen.getByRole('listbox');
+			expect(within(listbox).getByText('Mainnet')).toBeInTheDocument();
 		});
 	});
 

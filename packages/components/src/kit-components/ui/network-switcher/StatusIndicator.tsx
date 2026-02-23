@@ -13,15 +13,21 @@ import type { StatusIndicatorProps } from './types';
  */
 export function StatusIndicator({ status, className }: StatusIndicatorProps) {
 	if (status === 'connecting') {
-		return <Loader2 size={14} className={cn('animate-spin text-zinc-400', className)} aria-label="Connecting" />;
+		return (
+			<Loader2
+				size={14}
+				className={cn('animate-spin text-muted-foreground', className)}
+				aria-label="Connecting"
+			/>
+		);
 	}
 
 	return (
 		<output
 			className={cn(
-				'size-[8px] rounded-full shrink-0',
-				status === 'connected' && 'bg-green-500',
-				status === 'error' && 'bg-red-500',
+				'size-2 rounded-full shrink-0',
+				status === 'connected' && 'bg-success',
+				status === 'error' && 'bg-destructive',
 				className,
 			)}
 			aria-label={status === 'connected' ? 'Connected' : 'Connection error'}

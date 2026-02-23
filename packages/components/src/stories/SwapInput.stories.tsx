@@ -1,12 +1,22 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import type { SwapTokenInfo } from '../kit-components/ui/swap-input';
 import { SwapInput } from '../kit-components/ui/swap-input';
 
 const SOL_LOGO = 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/solana/info/logo.png';
 const USDC_LOGO =
 	'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v/logo.png';
 
-const solToken = { symbol: 'SOL', name: 'Solana', logoURI: SOL_LOGO };
-const usdcToken = { symbol: 'USDC', name: 'USD Coin', logoURI: USDC_LOGO };
+const solToken: SwapTokenInfo = { symbol: 'SOL', name: 'Solana', logoURI: SOL_LOGO };
+const usdcToken: SwapTokenInfo = { symbol: 'USDC', name: 'USD Coin', logoURI: USDC_LOGO };
+
+const tokenList: SwapTokenInfo[] = [
+	solToken,
+	usdcToken,
+	{ symbol: 'USDT', name: 'Tether' },
+	{ symbol: 'BONK', name: 'Bonk' },
+	{ symbol: 'JUP', name: 'Jupiter' },
+	{ symbol: 'RAY', name: 'Raydium' },
+];
 
 const meta = {
 	title: 'Kit Components/Input/SwapInput',
@@ -16,10 +26,6 @@ const meta = {
 		layout: 'centered',
 	},
 	argTypes: {
-		variant: {
-			control: 'select',
-			options: ['default', 'dark', 'light'],
-		},
 		size: {
 			control: 'select',
 			options: ['sm', 'md', 'lg'],
@@ -47,7 +53,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 /**
- * Default dark variant with empty amounts
+ * Default with empty amounts
  */
 export const Default: Story = {
 	args: {
@@ -55,20 +61,13 @@ export const Default: Story = {
 		receiveAmount: '',
 		payToken: solToken,
 		receiveToken: usdcToken,
+		payTokens: tokenList,
+		receiveTokens: tokenList,
 		payBalance: '4.32',
-		variant: 'dark',
 		onSwapDirection: () => console.log('Swap direction'),
 		onPayAmountChange: () => {},
-	},
-};
-
-/**
- * Light variant with empty amounts
- */
-export const Light: Story = {
-	args: {
-		...Default.args,
-		variant: 'light',
+		onPayTokenChange: (t) => console.log('Pay token changed:', t.symbol),
+		onReceiveTokenChange: (t) => console.log('Receive token changed:', t.symbol),
 	},
 };
 
@@ -81,8 +80,9 @@ export const ZeroAmounts: Story = {
 		receiveAmount: '0.00',
 		payToken: solToken,
 		receiveToken: usdcToken,
+		payTokens: tokenList,
+		receiveTokens: tokenList,
 		payBalance: '4.32',
-		variant: 'dark',
 		onSwapDirection: () => console.log('Swap direction'),
 		onPayAmountChange: () => {},
 	},
@@ -97,20 +97,11 @@ export const Filled: Story = {
 		receiveAmount: '1324.13',
 		payToken: solToken,
 		receiveToken: usdcToken,
+		payTokens: tokenList,
+		receiveTokens: tokenList,
 		payBalance: '4.32',
-		variant: 'dark',
 		onSwapDirection: () => console.log('Swap direction'),
 		onPayAmountChange: () => {},
-	},
-};
-
-/**
- * Filled state - light variant
- */
-export const FilledLight: Story = {
-	args: {
-		...Filled.args,
-		variant: 'light',
 	},
 };
 
@@ -123,20 +114,11 @@ export const InsufficientBalance: Story = {
 		receiveAmount: '1324.13',
 		payToken: solToken,
 		receiveToken: usdcToken,
+		payTokens: tokenList,
+		receiveTokens: tokenList,
 		payBalance: '4.32',
-		variant: 'dark',
 		onSwapDirection: () => console.log('Swap direction'),
 		onPayAmountChange: () => {},
-	},
-};
-
-/**
- * Insufficient balance - light variant
- */
-export const InsufficientBalanceLight: Story = {
-	args: {
-		...InsufficientBalance.args,
-		variant: 'light',
 	},
 };
 
@@ -148,37 +130,27 @@ export const Loading: Story = {
 		payAmount: '',
 		receiveAmount: '',
 		isLoading: true,
-		variant: 'dark',
 	},
 };
 
 /**
- * Loading - light variant
- */
-export const LoadingLight: Story = {
-	args: {
-		...Loading.args,
-		variant: 'light',
-	},
-};
-
-/**
- * No token selected yet
+ * No token selected yet — with dropdown to pick one
  */
 export const NoTokenSelected: Story = {
 	args: {
 		payAmount: '',
 		receiveAmount: '',
 		payBalance: '4.32',
-		variant: 'dark',
-		onPayTokenSelect: () => console.log('Select pay token'),
-		onReceiveTokenSelect: () => console.log('Select receive token'),
+		payTokens: tokenList,
+		receiveTokens: tokenList,
+		onPayTokenChange: (t) => console.log('Pay token changed:', t.symbol),
+		onReceiveTokenChange: (t) => console.log('Receive token changed:', t.symbol),
 		onPayAmountChange: () => {},
 	},
 };
 
 /**
- * Small size variant
+ * Small size
  */
 export const SmallSize: Story = {
 	args: {
@@ -188,7 +160,7 @@ export const SmallSize: Story = {
 };
 
 /**
- * Large size variant
+ * Large size
  */
 export const LargeSize: Story = {
 	args: {

@@ -38,7 +38,6 @@ export { NetworkOption } from './NetworkOption';
 export { NetworkSwitcher } from './NetworkSwitcher';
 export { NetworkTrigger } from './NetworkTrigger';
 export { StatusIndicator } from './StatusIndicator';
-// Re-export Theme with a namespaced alias to avoid conflicts
 export type {
 	Network,
 	NetworkDropdownProps,
@@ -47,9 +46,6 @@ export type {
 	NetworkSwitcherProps,
 	NetworkTriggerProps,
 	StatusIndicatorProps,
-	Theme as NetworkSwitcherTheme,
-	// Note: Theme is not re-exported here to avoid conflict with connect-wallet-button
-	// Import Theme from connect-wallet-button instead, or use NetworkSwitcherTheme
 } from './types';
 // Types and constants
 export { DEFAULT_NETWORKS } from './types';

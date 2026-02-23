@@ -14,15 +14,6 @@ const meta: Meta<typeof Skeleton> = {
 		},
 	},
 	argTypes: {
-		theme: {
-			description: 'Color theme for the skeleton',
-			control: 'select',
-			options: ['light', 'dark'],
-			table: {
-				defaultValue: { summary: 'light' },
-				type: { summary: "'light' | 'dark'" },
-			},
-		},
 		className: {
 			description: 'CSS classes to define size and shape (e.g., "h-4 w-32 rounded-full")',
 			table: {
@@ -119,27 +110,6 @@ export const Card: Story = {
 	},
 };
 
-// for theme variants
-
-export const Light: Story = {
-	name: 'Theme: Light',
-	args: {
-		className: 'h-4 w-32',
-		theme: 'light',
-	},
-};
-
-export const Dark: Story = {
-	name: 'Theme: Dark',
-	args: {
-		className: 'h-4 w-32',
-		theme: 'dark',
-	},
-	parameters: {
-		backgrounds: { default: 'dark' },
-	},
-};
-
 // for composition examples
 
 export const ProfileCard: Story = {
@@ -157,27 +127,6 @@ export const ProfileCard: Story = {
 		docs: {
 			description: {
 				story: 'Multiple skeletons composed to represent a loading profile card.',
-			},
-		},
-	},
-};
-
-export const ProfileCardDark: Story = {
-	name: 'Composition: Profile Card (Dark)',
-	render: () => (
-		<div className="flex items-center gap-4 p-4 border border-zinc-700 rounded-lg w-64 bg-zinc-900">
-			<Skeleton theme="dark" className="h-12 w-12 rounded-full" />
-			<div className="space-y-2 flex-1">
-				<Skeleton theme="dark" className="h-4 w-24" />
-				<Skeleton theme="dark" className="h-3 w-32" />
-			</div>
-		</div>
-	),
-	parameters: {
-		backgrounds: { default: 'dark' },
-		docs: {
-			description: {
-				story: 'Profile card skeleton with dark theme.',
 			},
 		},
 	},
@@ -216,12 +165,11 @@ export const Playground: Story = {
 	name: 'Playground',
 	args: {
 		className: 'h-8 w-48',
-		theme: 'light',
 	},
 	parameters: {
 		docs: {
 			description: {
-				story: 'Use the controls panel to experiment with different sizes and themes. Try classes like "h-12 w-12 rounded-full" for an avatar.',
+				story: 'Use the controls panel to experiment with different sizes. Try classes like "h-12 w-12 rounded-full" for an avatar.',
 			},
 		},
 	},

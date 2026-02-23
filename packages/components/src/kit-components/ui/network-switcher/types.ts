@@ -1,8 +1,5 @@
 import type { ClusterMoniker, WalletStatus } from '@solana/client';
 
-/** Theme variant */
-export type Theme = 'dark' | 'light';
-
 /** Network configuration */
 export interface Network {
 	/** Unique identifier */
@@ -25,8 +22,6 @@ export interface NetworkSwitcherProps {
 	open?: boolean;
 	/** Callback when open state changes */
 	onOpenChange?: (open: boolean) => void;
-	/** Theme variant */
-	theme?: Theme;
 	/** Custom networks to display */
 	networks?: Network[];
 	/** Additional CSS classes */
@@ -39,8 +34,10 @@ export interface NetworkSwitcherProps {
 export interface NetworkTriggerProps {
 	/** Whether dropdown is open */
 	isOpen?: boolean;
-	/** Theme variant */
-	theme?: Theme;
+	/** Label of the selected network (e.g. "Devnet") */
+	selectedLabel?: string;
+	/** Network connection status */
+	status?: WalletStatus['status'];
 	/** Click handler */
 	onClick?: () => void;
 	/** Additional CSS classes */
@@ -59,8 +56,6 @@ export interface NetworkDropdownProps {
 	networks: Network[];
 	/** Callback when network is selected */
 	onSelect?: (network: ClusterMoniker) => void;
-	/** Theme variant */
-	theme?: Theme;
 	/** Additional CSS classes */
 	className?: string;
 }
@@ -73,8 +68,6 @@ export interface NetworkOptionProps {
 	isSelected?: boolean;
 	/** Network status (only shown for selected) */
 	status?: WalletStatus['status'];
-	/** Theme variant */
-	theme?: Theme;
 	/** Click handler */
 	onClick?: () => void;
 	/** Additional CSS classes */
@@ -85,8 +78,6 @@ export interface NetworkOptionProps {
 export interface NetworkHeaderProps {
 	/** Whether dropdown is open */
 	isOpen?: boolean;
-	/** Theme variant */
-	theme?: Theme;
 	/** Click handler to toggle */
 	onClick?: () => void;
 	/** Additional CSS classes */

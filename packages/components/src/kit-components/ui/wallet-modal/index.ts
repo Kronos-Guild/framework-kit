@@ -14,7 +14,6 @@ export type {
 	ConnectionError,
 	ModalView,
 	WalletLabelType,
-	WalletModalTheme,
 } from './types';
 export type { WalletCardProps } from './WalletCard';
 export { WalletCard } from './WalletCard';

@@ -2,52 +2,36 @@
 
 import { ChevronRight, Network } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import type { NetworkTriggerProps, Theme } from './types';
-
-/** Theme-specific styles */
-const themeStyles: Record<Theme, { bg: string; text: string; border: string }> = {
-	dark: {
-		bg: 'bg-zinc-700',
-		text: 'text-zinc-50',
-		border: 'border-zinc-200/20',
-	},
-	light: {
-		bg: 'bg-zinc-50',
-		text: 'text-zinc-700',
-		border: 'border-zinc-700/10',
-	},
-};
+import { StatusIndicator } from './StatusIndicator';
+import type { NetworkTriggerProps } from './types';
 
 /**
- * NetworkTrigger - Collapsed trigger button showing "Network" with chevron.
- * Used when the dropdown is closed.
- * Dimensions from Figma: 191px x 38px
+ * NetworkTrigger - Trigger button showing the selected network with status indicator.
  */
 export function NetworkTrigger({
 	isOpen = false,
-	theme = 'dark',
+	selectedLabel,
+	status,
 	onClick,
 	className,
 	disabled = false,
 }: NetworkTriggerProps) {
-	const styles = themeStyles[theme];
-
 	return (
 		<button
 			type="button"
 			onClick={onClick}
 			disabled={disabled}
 			className={cn(
-				'w-[191px] h-[38px] flex items-center justify-between',
-				'px-[15px] py-2.5 rounded-[10px]',
-				'border-b-[0.5px] border-solid',
-				"font-['Inter',sans-serif] font-medium text-[15px] leading-normal",
+				'w-full min-w-44 min-h-10 flex items-center justify-between',
+				'px-4 py-2.5 rounded-lg',
+				'border-b border-solid',
+				"font-['Inter',sans-serif] font-medium text-sm leading-normal",
 				'cursor-pointer transition-colors',
-				'focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30',
+				'focus:outline-none focus-visible:ring-2 focus-visible:ring-ring',
 				'disabled:opacity-50 disabled:cursor-not-allowed',
-				styles.bg,
-				styles.text,
-				styles.border,
+				'bg-secondary',
+				'text-card-foreground',
+				'border-border',
 				className,
 			)}
 			aria-expanded={isOpen}
@@ -55,7 +39,8 @@ export function NetworkTrigger({
 		>
 			<div className="flex items-center gap-2">
 				<Network size={16} className="shrink-0" />
-				<span>Network</span>
+				<span>{selectedLabel ?? 'Network'}</span>
+				{status && <StatusIndicator status={status} />}
 			</div>
 			<ChevronRight
 				size={16}

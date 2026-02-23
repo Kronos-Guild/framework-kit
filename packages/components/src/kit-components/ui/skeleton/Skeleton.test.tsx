@@ -32,15 +32,10 @@ describe('Skeleton', () => {
 		expect(element).toHaveAttribute('aria-label', 'Loading content');
 	});
 
-	//test for theme support
-	it('applies light theme by default', () => {
+	//test for semantic token styles
+	it('applies bg-muted semantic token', () => {
 		render(<Skeleton data-testid="skeleton" />);
 		const element = screen.getByTestId('skeleton');
-		expect(element).toHaveClass('bg-zinc-200');
-	});
-	it('applies dark theme when specified', () => {
-		render(<Skeleton data-testid="skeleton" theme="dark" />);
-		const element = screen.getByTestId('skeleton');
-		expect(element).toHaveClass('bg-zinc-700');
+		expect(element).toHaveClass('bg-muted');
 	});
 });

@@ -10,7 +10,6 @@ export type {
 	SwapInputProps,
 	SwapInputSize,
 	SwapInputSkeletonProps,
-	SwapInputVariant,
 	SwapTokenInfo,
 	TokenInputProps,
 } from './types';

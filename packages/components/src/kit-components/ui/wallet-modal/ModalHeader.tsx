@@ -1,12 +1,11 @@
 import { ArrowLeft, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import type { WalletModalTheme } from './types';
 
 export interface ModalHeaderProps {
 	/** Title text to display */
 	title: string;
-	/** Theme variant */
-	theme?: WalletModalTheme;
+	/** ID for the title element (used for aria-labelledby) */
+	titleId?: string;
 	/** Whether to show the back button */
 	showBack?: boolean;
 	/** Handler for close button */
@@ -23,14 +22,12 @@ export interface ModalHeaderProps {
  * Features:
  * - Optional back arrow (for connecting/error views)
  * - Close X button (always visible)
- * - Theme-aware colors
  *
  * @example
  * ```tsx
  * // Wallet list view (no back button)
  * <ModalHeader
  *   title="Connect Wallet"
- *   theme="dark"
  *   onClose={() => setOpen(false)}
  * />
  *
@@ -38,16 +35,12 @@ export interface ModalHeaderProps {
  * <ModalHeader
  *   title=""
  *   showBack
- *   theme="dark"
  *   onBack={() => setView('list')}
  *   onClose={() => setOpen(false)}
  * />
  * ```
  */
-export function ModalHeader({ title, theme = 'dark', showBack = false, onClose, onBack, className }: ModalHeaderProps) {
-	const iconColor = theme === 'dark' ? 'text-zinc-50' : 'text-zinc-700';
-	const iconHover = theme === 'dark' ? 'hover:text-white' : 'hover:text-zinc-600';
-
+export function ModalHeader({ title, titleId, showBack = false, onClose, onBack, className }: ModalHeaderProps) {
 	return (
 		<div className={cn('w-full flex items-center justify-between', className)}>
 			{/* Left side: Back button or title */}
@@ -57,17 +50,15 @@ export function ModalHeader({ title, theme = 'dark', showBack = false, onClose, 
 					onClick={onBack}
 					className={cn(
 						'size-6 flex items-center justify-center rounded transition-colors',
-						iconColor,
-						iconHover,
-						'focus:outline-none focus-visible:ring-2',
-						theme === 'dark' ? 'focus-visible:ring-white/30' : 'focus-visible:ring-zinc-400',
+						'text-card-foreground hover:text-muted-foreground',
+						'focus:outline-none focus-visible:ring-2 focus-visible:ring-ring',
 					)}
 					aria-label="Go back"
 				>
 					<ArrowLeft size={24} />
 				</button>
 			) : (
-				<h2 className={cn('text-lg font-semibold', theme === 'dark' ? 'text-zinc-50' : 'text-zinc-700')}>
+				<h2 id={titleId} className="text-lg font-semibold text-card-foreground">
 					{title}
 				</h2>
 			)}
@@ -78,10 +69,8 @@ export function ModalHeader({ title, theme = 'dark', showBack = false, onClose, 
 				onClick={onClose}
 				className={cn(
 					'size-6 flex items-center justify-center rounded transition-colors',
-					iconColor,
-					iconHover,
-					'focus:outline-none focus-visible:ring-2',
-					theme === 'dark' ? 'focus-visible:ring-white/30' : 'focus-visible:ring-zinc-400',
+					'text-card-foreground hover:text-muted-foreground',
+					'focus:outline-none focus-visible:ring-2 focus-visible:ring-ring',
 				)}
 				aria-label="Close modal"
 			>

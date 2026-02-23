@@ -1,4 +1,5 @@
 import type React from 'react';
+import { cn } from '@/lib/utils';
 import type { BalanceAmountProps } from './types';
 import { formatBalance, formatFiatValue } from './utils';
 
@@ -14,13 +15,9 @@ export const BalanceAmount: React.FC<BalanceAmountProps> = ({
 	locale = 'en-US',
 	isPrivate = false,
 	size = 'md',
-	variant = 'default',
 	className = '',
+	tokenSymbol,
 }) => {
-	const isDark = variant === 'dark' || variant === 'default';
-
-	const textColor = isDark ? 'text-white' : 'text-zinc-900';
-
 	const sizeStyles = {
 		sm: 'text-xl font-semibold',
 		md: 'text-2xl font-bold',
@@ -31,10 +28,12 @@ export const BalanceAmount: React.FC<BalanceAmountProps> = ({
 		? '••••••'
 		: isFiat
 			? formatFiatValue(balance, currency, locale, tokenDecimals)
-			: formatBalance(balance, { tokenDecimals, displayDecimals, locale });
+			: tokenSymbol
+				? `${formatBalance(balance, { tokenDecimals, displayDecimals, locale })} ${tokenSymbol}`
+				: formatBalance(balance, { tokenDecimals, displayDecimals, locale });
 
 	return (
-		<div className={`${sizeStyles} ${textColor} ${className}`} aria-live="polite">
+		<div className={cn(sizeStyles, 'text-card-foreground', className)} aria-live="polite">
 			{formattedBalance}
 		</div>
 	);

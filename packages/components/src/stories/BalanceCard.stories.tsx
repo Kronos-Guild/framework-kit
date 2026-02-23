@@ -13,10 +13,6 @@ const meta = {
 		layout: 'centered',
 	},
 	argTypes: {
-		variant: {
-			control: 'select',
-			options: ['default', 'dark', 'light'],
-		},
 		size: {
 			control: 'select',
 			options: ['sm', 'md', 'lg'],
@@ -51,28 +47,26 @@ const sampleTokens = [
 ];
 
 /**
- * Default dark variant with balance and tokens
+ * Default with balance and tokens
  */
 export const Default: Story = {
 	args: {
 		walletAddress: sampleWalletAddress,
 		totalBalance: lamports(34_810_000_000n),
-		isFiatBalance: true,
+		tokenSymbol: 'SOL',
 		tokens: sampleTokens,
-		variant: 'dark',
 	},
 };
 
 /**
- * Light variant
+ * Empty balance
  */
-export const Light: Story = {
+export const EmptyBalance: Story = {
 	args: {
 		walletAddress: altWalletAddress,
 		totalBalance: lamports(0n),
 		isFiatBalance: false,
 		tokens: [],
-		variant: 'light',
 		defaultExpanded: true,
 	},
 };
@@ -85,19 +79,6 @@ export const Loading: Story = {
 		walletAddress: sampleWalletAddress,
 		totalBalance: lamports(0n),
 		isLoading: true,
-		variant: 'dark',
-	},
-};
-
-/**
- * Loading state - light variant
- */
-export const LoadingLight: Story = {
-	args: {
-		walletAddress: sampleWalletAddress,
-		totalBalance: lamports(0n),
-		isLoading: true,
-		variant: 'light',
 	},
 };
 
@@ -110,7 +91,6 @@ export const ZeroBalance: Story = {
 		totalBalance: lamports(0n),
 		isFiatBalance: false,
 		tokens: [],
-		variant: 'dark',
 	},
 };
 
@@ -123,7 +103,6 @@ export const ZeroBalanceExpanded: Story = {
 		totalBalance: lamports(0n),
 		isFiatBalance: false,
 		tokens: [],
-		variant: 'dark',
 		defaultExpanded: true,
 	},
 };
@@ -137,21 +116,6 @@ export const WithTokensExpanded: Story = {
 		totalBalance: lamports(34_810_000_000n),
 		isFiatBalance: true,
 		tokens: sampleTokens,
-		variant: 'dark',
-		defaultExpanded: true,
-	},
-};
-
-/**
- * Light variant with tokens expanded
- */
-export const LightWithTokensExpanded: Story = {
-	args: {
-		walletAddress: sampleWalletAddress,
-		totalBalance: lamports(34_810_000_000n),
-		isFiatBalance: true,
-		tokens: sampleTokens,
-		variant: 'light',
 		defaultExpanded: true,
 	},
 };
@@ -166,26 +130,11 @@ export const WithError: Story = {
 		isFiatBalance: true,
 		error: 'Error loading tokens.',
 		onRetry: () => console.log('Retry clicked'),
-		variant: 'dark',
 	},
 };
 
 /**
- * Error state - light variant
- */
-export const WithErrorLight: Story = {
-	args: {
-		walletAddress: sampleWalletAddress,
-		totalBalance: lamports(0n),
-		isFiatBalance: true,
-		error: 'Error loading tokens.',
-		onRetry: () => console.log('Retry clicked'),
-		variant: 'light',
-	},
-};
-
-/**
- * Small size variant
+ * Small size
  */
 export const SmallSize: Story = {
 	args: {
@@ -193,13 +142,12 @@ export const SmallSize: Story = {
 		totalBalance: lamports(34_810_000_000n),
 		isFiatBalance: true,
 		tokens: sampleTokens,
-		variant: 'dark',
 		size: 'sm',
 	},
 };
 
 /**
- * Large size variant
+ * Large size
  */
 export const LargeSize: Story = {
 	args: {
@@ -207,7 +155,6 @@ export const LargeSize: Story = {
 		totalBalance: lamports(34_810_000_000n),
 		isFiatBalance: true,
 		tokens: sampleTokens,
-		variant: 'dark',
 		size: 'lg',
 	},
 };
@@ -220,8 +167,20 @@ export const CryptoBalance: Story = {
 		walletAddress: sampleWalletAddress,
 		totalBalance: lamports(1_523_400_000n),
 		isFiatBalance: false,
+		tokenSymbol: 'SOL',
 		displayDecimals: 4,
 		tokens: [{ symbol: 'SOL', balance: 1.5234 }],
-		variant: 'dark',
+	},
+};
+
+/**
+ * Token symbol balance display (e.g. "4.50 SOL")
+ */
+export const TokenSymbolBalance: Story = {
+	args: {
+		walletAddress: sampleWalletAddress,
+		totalBalance: lamports(4_500_000_000n),
+		tokenSymbol: 'SOL',
+		tokens: sampleTokens,
 	},
 };
