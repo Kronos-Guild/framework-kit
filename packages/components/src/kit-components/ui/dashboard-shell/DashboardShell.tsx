@@ -57,7 +57,7 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({
 				</header>
 			)}
 			{/* main content slot */}
-			<main className={cn('relative z-[1] flex-1 p-4 md:p-6 lg:p-8', contentClassName)}>{children}</main>
+			<main className={cn('relative z-10 flex-1 p-4 md:p-6 lg:p-8', contentClassName)}>{children}</main>
 		</div>
 	);
 };
