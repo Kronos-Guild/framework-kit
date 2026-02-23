@@ -20,14 +20,13 @@ interface TransactionToastContextValue {
 // provider props
 export interface TransactionToastProviderProps {
 	children: React.ReactNode;
-	theme?: 'light' | 'dark';
 }
 
 //context
 export const TransactionToastContext = createContext<TransactionToastContextValue | null>(null);
 
 //provider component
-export const TransactionToastProvider: React.FC<TransactionToastProviderProps> = ({ children, theme = 'light' }) => {
+export const TransactionToastProvider: React.FC<TransactionToastProviderProps> = ({ children }) => {
 	const [toasts, setToasts] = useState<ToastItem[]>([]);
 
 	//toast function to add new toast
@@ -61,7 +60,7 @@ export const TransactionToastProvider: React.FC<TransactionToastProviderProps> =
 							'data-[state=closed]:slide-out-to-right-full data-[state=open]:slide-in-from-right-full',
 						)}
 					>
-						<TransactionToast {...t} theme={theme} />
+						<TransactionToast {...t} />
 					</ToastPrimitive.Root>
 				))}
 				<ToastPrimitive.Viewport

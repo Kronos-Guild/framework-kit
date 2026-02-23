@@ -47,23 +47,14 @@ describe('DashboardShell', () => {
 		);
 		expect(screen.queryByRole('banner')).not.toBeInTheDocument();
 	});
-	// test that light theme is the default
-	it('applies light theme by default', () => {
+	// test that semantic bg-background token is applied
+	it('applies bg-background semantic token', () => {
 		render(
 			<DashboardShell data-testid="shell">
 				<p>Content</p>
 			</DashboardShell>,
 		);
-		expect(screen.getByTestId('shell')).toHaveClass('bg-zinc-100');
-	});
-	// test that dark theme is applied when specified
-	it('applies dark theme when specified', () => {
-		render(
-			<DashboardShell data-testid="shell" theme="dark">
-				<p>Content</p>
-			</DashboardShell>,
-		);
-		expect(screen.getByTestId('shell')).toHaveClass('bg-zinc-900');
+		expect(screen.getByTestId('shell')).toHaveClass('bg-background');
 	});
 	// test that custom classes are applied
 	it('applies custom className', () => {
@@ -118,5 +109,79 @@ describe('DashboardShell', () => {
 		expect(screen.getByRole('banner')).toBeInTheDocument();
 		// children render inside <main> element
 		expect(screen.getByRole('main')).toBeInTheDocument();
+	});
+	// test that rounded corners are applied by default
+	it('applies rounded-3xl by default', () => {
+		render(
+			<DashboardShell data-testid="shell">
+				<p>Content</p>
+			</DashboardShell>,
+		);
+		expect(screen.getByTestId('shell')).toHaveClass('rounded-3xl');
+	});
+	// test that rounded corners can be disabled
+	it('does not apply rounded-3xl when rounded is false', () => {
+		render(
+			<DashboardShell data-testid="shell" rounded={false}>
+				<p>Content</p>
+			</DashboardShell>,
+		);
+		expect(screen.getByTestId('shell')).not.toHaveClass('rounded-3xl');
+	});
+	// test that headerClassName is applied
+	it('applies headerClassName to the header element', () => {
+		render(
+			<DashboardShell header={<span>Nav</span>} headerClassName="custom-header">
+				<p>Content</p>
+			</DashboardShell>,
+		);
+		expect(screen.getByRole('banner')).toHaveClass('custom-header');
+	});
+	// test that contentClassName is applied
+	it('applies contentClassName to the main element', () => {
+		render(
+			<DashboardShell contentClassName="custom-content">
+				<p>Content</p>
+			</DashboardShell>,
+		);
+		expect(screen.getByRole('main')).toHaveClass('custom-content');
+	});
+	// test responsive padding on header
+	it('applies responsive padding to header', () => {
+		render(
+			<DashboardShell header={<span>Nav</span>}>
+				<p>Content</p>
+			</DashboardShell>,
+		);
+		const header = screen.getByRole('banner');
+		expect(header).toHaveClass('p-4');
+		expect(header).toHaveClass('md:p-6');
+		expect(header).toHaveClass('lg:p-8');
+	});
+	// test responsive padding on main
+	it('applies responsive padding to main', () => {
+		render(
+			<DashboardShell>
+				<p>Content</p>
+			</DashboardShell>,
+		);
+		const main = screen.getByRole('main');
+		expect(main).toHaveClass('p-4');
+		expect(main).toHaveClass('md:p-6');
+		expect(main).toHaveClass('lg:p-8');
+	});
+	// test lowered z-index on header and main
+	it('uses z-[1] instead of z-10', () => {
+		render(
+			<DashboardShell header={<span>Nav</span>}>
+				<p>Content</p>
+			</DashboardShell>,
+		);
+		const header = screen.getByRole('banner');
+		const main = screen.getByRole('main');
+		expect(header).toHaveClass('z-[1]');
+		expect(main).toHaveClass('z-[1]');
+		expect(header).not.toHaveClass('z-10');
+		expect(main).not.toHaveClass('z-10');
 	});
 });

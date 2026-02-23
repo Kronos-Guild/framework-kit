@@ -24,8 +24,6 @@ export interface TransactionToastData {
 
 //Props for the visual toast component
 export interface TransactionToastProps extends TransactionToastData {
-	// color theme (default: 'light')
-	theme?: 'light' | 'dark';
 	// auto-dismiss after timeout (default: 5000ms for success, infinity for pending/error)
 	duration?: number;
 	// additional CSS classes
@@ -72,10 +70,8 @@ export const TransactionToast: React.FC<TransactionToastProps> = ({
 	status,
 	type = 'sent',
 	network = 'mainnet-beta',
-	theme = 'light',
 	className,
 }) => {
-	const isDark = theme === 'dark';
 	const message = MESSAGES[type][status];
 	const explorerUrl = getExplorerUrl(signature, network);
 
@@ -88,21 +84,20 @@ export const TransactionToast: React.FC<TransactionToastProps> = ({
 			role={role}
 			aria-live={ariaLive}
 			className={cn(
-				'inline-flex items-center gap-2 rounded-md px-2 py-2',
-				isDark ? 'bg-zinc-800 text-zinc-50' : 'bg-zinc-50 text-zinc-900',
+				'inline-flex items-center gap-2 rounded-md bg-card px-2 py-2 text-card-foreground',
 				className,
 			)}
 		>
 			{/* Icon based on status */}
-			{status === 'pending' && <Loader2 size={16} className="animate-spin text-zinc-500" />}
+			{status === 'pending' && <Loader2 size={16} className="animate-spin text-muted-foreground" />}
 			{status === 'success' && (
-				<div className="flex size-4 items-center justify-center rounded-full bg-green-500/20">
-					<Check size={12} className="text-green-600" />
+				<div className="flex size-4 items-center justify-center rounded-full bg-success/20">
+					<Check size={12} className="text-success" />
 				</div>
 			)}
 			{status === 'error' && (
-				<div className="flex size-4 items-center justify-center rounded-full bg-red-500/20">
-					<X size={12} className="text-red-600" />
+				<div className="flex size-4 items-center justify-center rounded-full bg-destructive/20">
+					<X size={12} className="text-destructive" />
 				</div>
 			)}
 
@@ -113,12 +108,7 @@ export const TransactionToast: React.FC<TransactionToastProps> = ({
 				target="_blank"
 				rel="noopener noreferrer"
 				aria-label="View transaction on Solana Explorer"
-				className={cn(
-					'inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-xs',
-					isDark
-						? 'bg-zinc-700 text-zinc-50 hover:bg-zinc-600'
-						: 'bg-zinc-200 text-zinc-700 hover:bg-zinc-300',
-				)}
+				className="inline-flex items-center gap-1 rounded border border-border bg-card px-1.5 py-0.5 text-xs text-primary hover:opacity-80"
 			>
 				View
 				<ExternalLink size={10} />

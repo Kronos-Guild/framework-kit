@@ -11,20 +11,11 @@ const meta: Meta<typeof DashboardShell> = {
 		docs: {
 			description: {
 				component:
-					'A page-level layout container for Solana dApp dashboards. Provides consistent structure with optional header slot, dot grid background pattern, and theme support.',
+					'A page-level layout container for Solana dApp dashboards. Provides consistent structure with optional header slot and dot grid background pattern.',
 			},
 		},
 	},
 	argTypes: {
-		theme: {
-			description: 'Color theme for the shell',
-			control: 'select',
-			options: ['light', 'dark'],
-			table: {
-				defaultValue: { summary: 'light' },
-				type: { summary: "'light' | 'dark'" },
-			},
-		},
 		header: {
 			description: 'Optional header content (navigation, wallet button, etc.)',
 			control: false,
@@ -71,35 +62,6 @@ export const Default: Story = {
 	},
 };
 
-// for light and dark theme variants
-
-export const Light: Story = {
-	name: 'Theme: Light',
-	args: {
-		theme: 'light',
-		children: (
-			<div className="flex items-center justify-center h-64">
-				<p className="text-zinc-500">Light theme (default)</p>
-			</div>
-		),
-	},
-};
-
-export const Dark: Story = {
-	name: 'Theme: Dark',
-	args: {
-		theme: 'dark',
-		children: (
-			<div className="flex items-center justify-center h-64">
-				<p className="text-zinc-400">Dark theme</p>
-			</div>
-		),
-	},
-	parameters: {
-		backgrounds: { default: 'dark' },
-	},
-};
-
 // for variants with header, dot grid, and without header
 
 export const WithHeader: Story = {
@@ -125,29 +87,6 @@ export const WithHeader: Story = {
 				story: 'The header slot accepts any React content. It renders in a flex container with space-between alignment.',
 			},
 		},
-	},
-};
-
-export const WithHeaderDark: Story = {
-	name: 'With Header (Dark)',
-	args: {
-		theme: 'dark',
-		header: (
-			<>
-				<div className="text-zinc-200 font-semibold">My dApp</div>
-				<button type="button" className="px-4 py-2 bg-white text-zinc-900 rounded-lg text-sm">
-					Connect Wallet
-				</button>
-			</>
-		),
-		children: (
-			<div className="flex items-center justify-center h-64">
-				<p className="text-zinc-400">Content below header</p>
-			</div>
-		),
-	},
-	parameters: {
-		backgrounds: { default: 'dark' },
 	},
 };
 
@@ -266,65 +205,6 @@ export const DashboardWithCards: Story = {
 	},
 };
 
-export const DashboardWithCardsDark: Story = {
-	name: 'Composition: Dashboard with Cards (Dark)',
-	args: {
-		theme: 'dark',
-		header: (
-			<>
-				<div className="text-zinc-200 font-semibold">Solana Wallet</div>
-				<div className="flex items-center gap-2">
-					<span className="text-sm text-zinc-400">Mainnet</span>
-					<button type="button" className="px-4 py-2 bg-white text-zinc-900 rounded-lg text-sm">
-						6DM1...1D4K
-					</button>
-				</div>
-			</>
-		),
-		children: (
-			<div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl mx-auto">
-				{/* Balance Card Mock */}
-				<div className="bg-zinc-800 rounded-xl p-6 border border-zinc-700">
-					<p className="text-sm text-zinc-400 mb-1">Total Balance</p>
-					<p className="text-3xl font-bold text-white">$34.81</p>
-					<div className="mt-4 space-y-2">
-						<div className="flex justify-between text-sm">
-							<span className="text-zinc-400">USDC</span>
-							<span className="text-zinc-200">$15.50</span>
-						</div>
-						<div className="flex justify-between text-sm">
-							<span className="text-zinc-400">USDT</span>
-							<span className="text-zinc-200">$10.18</span>
-						</div>
-					</div>
-				</div>
-				{/* Swap Widget Mock */}
-				<div className="bg-zinc-800 rounded-xl p-6 border border-zinc-700">
-					<p className="text-sm text-zinc-400 mb-4">Swap</p>
-					<div className="space-y-3">
-						<div className="bg-zinc-900 rounded-lg p-3">
-							<p className="text-xs text-zinc-500">Pay</p>
-							<p className="text-xl font-semibold text-white">1.21 SOL</p>
-						</div>
-						<div className="bg-zinc-900 rounded-lg p-3">
-							<p className="text-xs text-zinc-500">Receive</p>
-							<p className="text-xl font-semibold text-white">1324.13 USDC</p>
-						</div>
-					</div>
-				</div>
-			</div>
-		),
-	},
-	parameters: {
-		backgrounds: { default: 'dark' },
-		docs: {
-			description: {
-				story: 'Dark theme variant of the dashboard layout.',
-			},
-		},
-	},
-};
-
 export const LoadingState: Story = {
 	name: 'Composition: Loading State',
 	args: {
@@ -367,7 +247,6 @@ export const LoadingState: Story = {
 export const Playground: Story = {
 	name: 'Playground',
 	args: {
-		theme: 'light',
 		showDotGrid: false,
 		header: (
 			<>
