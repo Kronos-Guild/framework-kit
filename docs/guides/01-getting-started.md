@@ -32,13 +32,21 @@ Built with React 19, TypeScript, Tailwind CSS v4, and Radix UI primitives. Shadc
 | Component | Purpose |
 |-----------|---------|
 | Skeleton | Loading placeholders |
-| AddressDisplay | Truncated addresses with copy + explorer link |
+| AddressDisplay | Truncated addresses with copy and explorer link |
 | TransactionToast | Transaction status notifications |
+| ConnectWalletButton | Wallet connection with state management |
+| NetworkSwitcher | Solana network selection dropdown |
+| BalanceCard | Wallet balance display with token list |
+| TransactionTable | Transaction history with filtering |
+| WalletModal | Wallet selection modal |
+| DashboardShell | Page layout with header and content slots |
+| SwapInput | Token swap input with amount handling |
 
 ## Prerequisites
 
 - React 19 project with TypeScript
 - Tailwind CSS v4 configured
+- `@solana/kit` and `@solana/client` installed (required for component types like `Address`, `Lamports`, `ClusterMoniker`)
 - Basic React knowledge
 
 ## Setup
@@ -126,9 +134,6 @@ All Framework Kit components support light and dark themes via the `theme` prop.
 <Skeleton className="h-4 w-32" theme="dark" />
 ```
 
-(See: Skeleton with light theme)
-(See: Skeleton with dark theme)
-
 Components use Tailwind's zinc palette:
 - **Light:** `zinc-200` background
 - **Dark:** `zinc-800` background
@@ -159,8 +164,6 @@ function WalletCardSkeleton({ theme = "light" }: { theme?: "light" | "dark" }) {
   );
 }
 ```
-
-(See: Loading card composition example)
 
 ### Conditional Rendering
 
