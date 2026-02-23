@@ -43,7 +43,7 @@ export const BalanceCard: React.FC<BalanceCardProps> = ({
 	tokenSymbol,
 	currency = 'USD',
 	displayDecimals = 2,
-	tokens = [],
+	tokens = EMPTY_TOKENS,
 	isLoading = false,
 	error,
 	onRetry,
