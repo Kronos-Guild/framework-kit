@@ -64,7 +64,6 @@ function dateFilterToRangeSeconds(filter: TransactionDateFilter): number | null 
  *   typeFilter={typeFilter}
  *   onTypeFilterChange={setTypeFilter}
  *   onViewTransaction={(tx) => openExplorer(tx.tx.signature)}
- *   theme="light"
  * />
  * ```
  */
@@ -72,7 +71,6 @@ export const TransactionTable: React.FC<TransactionTableProps> = ({
 	transactions,
 	walletAddress,
 	isLoading = false,
-	theme = 'dark',
 	size = 'md',
 	dateFilter: dateFilterProp,
 	onDateFilterChange,
@@ -86,8 +84,6 @@ export const TransactionTable: React.FC<TransactionTableProps> = ({
 	onViewTransaction,
 	renderRowAction,
 }) => {
-	const isDark = theme === 'dark';
-
 	const [internalDate, setInternalDate] = useState<TransactionDateFilter>('all');
 	const [internalType, setInternalType] = useState<TransactionTypeFilter>('all');
 
@@ -124,38 +120,26 @@ export const TransactionTable: React.FC<TransactionTableProps> = ({
 		return txs;
 	}, [transactions, typeFilter, walletAddress, dateFilter]);
 
-	const containerStyles = cn(
-		'rounded-2xl border',
-		isDark ? 'border-zinc-700 bg-zinc-800' : 'border-zinc-200 bg-white',
-		className,
-	);
+	const containerStyles = cn('rounded-2xl border border-border bg-card', className);
 
 	const headerRowStyles = cn(
-		'grid grid-cols-4 items-center gap-6 border-b px-4 py-2 text-xs font-normal',
-		isDark ? 'border-zinc-700 text-zinc-400' : 'border-zinc-200 text-zinc-500',
+		'grid grid-cols-4 items-center gap-6 border-b border-border px-4 py-2 text-xs font-normal text-muted-foreground',
 	);
 
 	return (
 		<section className={containerStyles} aria-label="Transaction table">
-			<div
-				className={cn(
-					'flex items-center justify-end gap-2 px-4 py-2',
-					isDark ? 'text-zinc-200' : 'text-zinc-700',
-				)}
-			>
+			<div className={cn('flex items-center justify-end gap-2 px-4 py-2 text-foreground')}>
 				<FilterDropdown
 					icon={<Calendar className="size-3.5" aria-hidden="true" />}
 					value={dateFilter}
 					options={dateFilterOptions}
 					onChange={handleDateChange}
-					theme={theme}
 				/>
 				<FilterDropdown
 					icon={<ListFilter className="size-3.5" aria-hidden="true" />}
 					value={typeFilter}
 					options={typeFilterOptions}
 					onChange={handleTypeChange}
-					theme={theme}
 				/>
 			</div>
 
@@ -167,11 +151,9 @@ export const TransactionTable: React.FC<TransactionTableProps> = ({
 			</div>
 
 			{isLoading ? (
-				<TransactionTableSkeleton theme={theme} size={size} />
+				<TransactionTableSkeleton size={size} />
 			) : filteredTransactions.length === 0 ? (
-				<div className={cn('px-4 py-10 text-center text-sm', isDark ? 'text-zinc-400' : 'text-zinc-500')}>
-					{emptyMessage}
-				</div>
+				<div className={cn('px-4 py-10 text-center text-sm text-muted-foreground')}>{emptyMessage}</div>
 			) : (
 				<div className="overflow-hidden rounded-b-2xl">
 					{filteredTransactions.map((tx) => (
@@ -179,7 +161,6 @@ export const TransactionTable: React.FC<TransactionTableProps> = ({
 							key={String(tx.tx.signature)}
 							tx={tx}
 							walletAddress={walletAddress}
-							theme={theme}
 							size={size}
 							locale={locale}
 							onViewTransaction={onViewTransaction}

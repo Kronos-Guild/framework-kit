@@ -1,12 +1,6 @@
 import type { Address } from '@solana/kit';
 
 /**
- * Visual variant for the SwapInput component.
- * 'default' and 'dark' both render the dark theme.
- */
-export type SwapInputVariant = 'default' | 'dark' | 'light';
-
-/**
  * Size variant for the SwapInput component.
  */
 export type SwapInputSize = 'sm' | 'md' | 'lg';
@@ -28,7 +22,8 @@ export interface SwapTokenInfo {
 }
 
 /**
- * Props for the TokenInput sub-component (one input card — Pay or Receive)
+ * Props for the TokenInput sub-component (one input card — Pay or Receive).
+ * Can be used standalone (e.g. send / stake / deposit flows) or composed inside SwapInput.
  */
 export interface TokenInputProps {
 	/** Label displayed above the input (e.g., "Pay", "Receive") */
@@ -39,8 +34,10 @@ export interface TokenInputProps {
 	onAmountChange?: (value: string) => void;
 	/** Currently selected token */
 	token?: SwapTokenInfo;
-	/** Callback when the token selector button is clicked */
-	onTokenSelect?: () => void;
+	/** List of tokens available in the dropdown. If omitted or empty the selector is display-only. */
+	tokens?: SwapTokenInfo[];
+	/** Callback when a token is selected from the dropdown */
+	onTokenChange?: (token: SwapTokenInfo) => void;
 	/** User's balance for the selected token (display string, e.g. "4.32") */
 	balance?: string;
 	/** Whether the input is read-only (for the "Receive" side when computed) */
@@ -49,8 +46,6 @@ export interface TokenInputProps {
 	isLoading?: boolean;
 	/** Error message to display (e.g., "Insufficient balance") */
 	error?: string;
-	/** Visual variant */
-	variant?: SwapInputVariant;
 	/** Size variant */
 	size?: SwapInputSize;
 	/** Additional CSS classes */
@@ -73,12 +68,16 @@ export interface SwapInputProps {
 	onReceiveAmountChange?: (value: string) => void;
 	/** Token selected for the "Pay" side */
 	payToken?: SwapTokenInfo;
-	/** Callback when the pay token selector is clicked */
-	onPayTokenSelect?: () => void;
+	/** Available tokens for the pay dropdown */
+	payTokens?: SwapTokenInfo[];
+	/** Callback when the pay token is changed via dropdown */
+	onPayTokenChange?: (token: SwapTokenInfo) => void;
 	/** Token selected for the "Receive" side */
 	receiveToken?: SwapTokenInfo;
-	/** Callback when the receive token selector is clicked */
-	onReceiveTokenSelect?: () => void;
+	/** Available tokens for the receive dropdown */
+	receiveTokens?: SwapTokenInfo[];
+	/** Callback when the receive token is changed via dropdown */
+	onReceiveTokenChange?: (token: SwapTokenInfo) => void;
 	/** Callback when the swap direction button is pressed (swaps pay/receive tokens) */
 	onSwapDirection?: () => void;
 	/** User's balance for the pay token (display string, e.g. "4.32") */
@@ -89,8 +88,6 @@ export interface SwapInputProps {
 	isLoading?: boolean;
 	/** Whether the swap is currently executing */
 	isSwapping?: boolean;
-	/** Visual variant */
-	variant?: SwapInputVariant;
 	/** Size variant */
 	size?: SwapInputSize;
 	/** Additional CSS classes for the outer wrapper */
@@ -103,8 +100,6 @@ export interface SwapInputProps {
  * Props for the SwapInputSkeleton component
  */
 export interface SwapInputSkeletonProps {
-	/** Visual variant */
-	variant?: SwapInputVariant;
 	/** Size variant */
 	size?: SwapInputSize;
 	/** Additional CSS classes */

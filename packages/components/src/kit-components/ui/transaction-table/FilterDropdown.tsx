@@ -26,13 +26,11 @@ export function FilterDropdown<TValue extends string>({
 	value,
 	options,
 	onChange,
-	theme = 'dark',
 	className,
 }: FilterDropdownProps<TValue>) {
 	const [open, setOpen] = useState(false);
 	const id = useId();
 	const rootRef = useRef<HTMLDivElement | null>(null);
-	const isDark = theme === 'dark';
 
 	const selectedLabel = useMemo(() => options.find((o) => o.value === value)?.label ?? value, [options, value]);
 
@@ -59,16 +57,12 @@ export function FilterDropdown<TValue extends string>({
 	}, [open]);
 
 	const triggerStyles = cn(
-		'inline-flex items-center gap-1.5 rounded-md border px-2 py-1.5 text-xs transition-colors',
-		'focus:outline-none focus:ring-2 focus:ring-offset-2',
-		isDark
-			? 'border-zinc-700 bg-zinc-700 text-zinc-200 focus:ring-zinc-200/20 focus:ring-offset-zinc-900'
-			: 'border-zinc-200 bg-zinc-100 text-zinc-700 focus:ring-zinc-900/15 focus:ring-offset-white',
+		'inline-flex items-center gap-1.5 rounded-md border border-border bg-muted text-foreground px-2 py-1.5 text-xs transition-colors',
+		'focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background',
 	);
 
 	const menuStyles = cn(
-		'absolute right-0 top-full z-50 mt-2 min-w-36 rounded-md border p-1 shadow-lg',
-		isDark ? 'border-zinc-700 bg-zinc-800 text-zinc-100' : 'border-zinc-200 bg-white text-zinc-900',
+		'absolute right-0 top-full z-50 mt-2 min-w-36 rounded-md border border-border bg-card text-card-foreground p-1 shadow-lg',
 	);
 
 	return (
@@ -81,11 +75,9 @@ export function FilterDropdown<TValue extends string>({
 				aria-controls={id}
 				onClick={() => setOpen((prev) => !prev)}
 			>
-				<span className={cn('inline-flex items-center', isDark ? 'text-zinc-200' : 'text-zinc-600')}>
-					{icon}
-				</span>
+				<span className={cn('inline-flex items-center text-foreground')}>{icon}</span>
 				<span className="sr-only">Selected: {selectedLabel}</span>
-				<ChevronDown className={cn('shrink-0 size-3.5', isDark ? 'text-zinc-100' : 'text-zinc-500')} />
+				<ChevronDown className={cn('shrink-0 size-3.5 text-muted-foreground')} />
 			</button>
 
 			{open ? (
@@ -100,8 +92,8 @@ export function FilterDropdown<TValue extends string>({
 								aria-checked={selected}
 								className={cn(
 									'flex w-full items-center justify-between rounded px-2 py-1.5 text-left text-sm transition-colors',
-									isDark ? 'hover:bg-zinc-700/60' : 'hover:bg-zinc-50',
-									selected ? (isDark ? 'bg-zinc-700/70' : 'bg-zinc-100') : undefined,
+									'hover:bg-accent',
+									selected ? 'bg-muted' : undefined,
 								)}
 								onClick={() => {
 									onChange(option.value);

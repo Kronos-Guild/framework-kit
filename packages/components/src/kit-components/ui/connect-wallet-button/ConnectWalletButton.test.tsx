@@ -298,29 +298,6 @@ describe('ConnectWalletButton', () => {
 		});
 	});
 
-	describe('theme support', () => {
-		it('applies dark theme styles', () => {
-			const { container } = render(
-				<ConnectWalletButton status="disconnected" theme="dark" onConnect={() => {}} onDisconnect={() => {}} />,
-			);
-			const button = container.querySelector('button');
-			expect(button).toHaveClass('bg-zinc-700');
-		});
-
-		it('applies light theme styles', () => {
-			const { container } = render(
-				<ConnectWalletButton
-					status="disconnected"
-					theme="light"
-					onConnect={() => {}}
-					onDisconnect={() => {}}
-				/>,
-			);
-			const button = container.querySelector('button');
-			expect(button).toHaveClass('bg-white');
-		});
-	});
-
 	describe('balance display', () => {
 		it('shows loading state when balanceLoading is true', async () => {
 			render(

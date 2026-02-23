@@ -43,15 +43,6 @@ const meta: Meta<typeof TransactionToast> = {
 				type: { summary: "'sent' | 'received' | 'swapped'" },
 			},
 		},
-		theme: {
-			description: 'Color theme for the toast',
-			control: 'select',
-			options: ['light', 'dark'],
-			table: {
-				defaultValue: { summary: 'light' },
-				type: { summary: "'light' | 'dark'" },
-			},
-		},
 		network: {
 			description: 'Solana network for Explorer URL generation',
 			control: 'select',
@@ -180,57 +171,6 @@ export const Swapped: Story = {
 				story: 'Message: "Swap completed successfully"',
 			},
 		},
-	},
-};
-
-// for theme variants
-
-export const Light: Story = {
-	name: 'Theme: Light',
-	args: {
-		signature: mockSignature,
-		status: 'success',
-		type: 'sent',
-		theme: 'light',
-	},
-};
-
-export const Dark: Story = {
-	name: 'Theme: Dark',
-	args: {
-		signature: mockSignature,
-		status: 'success',
-		type: 'sent',
-		theme: 'dark',
-	},
-	parameters: {
-		backgrounds: { default: 'dark' },
-	},
-};
-
-export const DarkPending: Story = {
-	name: 'Theme: Dark (Pending)',
-	args: {
-		signature: mockSignature,
-		status: 'pending',
-		type: 'sent',
-		theme: 'dark',
-	},
-	parameters: {
-		backgrounds: { default: 'dark' },
-	},
-};
-
-export const DarkError: Story = {
-	name: 'Theme: Dark (Error)',
-	args: {
-		signature: mockSignature,
-		status: 'error',
-		type: 'sent',
-		theme: 'dark',
-	},
-	parameters: {
-		backgrounds: { default: 'dark' },
 	},
 };
 
@@ -393,7 +333,7 @@ export const WithProvider: Story = {
 export const WithProviderDark: Story = {
 	name: 'Composition: With Provider (Dark)',
 	render: () => (
-		<TransactionToastProvider theme="dark">
+		<TransactionToastProvider>
 			<div className="p-4 bg-zinc-900 rounded-lg">
 				<InteractiveDemo />
 			</div>
@@ -403,7 +343,7 @@ export const WithProviderDark: Story = {
 		backgrounds: { default: 'dark' },
 		docs: {
 			description: {
-				story: 'Same interactive demo with dark theme.',
+				story: 'Same interactive demo with dark background.',
 			},
 		},
 	},
@@ -417,7 +357,6 @@ export const Playground: Story = {
 		signature: mockSignature,
 		status: 'success',
 		type: 'sent',
-		theme: 'light',
 		network: 'mainnet-beta',
 	},
 	parameters: {

@@ -10,7 +10,6 @@ export type {
 	TransactionTableProps,
 	TransactionTableSize,
 	TransactionTableSkeletonProps,
-	TransactionTableTheme,
 	TransactionTypeFilter,
 } from './types';
 

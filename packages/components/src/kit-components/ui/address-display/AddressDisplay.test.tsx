@@ -109,19 +109,11 @@ describe('AddressDisplay', () => {
 		expect(container.firstChild).toHaveClass('custom-class');
 	});
 
-	describe('theme variants', () => {
-		it('applies light theme classes by default', () => {
+	describe('semantic token styles', () => {
+		it('applies bg-card semantic token on the chip', () => {
 			const { container } = render(<AddressDisplay address={testAddress} />);
-			// Light theme uses bg-zinc-200/40 on the chip
 			const chip = container.querySelector('span > span');
-			expect(chip).toHaveClass('bg-zinc-200/40');
-		});
-
-		it('applies dark theme classes when specified', () => {
-			const { container } = render(<AddressDisplay address={testAddress} theme="dark" />);
-			// Dark theme uses bg-zinc-700/90 on the chip
-			const chip = container.querySelector('span > span');
-			expect(chip).toHaveClass('bg-zinc-700/90');
+			expect(chip).toHaveClass('bg-card');
 		});
 	});
 

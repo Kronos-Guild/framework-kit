@@ -9,7 +9,6 @@ import { BalanceCard } from './BalanceCard';
 
 afterEach(() => {
 	cleanup();
-	vi.unstubAllGlobals();
 });
 
 const testAddress = address('6DMh7fYHrKdCJwCFUQfMfNAdLADi9xqsRKNzmZA31DkK');
@@ -55,15 +54,27 @@ describe('BalanceCard', () => {
 			// Should not have currency symbol
 			expect(screen.queryByText(/\$/)).not.toBeInTheDocument();
 		});
+
+		it('shows token symbol after balance when tokenSymbol is provided', () => {
+			render(<BalanceCard totalBalance={testBalance} tokenSymbol="SOL" />);
+			expect(screen.getByText(/SOL/)).toBeInTheDocument();
+			expect(screen.queryByText(/\$/)).not.toBeInTheDocument();
+		});
+
+		it('does not show token symbol when isFiatBalance is true even if tokenSymbol is set', () => {
+			render(<BalanceCard totalBalance={testBalance} isFiatBalance={true} tokenSymbol="SOL" />);
+			expect(screen.getByText(/\$/)).toBeInTheDocument();
+			expect(screen.queryByText(/SOL/)).not.toBeInTheDocument();
+		});
 	});
 
 	describe('loading state', () => {
 		it('renders skeleton when isLoading is true', () => {
-			render(<BalanceCard totalBalance={testBalance} isLoading={true} />);
+			const { container } = render(<BalanceCard totalBalance={testBalance} isLoading={true} />);
 			// Skeleton should be present, not the balance label
 			expect(screen.queryByText('Total balance')).not.toBeInTheDocument();
-			// BalanceCardSkeleton renders <output aria-label="Loading balance">
-			expect(screen.getByLabelText('Loading balance')).toBeInTheDocument();
+			// Check for skeleton elements (animated divs)
+			expect(container.querySelector('.animate-pulse')).toBeInTheDocument();
 		});
 	});
 
@@ -143,21 +154,20 @@ describe('BalanceCard', () => {
 		});
 	});
 
-	describe('theme variants', () => {
-		it('applies dark theme classes when variant is dark', () => {
-			const { container } = render(<BalanceCard totalBalance={testBalance} variant="dark" />);
-			expect(container.firstChild).toHaveClass('bg-zinc-800');
-		});
-
-		it('applies light theme classes when variant is light', () => {
-			const { container } = render(<BalanceCard totalBalance={testBalance} variant="light" />);
-			expect(container.firstChild).toHaveClass('bg-white');
-		});
-
-		// The "default" variant shares the same dark styles as the "dark" variant
-		it('applies dark theme classes for default variant', () => {
+	describe('semantic tokens', () => {
+		it('uses semantic background token', () => {
 			const { container } = render(<BalanceCard totalBalance={testBalance} />);
-			expect(container.firstChild).toHaveClass('bg-zinc-800');
+			expect(container.firstChild).toHaveClass('bg-card');
+		});
+
+		it('uses semantic foreground token', () => {
+			const { container } = render(<BalanceCard totalBalance={testBalance} />);
+			expect(container.firstChild).toHaveClass('text-card-foreground');
+		});
+
+		it('uses semantic border token', () => {
+			const { container } = render(<BalanceCard totalBalance={testBalance} />);
+			expect(container.firstChild).toHaveClass('border-border');
 		});
 	});
 

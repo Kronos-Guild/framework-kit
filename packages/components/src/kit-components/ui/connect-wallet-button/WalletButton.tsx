@@ -11,98 +11,46 @@ import type { WalletButtonProps } from './types';
 
 /**
  * Button variants using class-variance-authority.
- * Figma specs (nodes 23:32, 23:33, 23:37, 23:42, 23:44, 23:46, 23:98):
- * - Disconnected: h=37px, px=15px, py=10px, rounded=18px
- *   - Dark: bg=#3F3F46, hover=#52525C, text=#FAFAFA
- *   - Light: bg=transparent, hover=#E4E4E7, text=#3F3F46
- * - Loading: h=37px, px=20px, py=10px, rounded=18px
- *   - Dark: bg=#52525C
- *   - Light: bg=#F4F4F5
- *   - Spinner: 24px
- * - Connected: h=37px, px=15px, py=10px, rounded=9px, gap=10px
- *   - bg=#3F3F46, icon=20px, chevron=16px
+ * Uses semantic CSS variable tokens for theming.
  */
 const walletButtonVariants = cva(
-	// Base styles - Figma: text 14px, font-medium
 	[
 		'inline-flex items-center justify-center',
-		'font-medium text-[14px] leading-[17px]',
+		'font-medium text-sm leading-4',
 		'transition-all duration-200 ease-in-out',
-		'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
+		'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-ring',
 		'disabled:pointer-events-none disabled:opacity-50',
 		'cursor-pointer',
 	],
 	{
 		variants: {
 			variant: {
-				/** Outlined button - Light theme disconnected state
-				 * Figma (23:42, 23:44): bg=transparent, hover=zinc-200, text=zinc-700, rounded=18px
-				 */
-				outline: [
-					'border border-zinc-200',
-					'bg-white hover:bg-zinc-200',
-					'text-zinc-700',
-					'focus-visible:ring-zinc-400',
-					'gap-2 rounded-[18px]',
-				],
-				/** Filled button - Dark theme disconnected state
-				 * Figma (23:33): bg=zinc-700, hover=zinc-600, text=zinc-50, rounded=18px
-				 */
+				/** Filled button - Disconnected state */
 				filled: [
-					'border border-transparent',
-					'bg-zinc-700 hover:bg-zinc-600',
-					'text-zinc-50',
-					'focus-visible:ring-zinc-500',
-					'gap-2 rounded-[18px]',
+					'border border-border',
+					'bg-primary hover:bg-accent',
+					'text-primary-foreground',
+					'gap-2 rounded-2xl',
 				],
-				/** Loading state - Dark theme
-				 * Figma (23:32, 23:37): bg=zinc-600, rounded=18px
-				 */
-				loading: [
-					'border border-transparent',
-					'bg-zinc-600',
-					'text-zinc-50',
-					'focus-visible:ring-zinc-500',
-					'rounded-[18px]',
-				],
-				/** Loading state - Light theme
-				 * Figma (23:46): bg=zinc-100, rounded=18px
-				 */
-				loadingLight: [
-					'border border-transparent',
-					'bg-zinc-100',
-					'text-zinc-700',
-					'focus-visible:ring-zinc-400',
-					'rounded-[18px]',
-				],
-				/** Connected state - Dark theme
-				 * Figma (23:98): bg=zinc-700, rounded=9px, gap=10px
-				 */
+				/** Loading state */
+				loading: ['border border-transparent', 'bg-secondary', 'text-card-foreground', 'rounded-2xl'],
+				/** Connected state */
 				connected: [
-					'border border-transparent',
-					'bg-zinc-700 hover:bg-zinc-600',
-					'text-white',
-					'focus-visible:ring-zinc-500',
-					'gap-2.5 rounded-[9px]',
-				],
-				/** Connected state - Light theme */
-				connectedLight: [
-					'border border-zinc-200',
-					'bg-white hover:bg-zinc-200',
-					'text-zinc-700',
-					'focus-visible:ring-zinc-400',
-					'gap-2.5 rounded-[9px]',
+					'border border-border',
+					'bg-card hover:bg-accent',
+					'text-card-foreground',
+					'gap-2.5 rounded-lg',
 				],
 			},
 			size: {
-				/** Default size - Figma: h=37px, px=15px, py=10px */
-				default: 'h-[37px] px-[15px] py-[10px]',
+				/** Default size */
+				default: 'min-h-9 px-4 py-2.5',
 				sm: 'h-8 px-3 py-1.5 text-xs',
 				lg: 'h-12 px-6 py-3 text-base',
-				/** Loading size - Figma: h=37px, px=20px, py=10px (wider padding) */
-				loading: 'h-[37px] px-[20px] py-[10px]',
-				/** Connected size - Figma: h=37px, px=15px, py=10px */
-				connected: 'h-[37px] px-[15px] py-[10px]',
+				/** Loading size (wider horizontal padding) */
+				loading: 'min-h-9 px-5 py-2.5',
+				/** Connected size */
+				connected: 'min-h-9 px-4 py-2.5',
 			},
 		},
 		defaultVariants: {
@@ -116,11 +64,9 @@ export type WalletButtonVariantProps = VariantProps<typeof walletButtonVariants>
 
 export interface WalletButtonFullProps extends WalletButtonProps, WalletButtonVariantProps {
 	/** Button variant style */
-	variant?: 'outline' | 'filled' | 'loading' | 'loadingLight' | 'connected' | 'connectedLight';
+	variant?: 'filled' | 'loading' | 'connected';
 	/** Button size */
 	size?: 'default' | 'sm' | 'lg' | 'loading' | 'connected';
-	/** Theme for the button */
-	theme?: 'dark' | 'light';
 }
 
 /**
@@ -145,32 +91,13 @@ export interface WalletButtonFullProps extends WalletButtonProps, WalletButtonVa
  * ```
  */
 export const WalletButton = forwardRef<HTMLButtonElement, WalletButtonFullProps>(
-	(
-		{
-			connectionState,
-			wallet,
-			isExpanded = false,
-			variant,
-			size,
-			theme = 'dark',
-			className,
-			disabled,
-			children,
-			...props
-		},
-		ref,
-	) => {
-		// Determine variant based on connection state and theme
+	({ connectionState, wallet, isExpanded = false, variant, size, className, disabled, children, ...props }, ref) => {
+		// Determine variant based on connection state
 		const resolvedVariant = (() => {
 			if (variant) return variant;
-			if (connectionState === 'connected') {
-				return theme === 'light' ? 'connectedLight' : 'connected';
-			}
-			if (connectionState === 'connecting') {
-				return theme === 'light' ? 'loadingLight' : 'loading';
-			}
-			// Disconnected state
-			return theme === 'light' ? 'outline' : 'filled';
+			if (connectionState === 'connected') return 'connected';
+			if (connectionState === 'connecting') return 'loading';
+			return 'filled';
 		})();
 
 		// Determine size based on connection state
@@ -185,18 +112,16 @@ export const WalletButton = forwardRef<HTMLButtonElement, WalletButtonFullProps>
 		const renderContent = () => {
 			switch (connectionState) {
 				case 'connecting':
-					// Figma: spinner 24px
 					return <ButtonSpinner size={24} className="text-current" />;
 
 				case 'connected':
-					// Figma: wallet icon 20px, chevron 16px
 					return (
 						<>
 							<ButtonIcon
 								src={wallet?.icon}
 								alt={wallet?.name ?? 'Connected wallet'}
 								size={20}
-								className="rounded-[20px]"
+								className="rounded-full"
 							/>
 							<ChevronIcon direction={isExpanded ? 'up' : 'down'} />
 						</>

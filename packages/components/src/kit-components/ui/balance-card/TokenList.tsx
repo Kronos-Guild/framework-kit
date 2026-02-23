@@ -1,6 +1,7 @@
 import { ChevronUp } from 'lucide-react';
 import type React from 'react';
 import { useId, useState } from 'react';
+import { cn } from '@/lib/utils';
 import type { TokenInfo, TokenListProps } from './types';
 
 /**
@@ -23,15 +24,9 @@ function formatCurrency(value: number | string, currency: string, locale: string
  */
 const TokenRow: React.FC<{
 	token: TokenInfo;
-	variant: 'default' | 'dark' | 'light';
 	locale?: string;
 	currency?: string;
-}> = ({ token, variant, locale = 'en-US', currency = 'USD' }) => {
-	const isDark = variant === 'dark' || variant === 'default';
-
-	const textColor = isDark ? 'text-white' : 'text-zinc-900';
-	const hoverBg = isDark ? 'hover:bg-zinc-600' : 'hover:bg-zinc-50';
-
+}> = ({ token, locale = 'en-US', currency = 'USD' }) => {
 	const displayBalance = token.fiatValue
 		? formatCurrency(token.fiatValue, currency, locale)
 		: typeof token.balance === 'number'
@@ -39,9 +34,9 @@ const TokenRow: React.FC<{
 			: token.balance;
 
 	return (
-		<div className={`flex items-center justify-between py-2 px-1 ${hoverBg} rounded transition-colors`}>
-			<span className={`text-sm ${textColor}`}>{token.symbol}</span>
-			<span className={`text-sm ${textColor}`}>{displayBalance}</span>
+		<div className="flex items-center justify-between py-2 px-1 hover:bg-accent rounded transition-colors">
+			<span className="text-sm text-card-foreground">{token.symbol}</span>
+			<span className="text-sm text-card-foreground">{displayBalance}</span>
 		</div>
 	);
 };
@@ -52,13 +47,13 @@ const TokenRow: React.FC<{
 export const TokenList: React.FC<TokenListProps> = ({
 	tokens,
 	isExpanded: controlledExpanded,
+	defaultExpanded = false,
 	onExpandedChange,
-	variant = 'default',
 	className = '',
 	locale = 'en-US',
 	currency = 'USD',
 }) => {
-	const [internalExpanded, setInternalExpanded] = useState(false);
+	const [internalExpanded, setInternalExpanded] = useState(defaultExpanded);
 	const contentId = useId();
 
 	const isControlled = controlledExpanded !== undefined;
@@ -72,53 +67,49 @@ export const TokenList: React.FC<TokenListProps> = ({
 		onExpandedChange?.(newExpanded);
 	};
 
-	const isDark = variant === 'dark' || variant === 'default';
-
-	const textColor = isDark ? 'text-zinc-300' : 'text-zinc-600';
-	const headerTextColor = isDark ? 'text-zinc-400' : 'text-zinc-500';
-	const borderColor = isDark ? 'border-zinc-700' : 'border-zinc-200';
-	const iconColor = isDark ? 'text-zinc-100' : 'text-zinc-500';
-
 	return (
-		<div className={`border-t ${borderColor} ${className}`}>
+		<div className={cn('border-t border-border', className)}>
 			{/* Toggle header */}
 			<button
 				type="button"
 				onClick={handleToggle}
-				className={`flex items-center justify-between w-full py-3 ${textColor} focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 rounded`}
+				className="flex items-center justify-between w-full py-3 text-muted-foreground rounded focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background"
 				aria-expanded={isExpanded}
 				aria-controls={contentId}
 			>
 				<span className="text-sm">View all tokens</span>
 				<ChevronUp
 					size={20}
-					className={`${iconColor} transition-transform duration-200 ${isExpanded ? '' : 'rotate-180'}`}
+					className={cn(
+						'text-card-foreground transition-transform duration-200',
+						!isExpanded && 'rotate-180',
+					)}
 				/>
 			</button>
 
 			{/* Expandable content */}
 			<div
 				id={contentId}
-				className={`overflow-hidden transition-all duration-200 ${isExpanded ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}
+				className={cn(
+					'overflow-hidden transition-all duration-200',
+					isExpanded ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0',
+				)}
 			>
 				{/* Table header */}
-				<div
-					className={`flex items-center justify-between py-2 px-1 text-xs ${headerTextColor} border-b ${borderColor}`}
-				>
+				<div className="flex items-center justify-between py-2 px-1 text-xs text-muted-foreground border-b border-border">
 					<span>Token</span>
 					<span>Balance</span>
 				</div>
 
 				{/* Token rows */}
 				{tokens.length === 0 ? (
-					<div className={`py-4 text-center text-sm ${textColor}`}>No tokens yet</div>
+					<div className="py-4 text-center text-sm text-muted-foreground">No tokens yet</div>
 				) : (
 					<div className="py-1">
 						{tokens.map((token) => (
 							<TokenRow
 								key={token.mintAddress || token.symbol}
 								token={token}
-								variant={variant}
 								locale={locale}
 								currency={currency}
 							/>

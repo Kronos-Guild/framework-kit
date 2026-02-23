@@ -7,9 +7,6 @@ import type { ClusterMoniker, WalletConnectorMetadata, WalletStatus } from '@sol
 import type { Address, Lamports } from '@solana/kit';
 import type React from 'react';
 
-/** Theme variants for the component */
-export type Theme = 'dark' | 'light';
-
 /** Props for the main WalletButton component */
 export interface WalletButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 	/** Current connection state */
@@ -18,8 +15,6 @@ export interface WalletButtonProps extends React.ButtonHTMLAttributes<HTMLButton
 	wallet?: WalletConnectorMetadata | null;
 	/** Whether the dropdown is expanded (connected state) */
 	isExpanded?: boolean;
-	/** Theme variant (dark/light) */
-	theme?: Theme;
 	/** Custom class name */
 	className?: string;
 }
@@ -85,8 +80,6 @@ export interface WalletDropdownProps {
 	networkStatus?: WalletStatus['status'];
 	/** Callback when network is changed */
 	onNetworkChange?: (network: ClusterMoniker) => void;
-	/** Theme variant (dark/light) */
-	theme?: Theme;
 	/** Custom class name */
 	className?: string;
 	/** Custom label for the disconnect button */

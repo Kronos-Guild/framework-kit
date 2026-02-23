@@ -34,11 +34,6 @@ const meta = {
 	},
 	tags: ['autodocs'],
 	argTypes: {
-		theme: {
-			control: 'radio',
-			options: ['dark', 'light'],
-			description: 'Color theme',
-		},
 		status: {
 			control: 'radio',
 			options: ['disconnected', 'connecting', 'connected', 'error'],
@@ -90,10 +85,9 @@ const mockBalance = lamports(1120000000n); // 1.12 SOL
  */
 export const Interactive: Story = {
 	args: {
-		theme: 'dark',
 		status: 'disconnected',
 	},
-	render: function InteractiveRender(args) {
+	render: function InteractiveRender(_args) {
 		type WalletType = 'backpack' | 'solflare' | 'phantom';
 		type Status = 'disconnected' | 'connecting' | 'connected';
 
@@ -139,7 +133,6 @@ export const Interactive: Story = {
 				</div>
 
 				<ConnectWalletButton
-					theme={args.theme}
 					status={status}
 					isReady={true}
 					wallet={status === 'connected' ? { address: mockAddress } : undefined}
@@ -172,7 +165,6 @@ export const Interactive: Story = {
  */
 export const InteractiveLight: Story = {
 	args: {
-		theme: 'light',
 		status: 'disconnected',
 	},
 	parameters: {
@@ -199,7 +191,6 @@ export const InteractiveLight: Story = {
 		return (
 			<div className="flex flex-col items-center gap-6">
 				<ConnectWalletButton
-					theme="light"
 					status={status}
 					isReady={true}
 					wallet={status === 'connected' ? { address: mockAddress } : undefined}
@@ -230,10 +221,9 @@ export const InteractiveLight: Story = {
  */
 export const InteractiveBalanceLoading: Story = {
 	args: {
-		theme: 'dark',
 		status: 'disconnected',
 	},
-	render: function BalanceLoadingRender(args) {
+	render: function BalanceLoadingRender(_args) {
 		type Status = 'disconnected' | 'connecting' | 'connected';
 		const [status, setStatus] = useState<Status>('disconnected');
 		const [balanceLoading, setBalanceLoading] = useState(true);
@@ -261,7 +251,6 @@ export const InteractiveBalanceLoading: Story = {
 		return (
 			<div className="flex flex-col items-center gap-4">
 				<ConnectWalletButton
-					theme={args.theme}
 					status={status}
 					isReady={true}
 					wallet={status === 'connected' ? { address: mockAddress } : undefined}
@@ -285,63 +274,57 @@ export const InteractiveBalanceLoading: Story = {
 /**
  * **Both Themes Side-by-Side** - Compare dark and light interactive flows
  */
-export const BothThemesInteractive: Story = {
+export const BothStatesInteractive: Story = {
 	args: {
-		theme: 'dark',
 		status: 'disconnected',
 	},
-	parameters: {
-		backgrounds: { default: 'dark' },
-	},
-	render: function BothThemesRender(_args) {
+	render: function BothStatesRender(_args) {
 		type Status = 'disconnected' | 'connecting' | 'connected';
-		const [darkStatus, setDarkStatus] = useState<Status>('disconnected');
-		const [lightStatus, setLightStatus] = useState<Status>('disconnected');
-		const [darkNetwork, setDarkNetwork] = useState<ClusterMoniker>('devnet');
-		const [lightNetwork, setLightNetwork] = useState<ClusterMoniker>('mainnet-beta');
+		const [firstStatus, setFirstStatus] = useState<Status>('disconnected');
+		const [secondStatus, setSecondStatus] = useState<Status>('disconnected');
+		const [firstNetwork, setFirstNetwork] = useState<ClusterMoniker>('devnet');
+		const [secondNetwork, setSecondNetwork] = useState<ClusterMoniker>('mainnet-beta');
 
-		const handleDarkConnect = useCallback(() => {
-			setDarkStatus('connecting');
-			setTimeout(() => setDarkStatus('connected'), 1500);
+		const handleFirstConnect = useCallback(() => {
+			setFirstStatus('connecting');
+			setTimeout(() => setFirstStatus('connected'), 1500);
 		}, []);
 
-		const handleLightConnect = useCallback(() => {
-			setLightStatus('connecting');
-			setTimeout(() => setLightStatus('connected'), 1500);
+		const handleSecondConnect = useCallback(() => {
+			setSecondStatus('connecting');
+			setTimeout(() => setSecondStatus('connected'), 1500);
 		}, []);
 
 		return (
 			<div className="flex gap-8 items-start">
 				<div className="flex flex-col items-center gap-3 p-6 rounded-xl bg-zinc-900">
-					<span className="text-xs text-zinc-500 uppercase tracking-wider">Dark Theme</span>
+					<span className="text-xs text-zinc-500 uppercase tracking-wider">Backpack</span>
 					<ConnectWalletButton
-						theme="dark"
-						status={darkStatus}
+						status={firstStatus}
 						isReady={true}
-						wallet={darkStatus === 'connected' ? { address: mockAddress } : undefined}
-						currentConnector={darkStatus === 'connected' ? mockBackpackWallet : undefined}
+						wallet={firstStatus === 'connected' ? { address: mockAddress } : undefined}
+						currentConnector={firstStatus === 'connected' ? mockBackpackWallet : undefined}
 						balance={mockBalance}
-						onConnect={handleDarkConnect}
-						onDisconnect={async () => setDarkStatus('disconnected')}
-						selectedNetwork={darkNetwork}
+						onConnect={handleFirstConnect}
+						onDisconnect={async () => setFirstStatus('disconnected')}
+						selectedNetwork={firstNetwork}
 						networkStatus="connected"
-						onNetworkChange={setDarkNetwork}
+						onNetworkChange={setFirstNetwork}
 					/>
 				</div>
 				<div className="flex flex-col items-center gap-3 p-6 rounded-xl bg-zinc-100">
-					<span className="text-xs text-zinc-500 uppercase tracking-wider">Light Theme</span>
+					<span className="text-xs text-zinc-500 uppercase tracking-wider">Solflare</span>
 					<ConnectWalletButton
-						theme="light"
-						status={lightStatus}
+						status={secondStatus}
 						isReady={true}
-						wallet={lightStatus === 'connected' ? { address: mockAddress } : undefined}
-						currentConnector={lightStatus === 'connected' ? mockSolflareWallet : undefined}
+						wallet={secondStatus === 'connected' ? { address: mockAddress } : undefined}
+						currentConnector={secondStatus === 'connected' ? mockSolflareWallet : undefined}
 						balance={mockBalance}
-						onConnect={handleLightConnect}
-						onDisconnect={async () => setLightStatus('disconnected')}
-						selectedNetwork={lightNetwork}
+						onConnect={handleSecondConnect}
+						onDisconnect={async () => setSecondStatus('disconnected')}
+						selectedNetwork={secondNetwork}
 						networkStatus="connected"
-						onNetworkChange={setLightNetwork}
+						onNetworkChange={setSecondNetwork}
 					/>
 				</div>
 			</div>
@@ -358,7 +341,6 @@ export const BothThemesInteractive: Story = {
  */
 export const Disconnected: Story = {
 	args: {
-		theme: 'dark',
 		status: 'disconnected',
 		isReady: true,
 		onConnect: () => console.log('Connect clicked'),
@@ -370,7 +352,6 @@ export const Disconnected: Story = {
  */
 export const DisconnectedLight: Story = {
 	args: {
-		theme: 'light',
 		status: 'disconnected',
 		isReady: true,
 		onConnect: () => console.log('Connect clicked'),
@@ -385,7 +366,6 @@ export const DisconnectedLight: Story = {
  */
 export const Connecting: Story = {
 	args: {
-		theme: 'dark',
 		status: 'connecting',
 		isReady: true,
 	},
@@ -396,7 +376,6 @@ export const Connecting: Story = {
  */
 export const ConnectingLight: Story = {
 	args: {
-		theme: 'light',
 		status: 'connecting',
 		isReady: true,
 	},
@@ -410,7 +389,6 @@ export const ConnectingLight: Story = {
  */
 export const Connected: Story = {
 	args: {
-		theme: 'dark',
 		status: 'connected',
 		isReady: true,
 		wallet: { address: mockAddress },
@@ -425,7 +403,6 @@ export const Connected: Story = {
  */
 export const ConnectedLight: Story = {
 	args: {
-		theme: 'light',
 		status: 'connected',
 		isReady: true,
 		wallet: { address: mockAddress },
@@ -445,43 +422,16 @@ export const ConnectedLight: Story = {
 /**
  * **Dropdown Only (Dark)** - Test dropdown component in isolation
  */
-export const DropdownStandaloneDark: Story = {
+export const DropdownStandalone: Story = {
 	args: {
-		theme: 'dark',
 		status: 'connected',
 	},
-	render: (args) => (
+	render: () => (
 		<div className="relative pt-12">
 			<WalletDropdown
-				theme={args.theme}
 				wallet={mockBackpackWallet}
 				address={mockAddress}
 				balance={mockBalance}
-				balanceLoading={false}
-				onDisconnect={async () => console.log('Disconnect')}
-			/>
-		</div>
-	),
-};
-
-/**
- * **Dropdown Only (Light)** - Light theme dropdown
- */
-export const DropdownStandaloneLight: Story = {
-	args: {
-		theme: 'light',
-		status: 'connected',
-	},
-	parameters: {
-		backgrounds: { default: 'light' },
-	},
-	render: (_args) => (
-		<div className="relative pt-12">
-			<WalletDropdown
-				theme="light"
-				wallet={mockSolflareWallet}
-				address={mockAddress}
-				balance={lamports(2340000000n)}
 				balanceLoading={false}
 				onDisconnect={async () => console.log('Disconnect')}
 			/>
@@ -494,13 +444,11 @@ export const DropdownStandaloneLight: Story = {
  */
 export const DropdownBalanceLoading: Story = {
 	args: {
-		theme: 'dark',
 		status: 'connected',
 	},
-	render: (args) => (
+	render: () => (
 		<div className="relative pt-12">
 			<WalletDropdown
-				theme={args.theme}
 				wallet={mockBackpackWallet}
 				address={mockAddress}
 				balance={undefined}
@@ -518,76 +466,27 @@ export const DropdownBalanceLoading: Story = {
 /**
  * **Button Variants (Dark)** - All button states side-by-side
  */
-export const ButtonVariantsDark: Story = {
+export const ButtonVariants: Story = {
 	args: {
-		theme: 'dark',
 		status: 'disconnected',
 	},
 	render: (_args) => (
 		<div className="flex flex-col gap-4">
 			<div className="flex items-center gap-4">
 				<span className="text-zinc-500 text-sm w-24">Disconnected</span>
-				<WalletButton
-					connectionState="disconnected"
-					theme="dark"
-					variant="filled"
-					onClick={() => console.log('Connect')}
-				>
+				<WalletButton connectionState="disconnected" variant="filled" onClick={() => console.log('Connect')}>
 					Connect Wallet
 				</WalletButton>
 			</div>
 			<div className="flex items-center gap-4">
 				<span className="text-zinc-500 text-sm w-24">Connecting</span>
-				<WalletButton connectionState="connecting" theme="dark" variant="loading" disabled />
+				<WalletButton connectionState="connecting" variant="loading" disabled />
 			</div>
 			<div className="flex items-center gap-4">
 				<span className="text-zinc-500 text-sm w-24">Connected</span>
 				<WalletButton
 					connectionState="connected"
 					wallet={mockBackpackWallet}
-					theme="dark"
-					variant="connected"
-					onClick={() => console.log('Toggle dropdown')}
-				/>
-			</div>
-		</div>
-	),
-};
-
-/**
- * **Button Variants (Light)** - Light theme button states
- */
-export const ButtonVariantsLight: Story = {
-	args: {
-		theme: 'light',
-		status: 'disconnected',
-	},
-	parameters: {
-		backgrounds: { default: 'light' },
-	},
-	render: (_args) => (
-		<div className="flex flex-col gap-4">
-			<div className="flex items-center gap-4">
-				<span className="text-zinc-600 text-sm w-24">Disconnected</span>
-				<WalletButton
-					connectionState="disconnected"
-					theme="light"
-					variant="outline"
-					onClick={() => console.log('Connect')}
-				>
-					Connect Wallet
-				</WalletButton>
-			</div>
-			<div className="flex items-center gap-4">
-				<span className="text-zinc-600 text-sm w-24">Connecting</span>
-				<WalletButton connectionState="connecting" theme="light" variant="loadingLight" disabled />
-			</div>
-			<div className="flex items-center gap-4">
-				<span className="text-zinc-600 text-sm w-24">Connected</span>
-				<WalletButton
-					connectionState="connected"
-					wallet={mockSolflareWallet}
-					theme="light"
 					variant="connected"
 					onClick={() => console.log('Toggle dropdown')}
 				/>
@@ -605,40 +504,17 @@ export const ButtonVariantsLight: Story = {
  */
 export const AllStatesGrid: Story = {
 	args: {
-		theme: 'dark',
 		status: 'disconnected',
 	},
 	render: (_args) => (
-		<div className="grid grid-cols-2 gap-8">
-			<div className="flex flex-col gap-4 p-6 rounded-xl bg-zinc-900">
-				<h3 className="text-zinc-400 font-semibold text-sm uppercase tracking-wider">Dark Theme</h3>
-				<div className="flex flex-col gap-3">
-					<WalletButton connectionState="disconnected" theme="dark" variant="filled">
-						Connect Wallet
-					</WalletButton>
-					<WalletButton connectionState="connecting" theme="dark" variant="loading" disabled />
-					<WalletButton
-						connectionState="connected"
-						wallet={mockBackpackWallet}
-						theme="dark"
-						variant="connected"
-					/>
-				</div>
-			</div>
-			<div className="flex flex-col gap-4 p-6 rounded-xl bg-zinc-100">
-				<h3 className="text-zinc-600 font-semibold text-sm uppercase tracking-wider">Light Theme</h3>
-				<div className="flex flex-col gap-3">
-					<WalletButton connectionState="disconnected" theme="light" variant="outline">
-						Connect Wallet
-					</WalletButton>
-					<WalletButton connectionState="connecting" theme="light" variant="loadingLight" disabled />
-					<WalletButton
-						connectionState="connected"
-						wallet={mockSolflareWallet}
-						theme="light"
-						variant="connected"
-					/>
-				</div>
+		<div className="flex flex-col gap-4 p-6 rounded-xl bg-zinc-900">
+			<h3 className="text-zinc-400 font-semibold text-sm uppercase tracking-wider">All States</h3>
+			<div className="flex flex-col gap-3">
+				<WalletButton connectionState="disconnected" variant="filled">
+					Connect Wallet
+				</WalletButton>
+				<WalletButton connectionState="connecting" variant="loading" disabled />
+				<WalletButton connectionState="connected" wallet={mockBackpackWallet} variant="connected" />
 			</div>
 		</div>
 	),
@@ -653,13 +529,11 @@ export const AllStatesGrid: Story = {
  */
 export const ZeroBalance: Story = {
 	args: {
-		theme: 'dark',
 		status: 'connected',
 	},
-	render: (args) => (
+	render: () => (
 		<div className="relative pt-12">
 			<WalletDropdown
-				theme={args.theme}
 				wallet={mockBackpackWallet}
 				address={mockAddress}
 				balance={lamports(0n)}
@@ -675,13 +549,11 @@ export const ZeroBalance: Story = {
  */
 export const LargeBalance: Story = {
 	args: {
-		theme: 'dark',
 		status: 'connected',
 	},
-	render: (args) => (
+	render: () => (
 		<div className="relative pt-12">
 			<WalletDropdown
-				theme={args.theme}
 				wallet={mockBackpackWallet}
 				address={mockAddress}
 				balance={lamports(123456789012345678n)}
@@ -697,13 +569,12 @@ export const LargeBalance: Story = {
  */
 export const NotReady: Story = {
 	args: {
-		theme: 'dark',
 		status: 'disconnected',
 		isReady: false,
 	},
-	render: (args) => (
+	render: () => (
 		<div className="flex flex-col items-center gap-2">
-			<WalletButton connectionState="connecting" theme={args.theme} variant="loading" disabled />
+			<WalletButton connectionState="connecting" variant="loading" disabled />
 			<span className="text-xs text-zinc-500">isReady: false (SDK initializing...)</span>
 		</div>
 	),

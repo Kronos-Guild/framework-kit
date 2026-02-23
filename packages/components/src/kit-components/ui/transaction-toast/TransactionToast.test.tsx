@@ -31,13 +31,13 @@ describe('TransactionToast', () => {
 
 		it('renders check icon for success status', () => {
 			const { container } = render(<TransactionToast signature={mockSignature} status="success" />);
-			const successIcon = container.querySelector('.bg-green-500\\/20');
+			const successIcon = container.querySelector('.bg-success\\/20');
 			expect(successIcon).toBeInTheDocument();
 		});
 
 		it('renders X icon for error status', () => {
 			const { container } = render(<TransactionToast signature={mockSignature} status="error" />);
-			const errorIcon = container.querySelector('.bg-red-500\\/20');
+			const errorIcon = container.querySelector('.bg-destructive\\/20');
 			expect(errorIcon).toBeInTheDocument();
 		});
 	});
@@ -93,20 +93,13 @@ describe('TransactionToast', () => {
 		});
 	});
 
-	// for theme support
-	describe('theme support', () => {
-		it('applies light theme by default', () => {
+	// for semantic token styles
+	describe('semantic token styles', () => {
+		it('applies bg-card and text-card-foreground tokens', () => {
 			render(<TransactionToast signature={mockSignature} status="success" />);
 			const element = screen.getByText('Transaction sent successfully').parentElement;
-			expect(element).toHaveClass('bg-zinc-50');
-			expect(element).toHaveClass('text-zinc-900');
-		});
-
-		it('applies dark theme when specified', () => {
-			render(<TransactionToast signature={mockSignature} status="success" theme="dark" />);
-			const element = screen.getByText('Transaction sent successfully').parentElement;
-			expect(element).toHaveClass('bg-zinc-800');
-			expect(element).toHaveClass('text-zinc-50');
+			expect(element).toHaveClass('bg-card');
+			expect(element).toHaveClass('text-card-foreground');
 		});
 	});
 
