@@ -94,7 +94,7 @@ export function WalletDropdown({
 	return (
 		<div className={containerCn} role="menu" aria-label="Wallet options">
 			{/* ── Row 1: Address + Balance ── */}
-			<div className={cn(rowPx, 'border-b-[0.5px]', 'border-border')}>
+			<div className={cn(rowPx, 'border-b', 'border-border')}>
 				<div className="flex items-center gap-2.5">
 					<ButtonIcon src={wallet.icon} alt={wallet.name} size={32} className="shrink-0 rounded-4xl" />
 
@@ -129,7 +129,7 @@ export function WalletDropdown({
 			</div>
 
 			{/* ── Row 2: Network trigger → swaps to network view ── */}
-			<div className={cn(onDisconnect && 'border-b-[0.5px]', onDisconnect && 'border-border')}>
+			<div className={cn(onDisconnect && 'border-b', onDisconnect && 'border-border')}>
 				<NetworkTrigger
 					onClick={() => setView('network')}
 					className={cn(

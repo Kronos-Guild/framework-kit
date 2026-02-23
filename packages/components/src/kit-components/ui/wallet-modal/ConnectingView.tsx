@@ -49,7 +49,7 @@ export function ConnectingView({ wallet, onBack, onClose, className }: Connectin
 			{/* Text content */}
 			<div className="w-full flex flex-col gap-1.5 items-center text-center px-4">
 				<h3 className="text-lg font-medium text-card-foreground">Connecting to {wallet.name}...</h3>
-				<p className="text-sm max-w-[231px] text-muted-foreground">
+				<p className="text-sm max-w-60 text-muted-foreground">
 					Check your wallet and approve the connection request.
 				</p>
 			</div>

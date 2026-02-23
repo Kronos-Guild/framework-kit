@@ -44,14 +44,14 @@ export function WalletList({ wallets, onSelect, connectingWalletId, className }:
 
 	if (wallets.length === 0) {
 		return (
-			<div className={cn('w-full py-8 text-center rounded-[15px]', 'bg-muted text-muted-foreground', className)}>
+			<div className={cn('w-full py-8 text-center rounded-2xl', 'bg-muted text-muted-foreground', className)}>
 				<p className="text-sm">No wallets found</p>
 			</div>
 		);
 	}
 
 	return (
-		<div className={cn('w-full flex flex-col rounded-[15px] overflow-hidden', className)}>
+		<div className={cn('w-full flex flex-col rounded-2xl overflow-hidden', className)}>
 			{wallets.map((wallet, index) => (
 				<WalletCard
 					key={wallet.id}

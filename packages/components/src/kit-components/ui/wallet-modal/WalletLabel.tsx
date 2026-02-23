@@ -27,7 +27,7 @@ export function WalletLabel({ type, className }: WalletLabelProps) {
 	return (
 		<span
 			className={cn(
-				'inline-flex items-center justify-center px-1.5 py-0.5 rounded-[3px] text-xs font-normal',
+				'inline-flex items-center justify-center px-1.5 py-0.5 rounded-sm text-xs font-normal',
 				'bg-muted text-muted-foreground',
 				className,
 			)}

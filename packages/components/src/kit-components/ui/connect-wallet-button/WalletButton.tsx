@@ -16,7 +16,7 @@ import type { WalletButtonProps } from './types';
 const walletButtonVariants = cva(
 	[
 		'inline-flex items-center justify-center',
-		'font-medium text-[14px] leading-[17px]',
+		'font-medium text-sm leading-4',
 		'transition-all duration-200 ease-in-out',
 		'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-ring',
 		'disabled:pointer-events-none disabled:opacity-50',
@@ -30,16 +30,16 @@ const walletButtonVariants = cva(
 					'border border-border',
 					'bg-primary hover:bg-accent',
 					'text-primary-foreground',
-					'gap-2 rounded-[18px]',
+					'gap-2 rounded-2xl',
 				],
 				/** Loading state */
-				loading: ['border border-transparent', 'bg-secondary', 'text-card-foreground', 'rounded-[18px]'],
+				loading: ['border border-transparent', 'bg-secondary', 'text-card-foreground', 'rounded-2xl'],
 				/** Connected state */
 				connected: [
 					'border border-border',
 					'bg-card hover:bg-accent',
 					'text-card-foreground',
-					'gap-2.5 rounded-[9px]',
+					'gap-2.5 rounded-lg',
 				],
 			},
 			size: {
@@ -121,7 +121,7 @@ export const WalletButton = forwardRef<HTMLButtonElement, WalletButtonFullProps>
 								src={wallet?.icon}
 								alt={wallet?.name ?? 'Connected wallet'}
 								size={20}
-								className="rounded-[20px]"
+								className="rounded-full"
 							/>
 							<ChevronIcon direction={isExpanded ? 'up' : 'down'} />
 						</>

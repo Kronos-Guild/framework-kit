@@ -50,14 +50,14 @@ export function WalletCard({
 }: WalletCardProps) {
 	// Border radius based on position
 	const positionClasses = {
-		first: 'rounded-t-[15px]',
+		first: 'rounded-t-2xl',
 		middle: '',
-		last: 'rounded-b-[15px]',
-		only: 'rounded-[15px]',
+		last: 'rounded-b-2xl',
+		only: 'rounded-2xl',
 	};
 
 	// Border classes for middle items
-	const borderClasses = position === 'middle' ? 'border-y-[0.5px] border-border' : '';
+	const borderClasses = position === 'middle' ? 'border-y border-border' : '';
 
 	return (
 		<button

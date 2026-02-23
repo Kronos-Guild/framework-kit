@@ -47,7 +47,7 @@ export function ErrorView({
 			{/* Text content */}
 			<div className="w-full flex flex-col gap-1.5 items-center text-center">
 				<h3 className="text-lg font-medium text-card-foreground">{title}</h3>
-				<p className="text-sm max-w-[231px] text-muted-foreground">{message}</p>
+				<p className="text-sm max-w-60 text-muted-foreground">{message}</p>
 			</div>
 
 			{/* Retry button - pill shaped outlined button */}
