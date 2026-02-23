@@ -34,16 +34,11 @@ bun add @solana/components
 
 ### Tailwind CSS Configuration
 
-The components use Tailwind CSS. Add the package to your `tailwind.config.js`:
+The components use Tailwind CSS v4. Add the package source to your CSS file:
 
-```js
-module.exports = {
-  content: [
-    // ... your content paths
-    "./node_modules/@solana/components/**/*.{js,ts,jsx,tsx}",
-  ],
-  // ... rest of config
-};
+```css
+@import "tailwindcss";
+@source "./node_modules/@solana/components/**/*.{ts,tsx}";
 ```
 
 ## Display Components

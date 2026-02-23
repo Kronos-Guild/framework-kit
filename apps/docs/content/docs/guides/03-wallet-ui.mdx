@@ -37,11 +37,9 @@ By the end of this guide, you'll have:
 - Network switcher for mainnet/devnet/testnet
 - Proper loading, error, and empty states throughout
 
-*(Screenshot: Complete wallet UI, dark theme)*
-
 ## Prerequisites
 
-- Completed [Guide 1: Getting Started](/guides/getting-started) or equivalent setup
+- Completed [Guide 1: Getting Started](/docs/guides/getting-started) or equivalent setup
 - React 19 + TypeScript + Tailwind CSS v4
 - Familiarity with Solana wallets (you've used one before)
 
@@ -111,8 +109,6 @@ function WalletButton() {
 
 When connected, the button shows the wallet icon and truncated address. Click it to open a dropdown with balance info and a disconnect option.
 
-*(Screenshot: ConnectWalletButton, disconnected, connecting, and connected states)*
-
 <Callout type="info">
 The button manages its own dropdown state. You control the connection status; it handles the rest.
 </Callout>
@@ -124,7 +120,7 @@ import { ConnectWalletButton } from '@solana/components';
 import { type Address } from '@solana/kit';
 import { useState } from 'react';
 
-type Status = 'disconnected' | 'connecting' | 'connected';
+type Status = 'disconnected' | 'connecting' | 'connected' | 'error';
 
 function WalletButton({ onOpenModal }: { onOpenModal: () => void }) {
   const [status, setStatus] = useState<Status>('disconnected');
@@ -187,8 +183,6 @@ function WalletConnect({ onClose }: { onClose: () => void }) {
 
 Each wallet shows as a clickable row with icon and name. The "I don't have a wallet" link appears at the bottom by default.
 
-*(Screenshot: WalletModal, list view with wallet options)*
-
 ### Connecting View
 
 ```tsx
@@ -202,8 +196,6 @@ Each wallet shows as a clickable row with icon and name. The "I don't have a wal
 ```
 
 Shows which wallet you're connecting to with a loading indicator. The back button returns to the list.
-
-*(Screenshot: WalletModal, connecting view with loading state)*
 
 ### Error View
 
@@ -220,8 +212,6 @@ Shows which wallet you're connecting to with a loading indicator. The back butto
 <Callout type="warn">
 Always handle the error state. Users will click the wrong wallet, decline the connection, or have extension issues. Make recovery obvious.
 </Callout>
-
-*(Screenshot: WalletModal, error view with retry option)*
 
 ### Modal Props Reference
 
@@ -263,8 +253,6 @@ function WalletDashboard() {
 
 This displays the wallet address (truncated, with copy button) and the balance converted from lamports.
 
-*(Screenshot: BalanceCard, basic display with address and balance)*
-
 ### Fiat Display
 
 ```tsx
@@ -297,8 +285,6 @@ const tokens = [
 
 The token list is collapsible. Click "View all tokens" to expand. Empty state shows "No tokens yet."
 
-*(Screenshot: BalanceCard, expanded token list)*
-
 ### Loading State
 
 ```tsx
@@ -321,8 +307,6 @@ Shows an animated skeleton while data loads.
 ```
 
 Shows the error message with a "Try again" button.
-
-*(Screenshot: BalanceCard, loading skeleton and error state)*
 
 ### BalanceCard Props Reference
 
@@ -365,8 +349,6 @@ function NetworkControl() {
 ```
 
 Click the trigger to open a dropdown. Select a network and it closes automatically.
-
-*(Screenshot: NetworkSwitcher, dropdown with network options)*
 
 ### Custom Networks
 
@@ -538,8 +520,6 @@ export function CompleteWalletUI() {
 }
 ```
 
-*(Screenshot: Complete wallet UI, header with network switcher and connect button, balance card below)*
-
 This gives you a complete, working wallet UI. Users can:
 1. Click "Connect Wallet" to open the modal
 2. Select their wallet provider
@@ -586,7 +566,7 @@ You've built the foundation. Your users can now connect their wallet, see their 
 
 Everything else you build sits on top of this experience.
 
-**Next: [Guide 4: Sending Your First Transaction](/guides/sending-transactions)** (coming soon)
+**Next: [Guide 4: Sending Your First Transaction](/docs/guides/sending-transactions)** (coming soon)
 
 **Resources:**
 - [Component API Reference](/docs/components)
