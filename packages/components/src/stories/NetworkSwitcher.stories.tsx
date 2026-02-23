@@ -19,11 +19,6 @@ const meta = {
 	},
 	tags: ['autodocs'],
 	argTypes: {
-		theme: {
-			control: 'radio',
-			options: ['dark', 'light'],
-			description: 'Color theme',
-		},
 		selectedNetwork: {
 			control: 'select',
 			options: ['mainnet-beta', 'testnet', 'devnet', 'localnet', 'custom'],
@@ -48,56 +43,21 @@ type Story = StoryObj<typeof meta>;
 // MAIN COMPONENT STORIES
 // ============================================================================
 
-/** Dark theme - collapsed (trigger) */
-export const DarkCollapsed: Story = {
+/** Collapsed (trigger) */
+export const Collapsed: Story = {
 	args: {
 		selectedNetwork: 'mainnet-beta',
 		status: 'connected',
-		theme: 'dark',
 	},
 };
 
-/** Light theme - collapsed (trigger) */
-export const LightCollapsed: Story = {
+/** Expanded (dropdown) */
+export const Expanded: Story = {
 	args: {
 		selectedNetwork: 'mainnet-beta',
 		status: 'connected',
-		theme: 'light',
-	},
-	decorators: [
-		(Story) => (
-			<div className="bg-zinc-200 p-8 rounded-xl">
-				<Story />
-			</div>
-		),
-	],
-};
-
-/** Dark theme - expanded (dropdown) */
-export const DarkExpanded: Story = {
-	args: {
-		selectedNetwork: 'mainnet-beta',
-		status: 'connected',
-		theme: 'dark',
 		open: true,
 	},
-};
-
-/** Light theme - expanded (dropdown) */
-export const LightExpanded: Story = {
-	args: {
-		selectedNetwork: 'mainnet-beta',
-		status: 'connected',
-		theme: 'light',
-		open: true,
-	},
-	decorators: [
-		(Story) => (
-			<div className="bg-zinc-200 p-8 rounded-xl">
-				<Story />
-			</div>
-		),
-	],
 };
 
 // ============================================================================
@@ -109,7 +69,6 @@ export const StatusConnected: Story = {
 	args: {
 		selectedNetwork: 'mainnet-beta',
 		status: 'connected',
-		theme: 'dark',
 		open: true,
 	},
 };
@@ -119,7 +78,6 @@ export const StatusError: Story = {
 	args: {
 		selectedNetwork: 'mainnet-beta',
 		status: 'error',
-		theme: 'dark',
 		open: true,
 	},
 };
@@ -129,7 +87,6 @@ export const StatusConnecting: Story = {
 	args: {
 		selectedNetwork: 'mainnet-beta',
 		status: 'connecting',
-		theme: 'dark',
 		open: true,
 	},
 };
@@ -159,7 +116,6 @@ export const Interactive: Story = {
 					selectedNetwork={selectedNetwork}
 					status={status}
 					onNetworkChange={handleNetworkChange}
-					theme="dark"
 				/>
 				<p className="text-xs text-zinc-500">
 					Current: {selectedNetwork} ({status})
@@ -172,54 +128,13 @@ export const Interactive: Story = {
 	},
 };
 
-/** Interactive Light Theme */
-export const InteractiveLight: Story = {
-	render: function InteractiveLightRender() {
-		const [selectedNetwork, setSelectedNetwork] = useState<ClusterMoniker>('devnet');
-		const [status, setStatus] = useState<WalletStatus['status']>('connected');
-
-		const handleNetworkChange = useCallback((network: ClusterMoniker) => {
-			setStatus('connecting');
-			setTimeout(() => {
-				setSelectedNetwork(network);
-				// Simulate occasional errors
-				setStatus(Math.random() > 0.8 ? 'error' : 'connected');
-			}, 1000);
-		}, []);
-
-		return (
-			<div className="bg-zinc-100 p-8 rounded-xl flex flex-col items-center gap-4">
-				<NetworkSwitcher
-					selectedNetwork={selectedNetwork}
-					status={status}
-					onNetworkChange={handleNetworkChange}
-					theme="light"
-				/>
-				<p className="text-xs text-zinc-600">
-					Current: {selectedNetwork} ({status})
-				</p>
-			</div>
-		);
-	},
-	args: {
-		selectedNetwork: 'devnet',
-	},
-};
-
 // ============================================================================
 // SUB-COMPONENT STORIES
 // ============================================================================
 
 /** NetworkTrigger - collapsed state */
-export const TriggerDark: Story = {
-	render: () => (
-		<div className="flex gap-4">
-			<NetworkTrigger theme="dark" />
-			<div className="bg-zinc-100 p-2 rounded">
-				<NetworkTrigger theme="light" />
-			</div>
-		</div>
-	),
+export const TriggerStandalone: Story = {
+	render: () => <NetworkTrigger selectedLabel="Mainnet" status="connected" />,
 	args: {
 		selectedNetwork: 'mainnet-beta',
 	},
@@ -227,24 +142,7 @@ export const TriggerDark: Story = {
 
 /** NetworkDropdown - standalone */
 export const DropdownStandalone: Story = {
-	render: () => (
-		<div className="flex gap-8">
-			<NetworkDropdown
-				selectedNetwork="mainnet-beta"
-				status="connected"
-				networks={DEFAULT_NETWORKS}
-				theme="dark"
-			/>
-			<div className="bg-zinc-100 p-2 rounded">
-				<NetworkDropdown
-					selectedNetwork="mainnet-beta"
-					status="connected"
-					networks={DEFAULT_NETWORKS}
-					theme="light"
-				/>
-			</div>
-		</div>
-	),
+	render: () => <NetworkDropdown selectedNetwork="mainnet-beta" status="connected" networks={DEFAULT_NETWORKS} />,
 	args: {
 		selectedNetwork: 'mainnet-beta',
 	},
@@ -253,13 +151,8 @@ export const DropdownStandalone: Story = {
 /** NetworkHeader - header row */
 export const HeaderStandalone: Story = {
 	render: () => (
-		<div className="flex gap-8">
-			<div className="bg-zinc-700 p-2 rounded w-[180px]">
-				<NetworkHeader theme="dark" isOpen />
-			</div>
-			<div className="bg-zinc-100 p-2 rounded w-[180px]">
-				<NetworkHeader theme="light" isOpen />
-			</div>
+		<div className="bg-zinc-700 p-2 rounded w-[180px]">
+			<NetworkHeader isOpen />
 		</div>
 	),
 	args: {
@@ -270,25 +163,9 @@ export const HeaderStandalone: Story = {
 /** NetworkOption - individual options */
 export const OptionStandalone: Story = {
 	render: () => (
-		<div className="flex gap-8">
-			<div className="bg-zinc-700 p-2 rounded w-[180px] space-y-1">
-				<NetworkOption
-					network={{ id: 'mainnet-beta', label: 'Mainnet' }}
-					isSelected
-					status="connected"
-					theme="dark"
-				/>
-				<NetworkOption network={{ id: 'devnet', label: 'Devnet' }} theme="dark" />
-			</div>
-			<div className="bg-zinc-100 p-2 rounded w-[180px] space-y-1">
-				<NetworkOption
-					network={{ id: 'mainnet-beta', label: 'Mainnet' }}
-					isSelected
-					status="error"
-					theme="light"
-				/>
-				<NetworkOption network={{ id: 'devnet', label: 'Devnet' }} theme="light" />
-			</div>
+		<div className="bg-zinc-700 p-2 rounded w-[180px] space-y-1">
+			<NetworkOption network={{ id: 'mainnet-beta', label: 'Mainnet' }} isSelected status="connected" />
+			<NetworkOption network={{ id: 'devnet', label: 'Devnet' }} />
 		</div>
 	),
 	args: {
@@ -326,80 +203,24 @@ export const StatusIndicators: Story = {
 /** All states comparison */
 export const AllStatesGrid: Story = {
 	render: () => (
-		<div className="space-y-8">
-			{/* Dark Theme */}
-			<div className="space-y-4">
-				<h3 className="text-sm font-medium text-zinc-400">Dark Theme</h3>
-				<div className="flex flex-wrap gap-4">
-					<div className="flex flex-col gap-2">
-						<NetworkSwitcher selectedNetwork="mainnet-beta" status="connected" theme="dark" />
-						<span className="text-xs text-zinc-500">Collapsed</span>
-					</div>
-					<div className="flex flex-col gap-2">
-						<NetworkDropdown
-							selectedNetwork="mainnet-beta"
-							status="connected"
-							networks={DEFAULT_NETWORKS}
-							theme="dark"
-						/>
-						<span className="text-xs text-zinc-500">Connected</span>
-					</div>
-					<div className="flex flex-col gap-2">
-						<NetworkDropdown
-							selectedNetwork="mainnet-beta"
-							status="error"
-							networks={DEFAULT_NETWORKS}
-							theme="dark"
-						/>
-						<span className="text-xs text-zinc-500">Error</span>
-					</div>
-					<div className="flex flex-col gap-2">
-						<NetworkDropdown
-							selectedNetwork="mainnet-beta"
-							status="connecting"
-							networks={DEFAULT_NETWORKS}
-							theme="dark"
-						/>
-						<span className="text-xs text-zinc-500">Connecting</span>
-					</div>
+		<div className="space-y-4">
+			<h3 className="text-sm font-medium text-zinc-400">All States</h3>
+			<div className="flex flex-wrap gap-4">
+				<div className="flex flex-col gap-2">
+					<NetworkSwitcher selectedNetwork="mainnet-beta" status="connected" />
+					<span className="text-xs text-zinc-500">Collapsed</span>
 				</div>
-			</div>
-
-			{/* Light Theme */}
-			<div className="bg-zinc-100 p-6 rounded-xl space-y-4">
-				<h3 className="text-sm font-medium text-zinc-600">Light Theme</h3>
-				<div className="flex flex-wrap gap-4">
-					<div className="flex flex-col gap-2">
-						<NetworkSwitcher selectedNetwork="mainnet-beta" status="connected" theme="light" />
-						<span className="text-xs text-zinc-500">Collapsed</span>
-					</div>
-					<div className="flex flex-col gap-2">
-						<NetworkDropdown
-							selectedNetwork="mainnet-beta"
-							status="connected"
-							networks={DEFAULT_NETWORKS}
-							theme="light"
-						/>
-						<span className="text-xs text-zinc-500">Connected</span>
-					</div>
-					<div className="flex flex-col gap-2">
-						<NetworkDropdown
-							selectedNetwork="mainnet-beta"
-							status="error"
-							networks={DEFAULT_NETWORKS}
-							theme="light"
-						/>
-						<span className="text-xs text-zinc-500">Error</span>
-					</div>
-					<div className="flex flex-col gap-2">
-						<NetworkDropdown
-							selectedNetwork="mainnet-beta"
-							status="connecting"
-							networks={DEFAULT_NETWORKS}
-							theme="light"
-						/>
-						<span className="text-xs text-zinc-500">Connecting</span>
-					</div>
+				<div className="flex flex-col gap-2">
+					<NetworkDropdown selectedNetwork="mainnet-beta" status="connected" networks={DEFAULT_NETWORKS} />
+					<span className="text-xs text-zinc-500">Connected</span>
+				</div>
+				<div className="flex flex-col gap-2">
+					<NetworkDropdown selectedNetwork="mainnet-beta" status="error" networks={DEFAULT_NETWORKS} />
+					<span className="text-xs text-zinc-500">Error</span>
+				</div>
+				<div className="flex flex-col gap-2">
+					<NetworkDropdown selectedNetwork="mainnet-beta" status="connecting" networks={DEFAULT_NETWORKS} />
+					<span className="text-xs text-zinc-500">Connecting</span>
 				</div>
 			</div>
 		</div>
@@ -418,7 +239,6 @@ export const Disabled: Story = {
 	args: {
 		selectedNetwork: 'mainnet-beta',
 		status: 'connected',
-		theme: 'dark',
 		disabled: true,
 	},
 };
@@ -456,7 +276,6 @@ function MyApp() {
       selectedNetwork={network}
       status={status}
       onNetworkChange={handleNetworkChange}
-      theme="dark"
     />
   );
 }`}

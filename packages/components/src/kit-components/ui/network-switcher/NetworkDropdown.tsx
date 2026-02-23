@@ -2,13 +2,7 @@
 
 import { cn } from '@/lib/utils';
 import { NetworkOption } from './NetworkOption';
-import type { NetworkDropdownProps, Theme } from './types';
-
-/** Theme-specific container styles */
-const containerStyles: Record<Theme, string> = {
-	dark: 'bg-zinc-700',
-	light: 'bg-zinc-50',
-};
+import type { NetworkDropdownProps } from './types';
 
 /**
  * NetworkDropdown - Expanded dropdown showing all network options.
@@ -19,12 +13,11 @@ export function NetworkDropdown({
 	status = 'connected',
 	networks,
 	onSelect,
-	theme = 'dark',
 	className,
 }: NetworkDropdownProps) {
 	return (
 		<div
-			className={cn('w-[191px] flex flex-col gap-1 p-2 rounded-[10px]', containerStyles[theme], className)}
+			className={cn('w-[191px] flex flex-col gap-1 p-2 rounded-[10px]', 'bg-secondary', className)}
 			role="listbox"
 			aria-label="Select network"
 		>
@@ -34,7 +27,6 @@ export function NetworkDropdown({
 					network={network}
 					isSelected={network.id === selectedNetwork}
 					status={network.id === selectedNetwork ? status : undefined}
-					theme={theme}
 					onClick={() => onSelect?.(network.id)}
 				/>
 			))}

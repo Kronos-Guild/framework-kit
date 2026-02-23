@@ -1,9 +1,9 @@
 import { ChevronDown } from 'lucide-react';
 import type React from 'react';
-import { useCallback } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { Skeleton } from '../skeleton/Skeleton';
-import type { TokenInputProps } from './types';
+import type { SwapTokenInfo, TokenInputProps } from './types';
 import { sanitizeAmountInput } from './utils';
 
 function toCssSize(size: NonNullable<TokenInputProps['size']>) {
@@ -17,9 +17,20 @@ function toCssSize(size: NonNullable<TokenInputProps['size']>) {
 	}
 }
 
+function TokenLogo({ token, className }: { token: SwapTokenInfo; className?: string }) {
+	return token.logoURI ? (
+		<img src={token.logoURI} alt={`${token.symbol} token`} className={cn(className, 'shrink-0 rounded-full')} />
+	) : (
+		<div className={cn(className, 'shrink-0 rounded-full', 'bg-accent')} aria-hidden="true" />
+	);
+}
+
 /**
- * A single token input card for either the "Pay" or "Receive" side of a swap.
- * Displays a label, numeric amount input, token selector button, and optional balance.
+ * A single token input card for either the "Pay" or "Receive" side of a swap,
+ * or as a standalone input for send/stake/deposit flows.
+ *
+ * When a `tokens` list is provided, clicking the token button opens an inline
+ * dropdown to pick a different token. Without `tokens` the button is display-only.
  *
  * @example
  * ```tsx
@@ -28,8 +39,9 @@ function toCssSize(size: NonNullable<TokenInputProps['size']>) {
  *   amount="1.21"
  *   onAmountChange={setAmount}
  *   token={{ symbol: 'SOL', logoURI: 'https://...' }}
+ *   tokens={tokenList}
+ *   onTokenChange={setSelectedToken}
  *   balance="4.32"
- *   variant="dark"
  * />
  * ```
  */
@@ -38,18 +50,34 @@ export const TokenInput: React.FC<TokenInputProps> = ({
 	amount,
 	onAmountChange,
 	token,
-	onTokenSelect,
+	tokens,
+	onTokenChange,
 	balance,
 	readOnly = false,
 	isLoading = false,
 	error,
-	variant = 'default',
 	size = 'md',
 	className,
 	placeholder = '0.00',
 }) => {
-	const isDark = variant === 'dark' || variant === 'default';
 	const css = toCssSize(size);
+
+	const [isOpen, setIsOpen] = useState(false);
+	const dropdownRef = useRef<HTMLDivElement>(null);
+
+	const hasDropdown = tokens && tokens.length > 0 && onTokenChange;
+
+	// Close dropdown on click outside
+	useEffect(() => {
+		if (!isOpen) return;
+		function handleClickOutside(e: MouseEvent) {
+			if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+				setIsOpen(false);
+			}
+		}
+		document.addEventListener('mousedown', handleClickOutside);
+		return () => document.removeEventListener('mousedown', handleClickOutside);
+	}, [isOpen]);
 
 	const handleAmountChange = useCallback(
 		(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -61,38 +89,26 @@ export const TokenInput: React.FC<TokenInputProps> = ({
 		[onAmountChange],
 	);
 
-	const cardStyles = cn(
-		'rounded-xl border',
-		isDark ? 'bg-zinc-800 border-zinc-700' : 'bg-white border-zinc-200',
-		css.padding,
-		className,
+	const handleTokenSelect = useCallback(
+		(t: SwapTokenInfo) => {
+			onTokenChange?.(t);
+			setIsOpen(false);
+		},
+		[onTokenChange],
 	);
 
-	const labelColor = isDark ? 'text-zinc-400' : 'text-zinc-500';
-	const inputTextColor = isDark ? 'text-white' : 'text-zinc-900';
-	const balanceLabelColor = isDark ? 'text-zinc-400' : 'text-zinc-500';
-	const balanceValueColor = isDark ? 'text-zinc-200' : 'text-zinc-700';
-	const errorColor = isDark ? 'text-red-400' : 'text-red-600';
-	const tokenSelectorBg = isDark ? 'bg-zinc-700 hover:bg-zinc-600' : 'bg-zinc-100 hover:bg-zinc-200';
-	const tokenSelectorText = isDark ? 'text-zinc-50' : 'text-zinc-700';
-	const chevronColor = isDark ? 'text-zinc-100' : 'text-zinc-500';
-	const skeletonTheme = isDark ? 'dark' : 'light';
-
-	const tokenSelectorFocus = cn(
-		'focus:outline-none focus:ring-2 focus:ring-offset-2',
-		isDark ? 'focus:ring-zinc-200/20 focus:ring-offset-zinc-800' : 'focus:ring-zinc-900/15 focus:ring-offset-white',
-	);
+	const cardStyles = cn('rounded-xl border', 'bg-card border-border', css.padding, className);
 
 	return (
 		<div className={cardStyles}>
 			{/* Label */}
-			<div className={cn('text-xs font-medium mb-2', labelColor)}>{label}</div>
+			<div className={cn('text-xs font-medium mb-2', 'text-muted-foreground')}>{label}</div>
 
 			{/* Input + token selector row */}
 			<div className="flex items-center justify-between gap-3">
 				{/* Amount input or skeleton */}
 				{isLoading ? (
-					<Skeleton theme={skeletonTheme} className="h-8 w-32" />
+					<Skeleton className="h-8 w-32" />
 				) : (
 					<input
 						type="text"
@@ -104,63 +120,124 @@ export const TokenInput: React.FC<TokenInputProps> = ({
 						className={cn(
 							'bg-transparent border-none outline-none w-full min-w-0 font-semibold',
 							css.inputText,
-							inputTextColor,
+							'text-card-foreground',
 							readOnly && 'cursor-default',
-							'placeholder:text-zinc-500',
+							'placeholder:text-muted-foreground',
 						)}
 						aria-label={`${label} amount`}
 					/>
 				)}
 
-				{/* Token selector button */}
+				{/* Token selector button + dropdown */}
 				{isLoading ? (
-					<Skeleton theme={skeletonTheme} className="h-9 w-24 rounded-lg" />
-				) : token ? (
-					<button
-						type="button"
-						onClick={onTokenSelect}
-						className={cn(
-							'flex items-center gap-2 rounded-lg px-3 py-1.5 transition-colors shrink-0',
-							tokenSelectorBg,
-							tokenSelectorText,
-							tokenSelectorFocus,
-						)}
-						aria-label={`Select ${label.toLowerCase()} token, currently ${token.symbol}`}
-					>
-						{token.logoURI ? (
-							<img
-								src={token.logoURI}
-								alt={`${token.symbol} token`}
-								className={cn(css.tokenIcon, 'shrink-0 rounded-full')}
-							/>
-						) : (
-							<div
-								className={cn(
-									css.tokenIcon,
-									'shrink-0 rounded-full',
-									isDark ? 'bg-zinc-600' : 'bg-zinc-300',
-								)}
-								aria-hidden="true"
-							/>
-						)}
-						<span className="text-sm font-medium">{token.symbol}</span>
-						<ChevronDown size={16} className={cn('shrink-0', chevronColor)} aria-hidden="true" />
-					</button>
+					<Skeleton className="h-9 w-24 rounded-lg" />
 				) : (
-					<button
-						type="button"
-						onClick={onTokenSelect}
-						className={cn(
-							'flex items-center gap-2 rounded-lg px-3 py-1.5 transition-colors shrink-0',
-							tokenSelectorBg,
-							tokenSelectorText,
-							tokenSelectorFocus,
+					<div className="relative" ref={dropdownRef}>
+						{token ? (
+							<button
+								type="button"
+								onClick={hasDropdown ? () => setIsOpen((o) => !o) : undefined}
+								className={cn(
+									'flex items-center gap-2 rounded-lg px-3 py-1.5 transition-colors shrink-0',
+									'bg-secondary',
+									hasDropdown && 'hover:bg-accent cursor-pointer',
+									!hasDropdown && 'cursor-default',
+									'text-card-foreground',
+									'focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ring ring-offset-background',
+								)}
+								aria-label={`Select ${label.toLowerCase()} token, currently ${token.symbol}`}
+								aria-expanded={hasDropdown ? isOpen : undefined}
+								aria-haspopup={hasDropdown ? 'listbox' : undefined}
+							>
+								<TokenLogo token={token} className={css.tokenIcon} />
+								<span className="text-sm font-medium">{token.symbol}</span>
+								{hasDropdown && (
+									<ChevronDown
+										size={16}
+										className={cn(
+											'shrink-0',
+											'text-muted-foreground',
+											isOpen && 'rotate-180 transition-transform',
+										)}
+										aria-hidden="true"
+									/>
+								)}
+							</button>
+						) : (
+							<button
+								type="button"
+								onClick={hasDropdown ? () => setIsOpen((o) => !o) : undefined}
+								className={cn(
+									'flex items-center gap-2 rounded-lg px-3 py-1.5 transition-colors shrink-0',
+									'bg-secondary',
+									hasDropdown && 'hover:bg-accent cursor-pointer',
+									!hasDropdown && 'cursor-default',
+									'text-card-foreground',
+									'focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ring ring-offset-background',
+								)}
+								aria-label={`Select ${label.toLowerCase()} token`}
+								aria-expanded={hasDropdown ? isOpen : undefined}
+								aria-haspopup={hasDropdown ? 'listbox' : undefined}
+							>
+								<span className="text-sm font-medium">Select token</span>
+								{hasDropdown && (
+									<ChevronDown
+										size={16}
+										className={cn(
+											'shrink-0',
+											'text-muted-foreground',
+											isOpen && 'rotate-180 transition-transform',
+										)}
+										aria-hidden="true"
+									/>
+								)}
+							</button>
 						)}
-						aria-label={`Select ${label.toLowerCase()} token`}
-					>
-						<span className="text-sm font-medium">Select token</span>
-						<ChevronDown size={16} className={cn('shrink-0', chevronColor)} aria-hidden="true" />
-					</button>
+
+						{/* Dropdown */}
+						{isOpen && hasDropdown && (
+							<div
+								role="listbox"
+								aria-label={`${label} token list`}
+								className={cn(
+									'absolute right-0 top-full mt-1 z-20',
+									'bg-card border border-border rounded-lg shadow-lg',
+									'overflow-y-auto max-h-[200px] w-48',
+								)}
+							>
+								{tokens.map((t) => {
+									const isSelected =
+										token?.symbol === t.symbol && token?.mintAddress === t.mintAddress;
+									return (
+										<button
+											type="button"
+											key={t.mintAddress ?? t.symbol}
+											role="option"
+											aria-selected={isSelected}
+											onClick={() => handleTokenSelect(t)}
+											className={cn(
+												'flex w-full items-center gap-2 px-3 py-2 text-left transition-colors',
+												'hover:bg-accent',
+												isSelected && 'bg-accent',
+											)}
+										>
+											<TokenLogo token={t} className="size-5" />
+											<div className="flex flex-col min-w-0">
+												<span className="text-sm font-medium text-card-foreground">
+													{t.symbol}
+												</span>
+												{t.name && (
+													<span className="text-xs text-muted-foreground truncate">
+														{t.name}
+													</span>
+												)}
+											</div>
+										</button>
+									);
+								})}
+							</div>
+						)}
+					</div>
 				)}
 			</div>
 
@@ -169,15 +246,15 @@ export const TokenInput: React.FC<TokenInputProps> = ({
 				<div className="flex items-center justify-between mt-2">
 					{balance !== undefined ? (
 						<span className="text-xs">
-							<span className={balanceLabelColor}>Balance </span>
-							<span className={balanceValueColor}>{balance}</span>
+							<span className="text-muted-foreground">Balance </span>
+							<span className="text-card-foreground">{balance}</span>
 						</span>
 					) : (
 						<span />
 					)}
 
 					{error && (
-						<span className={cn('text-xs', errorColor)} role="alert">
+						<span className={cn('text-xs', 'text-destructive')} role="alert">
 							{error}
 						</span>
 					)}

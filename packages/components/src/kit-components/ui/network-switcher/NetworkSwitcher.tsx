@@ -26,7 +26,6 @@ import { DEFAULT_NETWORKS } from './types';
  *   onNetworkChange={handleNetworkChange}
  *   open={isOpen}
  *   onOpenChange={setIsOpen}
- *   theme="dark"
  * />
  * ```
  */
@@ -36,7 +35,6 @@ export function NetworkSwitcher({
 	onNetworkChange,
 	open: controlledOpen,
 	onOpenChange,
-	theme = 'dark',
 	networks = DEFAULT_NETWORKS,
 	className,
 	disabled = false,
@@ -101,7 +99,13 @@ export function NetworkSwitcher({
 	return (
 		<div ref={containerRef} className={cn('relative inline-block', className)}>
 			{/* Trigger is always visible */}
-			<NetworkTrigger isOpen={isOpen} theme={theme} onClick={handleToggle} disabled={disabled} />
+			<NetworkTrigger
+				isOpen={isOpen}
+				selectedLabel={networks.find((n) => n.id === selectedNetwork)?.label}
+				status={status}
+				onClick={handleToggle}
+				disabled={disabled}
+			/>
 
 			{/* Dropdown appears below trigger when open */}
 			{isOpen && (
@@ -111,7 +115,6 @@ export function NetworkSwitcher({
 						status={status}
 						networks={networks}
 						onSelect={handleSelect}
-						theme={theme}
 					/>
 				</div>
 			)}

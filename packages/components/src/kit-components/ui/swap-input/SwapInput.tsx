@@ -21,7 +21,6 @@ import { isInsufficientBalance } from './utils';
  *   receiveToken={{ symbol: 'USDC', icon: usdcIcon }}
  *   onSwapDirection={handleSwap}
  *   payBalance="4.32"
- *   variant="dark"
  * />
  * ```
  */
@@ -31,35 +30,26 @@ export const SwapInput: React.FC<SwapInputProps> = ({
 	receiveAmount,
 	onReceiveAmountChange,
 	payToken,
-	onPayTokenSelect,
+	payTokens,
+	onPayTokenChange,
 	receiveToken,
-	onReceiveTokenSelect,
+	receiveTokens,
+	onReceiveTokenChange,
 	onSwapDirection,
 	payBalance,
 	receiveReadOnly = true,
 	isLoading = false,
 	isSwapping = false,
-	variant = 'default',
 	size = 'md',
 	className,
 	disabled = false,
 }) => {
 	if (isLoading) {
-		return <SwapInputSkeleton variant={variant} size={size} className={className} />;
+		return <SwapInputSkeleton size={size} className={className} />;
 	}
-
-	const isDark = variant === 'dark' || variant === 'default';
 
 	const insufficientBalance = isInsufficientBalance(payAmount, payBalance);
 	const payError = insufficientBalance ? 'Insufficient balance' : undefined;
-
-	const swapBtnBg = isDark ? 'bg-zinc-700 hover:bg-zinc-600' : 'bg-zinc-200 hover:bg-zinc-300';
-	const swapBtnBorder = isDark ? 'border-zinc-900' : 'border-zinc-50';
-	const swapBtnIconColor = isDark ? 'text-zinc-100' : 'text-zinc-600';
-	const swapBtnFocus = cn(
-		'focus:outline-none focus:ring-2 focus:ring-offset-2',
-		isDark ? 'focus:ring-zinc-200/20 focus:ring-offset-zinc-900' : 'focus:ring-zinc-900/15 focus:ring-offset-white',
-	);
 
 	return (
 		<section className={cn('relative', className)} aria-label="Swap input">
@@ -70,11 +60,11 @@ export const SwapInput: React.FC<SwapInputProps> = ({
 					amount={payAmount}
 					onAmountChange={disabled ? undefined : onPayAmountChange}
 					token={payToken}
-					onTokenSelect={disabled ? undefined : onPayTokenSelect}
+					tokens={disabled ? undefined : payTokens}
+					onTokenChange={disabled ? undefined : onPayTokenChange}
 					balance={payBalance}
 					readOnly={disabled}
 					error={payError}
-					variant={variant}
 					size={size}
 				/>
 
@@ -86,14 +76,14 @@ export const SwapInput: React.FC<SwapInputProps> = ({
 						disabled={disabled || isSwapping}
 						className={cn(
 							'flex items-center justify-center w-9 h-9 rounded-full border-4 transition-colors',
-							swapBtnBg,
-							swapBtnBorder,
-							swapBtnFocus,
+							'bg-secondary hover:bg-accent',
+							'border-background',
+							'focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ring ring-offset-background',
 							(disabled || isSwapping) && 'opacity-50 cursor-not-allowed',
 						)}
 						aria-label="Swap pay and receive tokens"
 					>
-						<ArrowDownUp size={16} className={swapBtnIconColor} aria-hidden="true" />
+						<ArrowDownUp size={16} className="text-muted-foreground" aria-hidden="true" />
 					</button>
 				</div>
 
@@ -103,9 +93,9 @@ export const SwapInput: React.FC<SwapInputProps> = ({
 					amount={receiveAmount}
 					onAmountChange={disabled ? undefined : onReceiveAmountChange}
 					token={receiveToken}
-					onTokenSelect={disabled ? undefined : onReceiveTokenSelect}
+					tokens={disabled ? undefined : receiveTokens}
+					onTokenChange={disabled ? undefined : onReceiveTokenChange}
 					readOnly={receiveReadOnly}
-					variant={variant}
 					size={size}
 				/>
 			</div>
