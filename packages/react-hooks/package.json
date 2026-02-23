@@ -1,6 +1,6 @@
 {
 	"name": "@solana/react-hooks",
-	"version": "1.3.0",
+	"version": "1.4.1",
 	"description": "React hooks for the @solana/client Solana client",
 	"exports": {
 		"browser": "./dist/index.browser.mjs",
@@ -58,6 +58,7 @@
 		"zustand": "catalog:utils"
 	},
 	"devDependencies": {
+		"@solana/connector": "catalog:solana",
 		"@types/react": "catalog:typescript",
 		"react": "catalog:react"
 	},

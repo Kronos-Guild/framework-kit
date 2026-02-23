@@ -11,6 +11,22 @@ in any runtime (React, Svelte, API routes, workers, etc.).
 npm install @solana/client
 ```
 
+## ConnectorKit (optional)
+
+ConnectorKit integration is available as a **stable, opt-in entrypoint**: `@solana/client/connectorkit`.
+
+This requires installing `@solana/connector` (an **optional peer dependency** of `@solana/client`):
+
+```bash
+npm install @solana/connector
+```
+
+```ts
+import { connectorKit } from "@solana/client/connectorkit";
+
+const walletConnectors = connectorKit({ defaultConfig: { /* ... */ } });
+```
+
 ## Quickstart
 
 1. Choose Wallet Standard connectors (auto-discovery is the fastest way to start).
@@ -27,7 +43,8 @@ const client = createClient({
 });
 
 // Connect Wallet Standard apps via their connector ids.
-await client.actions.connectWallet("phantom");
+// Recommended: use canonical ids like "wallet-standard:phantom" (aliases like "phantom" also work).
+await client.actions.connectWallet("wallet-standard:phantom");
 
 // Fetch an account once.
 const wallet = client.store.getState().wallet;
@@ -110,6 +127,34 @@ const signature = await usdc.sendTransfer({
   destinationOwner: "Ff34MXWdgNsEJ1kJFj9cXmrEe7y2P93b95mGu5CJjBQJ",
 });
 console.log(signature.toString());
+```
+
+### Token 2022 support
+
+Token 2022 mints are supported via the `tokenProgram` option:
+
+```ts
+// Auto-detect Token or Token 2022 (recommended)
+const token = client.splToken({
+  mint: "2b1kV6DkPAnxd5ixfnxCpjxmKwqjjaYmCZfHsFu24GXo", // PYUSD
+  tokenProgram: "auto",
+});
+
+// Or explicitly specify Token 2022 program
+import { TOKEN_2022_PROGRAM_ADDRESS } from "@solana/client";
+
+const token2022 = client.splToken({
+  mint: mintAddress,
+  tokenProgram: TOKEN_2022_PROGRAM_ADDRESS,
+});
+
+// Balance and transfers work the same way
+const balance = await token.fetchBalance(wallet.session.account.address);
+const signature = await token.sendTransfer({
+  amount: 10,
+  authority: wallet.session,
+  destinationOwner: recipientAddress,
+});
 ```
 
 ### Fetch address lookup tables
