@@ -7,7 +7,6 @@ import type { NetworkTriggerProps } from './types';
 
 /**
  * NetworkTrigger - Trigger button showing the selected network with status indicator.
- * Dimensions from Figma: 191px x 38px
  */
 export function NetworkTrigger({
 	isOpen = false,
@@ -23,10 +22,10 @@ export function NetworkTrigger({
 			onClick={onClick}
 			disabled={disabled}
 			className={cn(
-				'w-[191px] h-[38px] flex items-center justify-between',
-				'px-[15px] py-2.5 rounded-[10px]',
+				'w-full min-w-44 min-h-10 flex items-center justify-between',
+				'px-4 py-2.5 rounded-lg',
 				'border-b-[0.5px] border-solid',
-				"font-['Inter',sans-serif] font-medium text-[15px] leading-normal",
+				"font-['Inter',sans-serif] font-medium text-sm leading-normal",
 				'cursor-pointer transition-colors',
 				'focus:outline-none focus-visible:ring-2 focus-visible:ring-ring',
 				'disabled:opacity-50 disabled:cursor-not-allowed',

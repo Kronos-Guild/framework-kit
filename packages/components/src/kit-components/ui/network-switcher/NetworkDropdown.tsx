@@ -6,7 +6,6 @@ import type { NetworkDropdownProps } from './types';
 
 /**
  * NetworkDropdown - Expanded dropdown showing all network options.
- * Dimensions from Figma: 191px x auto (based on items)
  */
 export function NetworkDropdown({
 	selectedNetwork,
@@ -17,7 +16,7 @@ export function NetworkDropdown({
 }: NetworkDropdownProps) {
 	return (
 		<div
-			className={cn('w-[191px] flex flex-col gap-1 p-2 rounded-[10px]', 'bg-secondary', className)}
+			className={cn('w-full min-w-44 flex flex-col gap-1 p-2 rounded-lg', 'bg-secondary', className)}
 			role="listbox"
 			aria-label="Select network"
 		>
