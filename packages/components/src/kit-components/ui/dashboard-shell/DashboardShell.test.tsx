@@ -170,8 +170,8 @@ describe('DashboardShell', () => {
 		expect(main).toHaveClass('md:p-6');
 		expect(main).toHaveClass('lg:p-8');
 	});
-	// z-index keeps content above decorative dot grid
-	it('uses z-10 for header and main layers', () => {
+	// header and main use relative positioning without z-index so dropdowns can escape
+	it('does not trap dropdowns with z-index on header or main', () => {
 		render(
 			<DashboardShell header={<span>Nav</span>}>
 				<p>Content</p>
@@ -179,7 +179,9 @@ describe('DashboardShell', () => {
 		);
 		const header = screen.getByRole('banner');
 		const main = screen.getByRole('main');
-		expect(header).toHaveClass('z-10');
-		expect(main).toHaveClass('z-10');
+		expect(header).toHaveClass('relative');
+		expect(main).toHaveClass('relative');
+		expect(header).not.toHaveClass('z-10');
+		expect(main).not.toHaveClass('z-10');
 	});
 });
