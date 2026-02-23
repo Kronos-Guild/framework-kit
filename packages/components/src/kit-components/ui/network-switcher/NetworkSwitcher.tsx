@@ -97,7 +97,7 @@ export function NetworkSwitcher({
 	}, [isOpen, handleOpenChange]);
 
 	return (
-		<div ref={containerRef} className={cn('relative inline-block min-w-44', className)}>
+		<div ref={containerRef} className={cn('relative inline-block min-w-44', isOpen && 'z-50', className)}>
 			{/* Trigger is always visible */}
 			<NetworkTrigger
 				isOpen={isOpen}
