@@ -28,7 +28,7 @@ const walletButtonVariants = cva(
 				/** Filled button - Disconnected state */
 				filled: [
 					'border border-border',
-					'bg-primary hover:bg-accent',
+					'bg-primary hover:bg-primary/90',
 					'text-primary-foreground',
 					'gap-2 rounded-2xl',
 				],
@@ -37,7 +37,7 @@ const walletButtonVariants = cva(
 				/** Connected state */
 				connected: [
 					'border border-border',
-					'bg-card hover:bg-accent',
+					'bg-card hover:bg-secondary',
 					'text-card-foreground',
 					'gap-2.5 rounded-lg',
 				],
