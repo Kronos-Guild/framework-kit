@@ -187,7 +187,8 @@ describe('BalanceCard', () => {
 		it('calls onCopyAddress when copy button is clicked', async () => {
 			// Mock clipboard API
 			const mockWriteText = vi.fn().mockResolvedValue(undefined);
-			Object.assign(navigator, {
+			vi.stubGlobal('navigator', {
+				...navigator,
 				clipboard: { writeText: mockWriteText },
 			});
 

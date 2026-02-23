@@ -200,15 +200,16 @@ describe('NetworkSwitcher', () => {
 	});
 
 	describe('theme variants', () => {
-		it('applies dark theme by default', () => {
+		it('applies dark theme styles by default', () => {
 			render(<NetworkSwitcher selectedNetwork="mainnet-beta" />);
-			// Component should render with dark theme
-			expect(screen.getByRole('button')).toBeInTheDocument();
+			const button = screen.getByRole('button');
+			expect(button).toHaveClass('bg-zinc-700');
 		});
 
-		it('accepts light theme prop', () => {
+		it('applies light theme styles', () => {
 			render(<NetworkSwitcher selectedNetwork="mainnet-beta" theme="light" />);
-			expect(screen.getByRole('button')).toBeInTheDocument();
+			const button = screen.getByRole('button');
+			expect(button).toHaveClass('bg-zinc-50');
 		});
 	});
 
