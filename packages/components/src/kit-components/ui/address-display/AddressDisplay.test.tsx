@@ -7,6 +7,7 @@ import '@testing-library/jest-dom/vitest';
 
 afterEach(() => {
 	cleanup();
+	vi.unstubAllGlobals();
 });
 
 import { AddressDisplay, getExplorerUrl, truncateAddress } from './AddressDisplay';
@@ -109,15 +110,18 @@ describe('AddressDisplay', () => {
 	});
 
 	describe('theme variants', () => {
-		it('applies light theme by default', () => {
+		it('applies light theme classes by default', () => {
 			const { container } = render(<AddressDisplay address={testAddress} />);
-			// Light theme should have light text colors
-			expect(container.firstChild).toBeInTheDocument();
+			// Light theme uses bg-zinc-200/40 on the chip
+			const chip = container.querySelector('span > span');
+			expect(chip).toHaveClass('bg-zinc-200/40');
 		});
 
-		it('applies dark theme when specified', () => {
+		it('applies dark theme classes when specified', () => {
 			const { container } = render(<AddressDisplay address={testAddress} theme="dark" />);
-			expect(container.firstChild).toBeInTheDocument();
+			// Dark theme uses bg-zinc-700/90 on the chip
+			const chip = container.querySelector('span > span');
+			expect(chip).toHaveClass('bg-zinc-700/90');
 		});
 	});
 
@@ -125,7 +129,8 @@ describe('AddressDisplay', () => {
 		it('calls onCopy callback when copy button is clicked', async () => {
 			// Mock clipboard API
 			const mockWriteText = vi.fn().mockResolvedValue(undefined);
-			Object.assign(navigator, {
+			vi.stubGlobal('navigator', {
+				...navigator,
 				clipboard: { writeText: mockWriteText },
 			});
 
@@ -142,7 +147,8 @@ describe('AddressDisplay', () => {
 
 		it('copies address to clipboard when copy button is clicked', async () => {
 			const mockWriteText = vi.fn().mockResolvedValue(undefined);
-			Object.assign(navigator, {
+			vi.stubGlobal('navigator', {
+				...navigator,
 				clipboard: { writeText: mockWriteText },
 			});
 

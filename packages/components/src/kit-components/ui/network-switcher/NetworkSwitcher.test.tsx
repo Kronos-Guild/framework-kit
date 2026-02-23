@@ -18,11 +18,6 @@ describe('NetworkSwitcher', () => {
 			expect(screen.getByRole('button')).toBeInTheDocument();
 		});
 
-		it('renders trigger button', () => {
-			render(<NetworkSwitcher selectedNetwork="mainnet-beta" />);
-			expect(screen.getByRole('button')).toBeInTheDocument();
-		});
-
 		it('dropdown is closed by default', () => {
 			render(<NetworkSwitcher selectedNetwork="mainnet-beta" />);
 			// Network options should not be visible
@@ -214,13 +209,14 @@ describe('NetworkSwitcher', () => {
 	});
 
 	describe('status indicator', () => {
-		it('passes status to dropdown', () => {
+		it('renders connected status indicator for selected network', () => {
 			render(<NetworkSwitcher selectedNetwork="mainnet-beta" status="connected" />);
 
 			fireEvent.click(screen.getByRole('button'));
 
-			// Dropdown should be visible - status is used for styling
+			// The selected network should show a status indicator with aria-label "Connected"
 			expect(screen.getByText('Mainnet')).toBeInTheDocument();
+			expect(screen.getByLabelText('Connected')).toBeInTheDocument();
 		});
 	});
 

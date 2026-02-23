@@ -9,6 +9,7 @@ import { BalanceCard } from './BalanceCard';
 
 afterEach(() => {
 	cleanup();
+	vi.unstubAllGlobals();
 });
 
 const testAddress = address('6DMh7fYHrKdCJwCFUQfMfNAdLADi9xqsRKNzmZA31DkK');
@@ -58,11 +59,11 @@ describe('BalanceCard', () => {
 
 	describe('loading state', () => {
 		it('renders skeleton when isLoading is true', () => {
-			const { container } = render(<BalanceCard totalBalance={testBalance} isLoading={true} />);
+			render(<BalanceCard totalBalance={testBalance} isLoading={true} />);
 			// Skeleton should be present, not the balance label
 			expect(screen.queryByText('Total balance')).not.toBeInTheDocument();
-			// Check for skeleton elements (animated divs)
-			expect(container.querySelector('.animate-pulse')).toBeInTheDocument();
+			// BalanceCardSkeleton renders <output aria-label="Loading balance">
+			expect(screen.getByLabelText('Loading balance')).toBeInTheDocument();
 		});
 	});
 
@@ -153,7 +154,8 @@ describe('BalanceCard', () => {
 			expect(container.firstChild).toHaveClass('bg-white');
 		});
 
-		it('applies dark theme by default', () => {
+		// The "default" variant shares the same dark styles as the "dark" variant
+		it('applies dark theme classes for default variant', () => {
 			const { container } = render(<BalanceCard totalBalance={testBalance} />);
 			expect(container.firstChild).toHaveClass('bg-zinc-800');
 		});
