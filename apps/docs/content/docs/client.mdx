@@ -63,6 +63,16 @@ if (wallet.status === "connected") {
 await client.actions.disconnectWallet();
 ```
 
+### Connector IDs
+
+Connectors use **canonical IDs**:
+
+- Wallet Standard: `wallet-standard:<wallet-name>` (example: `wallet-standard:phantom`)
+- Mobile Wallet Adapter: `mwa:<wallet-name>`
+- WalletConnect: `walletconnect`
+
+For convenience, calls like `connectWallet("phantom")` also work (fallback-only: prefers `wallet-standard:phantom`, then `mwa:phantom`). The client persists the **canonical** ID in state for more reliable restore/auto-connect.
+
 ### Wallet Connectors
 
 Framework Kit uses the Wallet Standard for wallet discovery:
@@ -94,6 +104,27 @@ const client = createClient({
   walletConnectors: [phantom(), solflare(), backpack()],
 });
 ```
+
+## ConnectorKit (optional)
+
+ConnectorKit integration is exposed as a **stable, opt-in entrypoint**:
+
+```ts
+import { connectorKit } from "@solana/client/connectorkit";
+import { createClient } from "@solana/client";
+
+const walletConnectors = connectorKit({
+  // Pass a ConnectorKit client/config/defaultConfig (see ConnectorKit docs).
+  defaultConfig: { /* ... */ },
+});
+
+const client = createClient({
+  cluster: "devnet",
+  walletConnectors,
+});
+```
+
+`@solana/connector` is an **optional peer dependency** of `@solana/client`. Install it to use `@solana/client/connectorkit`.
 
 ## Fetching Data
 
@@ -203,6 +234,48 @@ const signature = await usdc.sendTransfer({
   authority: wallet.session,
   destinationOwner: "Ff34MXWdgNsEJ1kJFj9cXmrEe7y2P93b95mGu5CJjBQJ",
 });
+```
+
+### Token 2022 Support
+
+The SPL token helper supports Token 2022 (Token Extensions) mints. Use the `tokenProgram` option to specify the program:
+
+```ts
+// Auto-detect program (recommended for existing mints)
+const token2022 = client.splToken({
+  mint: "2b1kV6DkPAnxd5ixfnxCpjxmKwqjjaYmCZfHsFu24GXo", // PYUSD
+  tokenProgram: "auto",
+});
+
+// Fetch balance works the same way
+const balance = await token2022.fetchBalance(wallet.session.account.address);
+
+// Transfer works the same way
+const signature = await token2022.sendTransfer({
+  amount: 10,
+  authority: wallet.session,
+  destinationOwner: recipientAddress,
+});
+```
+
+You can also explicitly specify the Token 2022 program address:
+
+```ts
+import { TOKEN_2022_PROGRAM_ADDRESS } from "@solana/client";
+
+const token = client.splToken({
+  mint: mintAddress,
+  tokenProgram: TOKEN_2022_PROGRAM_ADDRESS,
+});
+```
+
+The `detectTokenProgram` utility is also available for manual program detection:
+
+```ts
+import { detectTokenProgram } from "@solana/client";
+
+const result = await detectTokenProgram(client.runtime, mintAddress);
+console.log(result.programId); // 'token' or 'token-2022'
 ```
 
 ## Custom Transactions
