@@ -58,10 +58,8 @@ export function WalletDropdown({
 		return formattedBalance;
 	})();
 
-	// Figma: px-15 py-10
-	const rowPx = 'px-[15px] py-[10px]';
-	// Figma: w-191, rounded-10
-	const containerCn = cn('w-[191px] rounded-[10px] overflow-hidden', 'bg-card', 'shadow-lg', className);
+	const rowPx = 'px-4 py-2.5';
+	const containerCn = cn('min-w-full w-max max-w-sm rounded-lg overflow-hidden', 'bg-card', 'shadow-lg', className);
 
 	// ═══════════════════════════════════════════════════════════
 	// VIEW 2: Network selection (replaces wallet dropdown in-place)
@@ -135,7 +133,7 @@ export function WalletDropdown({
 				<NetworkTrigger
 					onClick={() => setView('network')}
 					className={cn(
-						'w-full! h-auto! bg-transparent! border-0! rounded-none!',
+						'w-full! min-w-0! bg-transparent! border-0! rounded-none!',
 						'text-card-foreground',
 						'hover:bg-accent',
 						'transition-colors duration-200',

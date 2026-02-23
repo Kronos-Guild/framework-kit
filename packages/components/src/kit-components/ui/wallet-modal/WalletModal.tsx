@@ -65,7 +65,7 @@ export function WalletModal({
 }: WalletModalProps) {
 	return (
 		<div
-			className={cn('w-[361px] p-6 rounded-[15px] flex flex-col gap-5', 'bg-card', className)}
+			className={cn('w-full max-w-sm p-6 rounded-[15px] flex flex-col gap-5', 'bg-card', className)}
 			role="dialog"
 			aria-modal="true"
 			aria-labelledby={view === 'list' ? 'wallet-modal-title' : undefined}

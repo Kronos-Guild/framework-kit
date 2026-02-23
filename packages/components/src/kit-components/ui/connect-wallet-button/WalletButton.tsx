@@ -43,14 +43,14 @@ const walletButtonVariants = cva(
 				],
 			},
 			size: {
-				/** Default size - h=37px, px=15px, py=10px */
-				default: 'h-[37px] px-[15px] py-[10px]',
+				/** Default size */
+				default: 'min-h-9 px-4 py-2.5',
 				sm: 'h-8 px-3 py-1.5 text-xs',
 				lg: 'h-12 px-6 py-3 text-base',
-				/** Loading size - h=37px, px=20px, py=10px (wider padding) */
-				loading: 'h-[37px] px-[20px] py-[10px]',
-				/** Connected size - h=37px, px=15px, py=10px */
-				connected: 'h-[37px] px-[15px] py-[10px]',
+				/** Loading size (wider horizontal padding) */
+				loading: 'min-h-9 px-5 py-2.5',
+				/** Connected size */
+				connected: 'min-h-9 px-4 py-2.5',
 			},
 		},
 		defaultVariants: {
