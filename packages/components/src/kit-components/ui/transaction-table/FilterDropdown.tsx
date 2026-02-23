@@ -1,6 +1,6 @@
 import { ChevronDown } from 'lucide-react';
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
-import { cn } from '../../lib/utils';
+import { cn } from '@/lib/utils';
 import type { FilterDropdownProps } from './types';
 
 /**

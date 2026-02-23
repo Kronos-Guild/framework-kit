@@ -1,5 +1,5 @@
 import type React from 'react';
-import { cn } from '../../lib/utils';
+import { cn } from '@/lib/utils';
 
 export interface DashboardShellProps extends React.HTMLAttributes<HTMLDivElement> {
 	//slot for shell color theme

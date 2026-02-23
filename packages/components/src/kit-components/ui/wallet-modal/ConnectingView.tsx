@@ -1,6 +1,6 @@
 import type { WalletConnectorMetadata } from '@solana/client';
 import { Loader2 } from 'lucide-react';
-import { cn } from '../../../lib/utils';
+import { cn } from '@/lib/utils';
 import { ModalHeader } from './ModalHeader';
 import type { WalletModalTheme } from './types';
 

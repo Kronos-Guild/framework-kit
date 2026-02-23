@@ -1,6 +1,6 @@
 'use client';
 
-import { cn } from '../../../lib/utils';
+import { cn } from '@/lib/utils';
 import { StatusIndicator } from './StatusIndicator';
 import type { NetworkOptionProps, Theme } from './types';
 

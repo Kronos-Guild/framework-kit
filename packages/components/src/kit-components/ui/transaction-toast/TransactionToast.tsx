@@ -1,7 +1,7 @@
 import type { ClusterMoniker } from '@solana/client';
 import { Check, ExternalLink, Loader2, X } from 'lucide-react';
 import type React from 'react';
-import { cn } from '../../lib/utils';
+import { cn } from '@/lib/utils';
 
 //define interfaces for Typescript types
 // for transaction status

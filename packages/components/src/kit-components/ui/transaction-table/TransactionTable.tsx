@@ -1,7 +1,7 @@
 import { Calendar, ListFilter } from 'lucide-react';
 import type React from 'react';
 import { useMemo, useState } from 'react';
-import { cn } from '../../lib/utils';
+import { cn } from '@/lib/utils';
 import { FilterDropdown } from './FilterDropdown';
 import { TransactionRow } from './TransactionRow';
 import { TransactionTableSkeleton } from './TransactionTableSkeleton';

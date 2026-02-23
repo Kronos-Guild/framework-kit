@@ -3,7 +3,7 @@
 import type { ClusterMoniker, WalletStatus } from '@solana/client';
 import type { Address, Lamports } from '@solana/kit';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { cn } from '../../../lib/utils';
+import { cn } from '@/lib/utils';
 import type { Theme } from './types';
 import { WalletButton } from './WalletButton';
 import { WalletDropdown, WalletDropdownWrapper } from './WalletDropdown';

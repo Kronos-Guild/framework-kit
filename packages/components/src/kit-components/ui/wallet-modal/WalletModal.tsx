@@ -1,5 +1,5 @@
 import type { WalletConnectorMetadata } from '@solana/client';
-import { cn } from '../../../lib/utils';
+import { cn } from '@/lib/utils';
 import { ConnectingView } from './ConnectingView';
 import { ErrorView } from './ErrorView';
 import { ModalHeader } from './ModalHeader';

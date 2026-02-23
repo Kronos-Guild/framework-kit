@@ -1,7 +1,7 @@
 import { ChevronDown } from 'lucide-react';
 import type React from 'react';
 import { useCallback } from 'react';
-import { cn } from '../../lib/utils';
+import { cn } from '@/lib/utils';
 import { Skeleton } from '../skeleton/Skeleton';
 import type { TokenInputProps } from './types';
 import { sanitizeAmountInput } from './utils';

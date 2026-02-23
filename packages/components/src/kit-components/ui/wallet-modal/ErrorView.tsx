@@ -1,4 +1,4 @@
-import { cn } from '../../../lib/utils';
+import { cn } from '@/lib/utils';
 import errorIcon from './assets/error-icon.svg';
 import { ModalHeader } from './ModalHeader';
 import type { WalletModalTheme } from './types';
